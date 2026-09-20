@@ -140,6 +140,7 @@ input[type="date"] {
 .note.warn { border-color: var(--high); background: rgba(241,196,15,.09); }
 .note.info { border-color: var(--mlb); background: rgba(52,152,219,.09); }
 .note.hidden { display: none; }
+.note .r { color: var(--muted); display: block; margin-top: 6px; }
 .lede { color: var(--muted); max-width: 76ch; }
 
 .interp { display: flex; flex-direction: column; gap: 6px; margin: 14px 0 18px; font-size: 14px; }
@@ -221,3 +222,27 @@ code { background: var(--panel2); padding: 1px 5px; border-radius: 4px; font-siz
 .srccard.station { margin-bottom: 12px; }
 .srccard .small { font-size: 11.5px; color: #8494ab; display: block; margin: 2px 0 6px; }
 .blk.provisional { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.09) 0 6px, transparent 6px 12px); }
+
+/* ---- complete NFL reference slate ---- */
+.nflrefgrid { display: grid; gap: 5px; margin: 10px 0 18px; }
+.nflrefrow {
+  display: grid; grid-template-columns: 155px 1fr auto; gap: 10px; align-items: center;
+  border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; background: var(--panel);
+}
+.nflrefrow.high { border-left: 3px solid var(--high); }
+.nflreftime { font-variant-numeric: tabular-nums; font-weight: 700; }
+.nflreftime span { display: block; color: var(--muted); font-size: 11px; font-weight: 400; }
+.nflrefrow .det { display: block; color: var(--muted); font-size: 11px; }
+.nflweek { margin: 8px 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }
+.nflweek summary { cursor: pointer; padding: 11px 13px; background: var(--panel2); font-weight: 700; }
+.nflweek summary span { float: right; color: var(--muted); font-weight: 400; }
+.nflweek table { font-size: 12px; }
+.nflweek th, .nflweek td { padding: 7px 9px; }
+.nflweek .nflhigh { background: rgba(241,196,15,.08); }
+.nflweek .nflhigh td:first-child { border-left: 3px solid var(--high); }
+
+@media (max-width: 720px) {
+  .nflrefrow { grid-template-columns: 1fr; gap: 2px; }
+  .nflrefrow .meta { text-align: left; }
+  .nflweek { overflow-x: auto; }
+}

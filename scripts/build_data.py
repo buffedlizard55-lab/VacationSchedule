@@ -47,6 +47,80 @@ def load(name: str) -> dict:
         return json.load(handle)
 
 
+NFL_TEAM_NAMES = {
+    "ARI": "Arizona Cardinals", "ATL": "Atlanta Falcons", "BAL": "Baltimore Ravens",
+    "BUF": "Buffalo Bills", "CAR": "Carolina Panthers", "CHI": "Chicago Bears",
+    "CIN": "Cincinnati Bengals", "CLE": "Cleveland Browns", "DAL": "Dallas Cowboys",
+    "DEN": "Denver Broncos", "DET": "Detroit Lions", "GB": "Green Bay Packers",
+    "HOU": "Houston Texans", "IND": "Indianapolis Colts", "JAX": "Jacksonville Jaguars",
+    "KC": "Kansas City Chiefs", "LA": "Los Angeles Rams", "LAC": "Los Angeles Chargers",
+    "LV": "Las Vegas Raiders", "MIA": "Miami Dolphins", "MIN": "Minnesota Vikings",
+    "NE": "New England Patriots", "NO": "New Orleans Saints", "NYG": "New York Giants",
+    "NYJ": "New York Jets", "PHI": "Philadelphia Eagles", "PIT": "Pittsburgh Steelers",
+    "SEA": "Seattle Seahawks", "SF": "San Francisco 49ers", "TB": "Tampa Bay Buccaneers",
+    "TEN": "Tennessee Titans", "WAS": "Washington Commanders",
+}
+
+NFL_FULL_SCHEDULE_SOURCE = "https://www.nfl.com/nfl-schedule-release/"
+NFL_FULL_SCHEDULE_PDF = (
+    "https://media.nfl.com/content/dam/communications/football-communications/2026/news/"
+    "05%2014%2026%20-%202026%20NFL%20Schedule%20-%20By%20Week.pdf"
+)
+
+
+def load_nfl_regular_schedule() -> list[dict]:
+    """Load the 272-game 2026 regular-season schedule snapshot.
+
+    The NFL publishes kickoff times in Eastern Time in its by-week release.  The
+    Week 16/17 flexible matchups and Week 18 matchups are official, but their date
+    and/or kickoff fields are intentionally still TBD in the source; those rows
+    retain ``None`` rather than borrowing a date from a third-party feed.  This is a reference schedule, not a radio claim:
+    Westwood One's national selection remains the only NFL interval counted by
+    Sections 1-3.
+    """
+    rows: list[dict] = []
+    path = VERIFIED / "nfl_regular_2026.csv"
+    for line_no, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = line.split("|")
+        if len(fields) != 5:
+            raise ValueError(f"{path}:{line_no}: expected 5 pipe-separated fields")
+        week, date_local, kickoff_et, away, home = fields
+        if away not in NFL_TEAM_NAMES or home not in NFL_TEAM_NAMES:
+            raise ValueError(f"{path}:{line_no}: unknown NFL team {away}/{home}")
+        is_tbd = date_local == "TBD" or kickoff_et == "TBD"
+        rows.append({
+            "week": int(week),
+            "date_local": None if date_local == "TBD" else date_local,
+            "date_window": {
+                16: ["2026-12-26", "2026-12-27"],
+                17: ["2027-01-02", "2027-01-03"],
+                18: ["2027-01-09", "2027-01-10"],
+            }.get(int(week)) if is_tbd else None,
+            "kickoff_et": None if kickoff_et == "TBD" else kickoff_et,
+            "away": NFL_TEAM_NAMES[away],
+            "home": NFL_TEAM_NAMES[home],
+            "away_abbr": away,
+            "home_abbr": home,
+            "label": f"{NFL_TEAM_NAMES[away]} at {NFL_TEAM_NAMES[home]}",
+            "time_status": "TBD_official_window" if is_tbd else "official",
+            "source": NFL_FULL_SCHEDULE_PDF,
+        })
+    if len(rows) != 272:
+        raise ValueError(f"2026 NFL schedule contains {len(rows)} rows, expected 272")
+    if len({(g["week"], g["away_abbr"], g["home_abbr"]) for g in rows}) != 272:
+        raise ValueError("2026 NFL schedule contains duplicate game keys")
+    appearances = {
+        abbr: sum(abbr in (g["away_abbr"], g["home_abbr"]) for g in rows)
+        for abbr in NFL_TEAM_NAMES
+    }
+    if set(appearances.values()) != {17}:
+        raise ValueError(f"2026 NFL schedule team appearance counts are not all 17: {appearances}")
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # Coverage sections
 # ---------------------------------------------------------------------------
@@ -415,55 +489,145 @@ def from_nfl_calendar() -> tuple[list[dict], list[dict]]:
     return games, unresolved
 
 
-def from_nfl_season_frame(existing: list[dict]) -> tuple[list[dict], list[dict]]:
-    """One placeholder per NFL game day the bundle does not already cover.
+def from_nfl_schedule_radio_backstop(
+    existing: list[dict], schedule: list[dict]
+) -> tuple[list[dict], list[dict]]:
+    """Block an NFL date conservatively when the full 2026 slate is known.
 
-    The three sections name only the 49ers and the Westwood One national feed, so
-    without this the day board would report an NFL Sunday as free whenever the
-    national window had not been published -- most visibly for 2027-2029, where
-    neither the 49ers nor the Westwood One schedule exists yet.
-
-    These records are date-level and say exactly that: the NFL is scheduled to play
-    on this date, the national radio window is not announced, and the day is blocked
-    with the documented NFL envelope. Nothing about a specific game is invented.
+    The full league schedule answers *which games are scheduled*, but it does not
+    say which one Westwood One will select for the Bay Area affiliate.  The
+    selection itself remains the radio source of truth.  On a date with no
+    published selection we therefore retain one clearly labelled, date-level
+    envelope backed by the official full-slate source.  This replaces the old
+    generic ``national radio window TBA`` season-frame row for 2026; it never
+    invents a matchup or kickoff.
     """
-    covered = {g["date_local"] for g in existing if g.get("league") == "NFL"}
+    covered = {
+        g.get("date_local") for g in existing
+        if g.get("league") == "NFL" and g.get("date_local")
+    }
+    by_date: dict[str, list[dict]] = {}
+    for row in schedule:
+        dates = [row["date_local"]] if row.get("date_local") else (row.get("date_window") or [])
+        for date_iso in dates:
+            by_date.setdefault(date_iso, []).append(row)
+
+    games, unresolved = [], []
+    for date_iso in sorted(by_date):
+        if date_iso in covered:
+            continue
+        rows = by_date[date_iso]
+        count = len(rows)
+        has_unassigned = any(not row.get("date_local") for row in rows)
+        detail = (
+            (
+                "Official Week 18 matchup set is shown for this date window; the 16 games "
+                "are not assigned to Saturday or Sunday yet."
+            ) if has_unassigned and any(row.get("week") == 18 for row in rows) else
+            (
+                f"Official 2026 NFL schedule has {count} regular-season game(s) in this "
+                "date window; flexible Saturday/Sunday assignment is not published."
+            ) if has_unassigned else
+            (
+                f"Official 2026 NFL schedule has {count} regular-season game(s) on this date; "
+                "the Westwood One national selection is not in the bundled radio snapshot. "
+                "The full matchup list is shown in the NFL schedule reference."
+            )
+        )
+        games.append({
+            "league": "NFL",
+            "label": "NFL schedule day - radio selection not published",
+            "detail": detail,
+            "venue": "",
+            "priority": "normal",
+            "source": NFL_FULL_SCHEDULE_SOURCE,
+            "network": "Westwood One Sports (national NFL radio) - San Francisco affiliate",
+            "date_local": date_iso,
+            "start_utc": pt_to_utc(date_iso, TBD_ENVELOPE["NFL"][0]),
+            "duration": _envelope_minutes("NFL"),
+            "time_status": "TBD_envelope",
+            "status": "VERIFIED schedule / UNRESOLVED radio selection",
+            "schedule_backstop": True,
+            "tags": ["NFL:national"],
+        })
+        unresolved.append({
+            "league": "NFL",
+            "date_local": date_iso,
+            "label": "NFL schedule day - radio selection not published",
+            "reason": (
+                "The official full NFL schedule confirms games on this date, but the "
+                "bundled Westwood One page does not identify the Bay Area national slot. "
+                "A conservative envelope prevents a false free day."
+            ),
+            "source": NFL_FULL_SCHEDULE_SOURCE,
+        })
+    return games, unresolved
+
+
+def from_nfl_season_frame(
+    existing: list[dict], full_schedule: list[dict] | None = None
+) -> tuple[list[dict], list[dict]]:
+    """One conservative record per uncovered NFL game date.
+
+    2026 is now covered by the official 272-game schedule plus the explicit radio
+    backstop above, so this fallback no longer emits the old generic label for
+    2026.  It remains necessary for 2027-2029, whose league schedules are not
+    released and therefore cannot be represented as real game rows.
+    """
+    covered = {
+        g["date_local"] for g in existing
+        if g.get("league") == "NFL" and g.get("date_local")
+    }
+    schedule_dates = {
+        g.get("date_local") for g in (full_schedule or []) if g.get("date_local")
+    }
     games, unresolved = [], []
     for season_year in (2026, 2027, 2028, 2029):
         status = "VERIFIED" if season_year == 2026 else "ESTIMATED"
-        sb_iso, sb_status, _ = nfl_calendar.super_bowl_for_season(season_year)
         for date_iso in nfl_calendar.season_game_dates(season_year):
-            if date_iso in covered:
+            if date_iso in covered or (season_year == 2026 and date_iso in schedule_dates):
                 continue
+            preseason_only = season_year == 2026 and date_iso < "2026-09-09"
+            label = (
+                "NFL preseason game date - see official preseason schedule"
+                if preseason_only else "NFL season date - schedule not released"
+            )
+            detail = (
+                "The official 2026 preseason schedule occupies this date; the full "
+                "regular-season bundle begins on 2026-09-09."
+                if preseason_only else
+                f"{season_year} NFL season shape indicates a game date, but the full league schedule is not released"
+            )
             games.append({
                 "league": "NFL",
-                "label": "NFL games scheduled (national radio window TBA)",
-                "detail": f"{season_year} NFL season - the NFL plays on this date; the national radio window is not published"
-                          + (" (season not released by the NFL)" if status == "ESTIMATED" else ""),
+                "label": label,
+                "detail": detail,
                 "venue": "",
                 "priority": "normal",
-                "source": "https://www.nfl.com/schedules/" if status == "VERIFIED"
+                "source": NFL_FULL_SCHEDULE_SOURCE if status == "VERIFIED"
                           else "NOT RELEASED - NFL week shape (Sunday/Monday/Thursday) applied to the league calendar",
-                "network": "Westwood One Sports (national NFL radio) - SF: KNBR 680 AM / 104.5 FM / KTCT 1050 AM",
+                "network": "Westwood One Sports (national NFL radio) - SF affiliate",
                 "date_local": date_iso,
                 "start_utc": pt_to_utc(date_iso, TBD_ENVELOPE["NFL"][0]),
                 "duration": _envelope_minutes("NFL"),
                 "time_status": "TBD_envelope",
                 "status": status,
                 "tags": ["NFL:national"],
-                "season_frame": True,
+                "season_frame": not preseason_only,
+                "preseason_frame": preseason_only,
                 "season_year": season_year,
             })
-        unresolved.append({
-            "league": "NFL", "date_local": None,
-            "label": f"{season_year} NFL season - national radio window",
-            "reason": f"{len([g for g in games if g['status'] == status])} date(s) in the {season_year} NFL season "
-                      "have no published Westwood One national window (or no 49ers game). Each is blocked with the "
-                      "NFL envelope instead of being called free; the individual dates are on the day board.",
-            "source": "https://www.westwoodonesports.com/nfl-schedule/",
-        })
+        if season_year != 2026:
+            unresolved.append({
+                "league": "NFL", "date_local": None,
+                "label": f"{season_year} NFL season - unreleased schedule",
+                "reason": (
+                    f"{season_year} is not represented by an official full schedule in this bundle. "
+                    "Date-level conservative records prevent an NFL Sunday from reading free."
+                ),
+                "source": "https://www.westwoodonesports.com/nfl-schedule/",
+            })
     return games, unresolved
-
 
 def from_mlb_postseason() -> tuple[list[dict], list[dict]]:
     """The 2026 MLB postseason, using the official per-date list.
@@ -562,13 +726,23 @@ def build(use_cache: bool = True) -> dict:
 def _build() -> dict:
     games: list[dict] = []
     unresolved: list[dict] = []
+    nfl_schedule_2026 = load_nfl_regular_schedule()
     for loader in (from_westwood_one, from_49ers, from_westwood_one_ncaaf, from_ncaaf, from_mls,
                    from_mlb_postseason, from_nfl_calendar):
         g, u = loader()
         games.extend(g)
         unresolved.extend(u)
 
-    frame_games, frame_unresolved = from_nfl_season_frame(games)
+    # The league schedule is a reference dataset; only the national-radio
+    # backstop is fed into the busy engine.  This keeps a 272-game league slate
+    # from being mistaken for 272 simultaneous Bay Area radio broadcasts.
+    backstop_games, backstop_unresolved = from_nfl_schedule_radio_backstop(
+        games, nfl_schedule_2026
+    )
+    games.extend(backstop_games)
+    unresolved.extend(backstop_unresolved)
+
+    frame_games, frame_unresolved = from_nfl_season_frame(games, nfl_schedule_2026)
     games.extend(frame_games)
     unresolved.extend(frame_unresolved)
 
@@ -623,6 +797,7 @@ def _build() -> dict:
             "counts": {
                 "games": len(games),
                 "unresolved": len(unresolved),
+                "nfl_regular_schedule_2026": len(nfl_schedule_2026),
                 "by_league": {
                     lg: sum(1 for g in games if g["league"] == lg)
                     for lg in ("MLB", "NFL", "NCAAF", "MLS")
@@ -636,6 +811,16 @@ def _build() -> dict:
         },
         "games": games,
         "unresolved": unresolved,
+        "nfl_schedule_2026": {
+            "status": "VERIFIED matchup/date/time snapshot; flexible Week 16/17 and Week 18 date/kickoff fields remain TBD",
+            "season": 2026,
+            "expected_games": 272,
+            "source": NFL_FULL_SCHEDULE_SOURCE,
+            "source_pdf": NFL_FULL_SCHEDULE_PDF,
+            "retrieved_utc": "2026-09-20T00:00:00Z",
+            "radio_note": "Reference schedule only. Sections 1-3 count the Westwood One radio record/backstop, not every league game as an on-air interval.",
+            "games": nfl_schedule_2026,
+        },
         "vacation": vacation["results"],
         "vacation_compare": vacation["comparison"],
         "vacation_compare_notes": vacation["comparison_notes"],

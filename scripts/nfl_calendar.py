@@ -29,6 +29,7 @@ analysis output labels every future-year row ESTIMATED.
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Verified / estimated anchors
@@ -83,6 +84,39 @@ NFL_REGULAR_WEEKDAYS = (
 )
 NFL_SATURDAY_MONTHS = (12, 1)
 
+# The 2026 official release is available, so keep the Saturday set exact rather
+# than treating every December Saturday as an NFL date (there is no game on
+# 2026-12-05, for example). Future seasons remain estimates and use the broader
+# month/day-of-week pattern below.
+KNOWN_SATURDAY_DATES = {
+    2026: ("2026-12-19", "2027-01-02", "2027-01-09"),
+}
+
+
+def _official_2026_game_dates() -> list[str]:
+    """Exact 2026 regular-season date set from the checked-in official snapshot.
+
+    Preseason occupancy comes from the 49ers source, not from every other NFL
+    preseason game. This keeps the verified season calendar from inventing shape-only
+    dates such as an NFL Thursday on 2027-01-07.  The CSV is deliberately a small source input;
+    the 272 matchup records themselves are loaded by build_data.py.
+    """
+    path = Path(__file__).resolve().parents[1] / "data" / "verified" / "nfl_regular_2026.csv"
+    dates: set[str] = set()
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        fields = raw.split("|")
+        if len(fields) != 5:
+            continue
+        _, date_local, _, _, _ = fields
+        if date_local != "TBD":
+            dates.add(date_local)
+    # Four flexible games in Weeks 16/17 and all Week 18 games have official
+    # Saturday/Sunday windows even though individual assignments are unresolved.
+    dates.update(("2026-12-26", "2027-01-02", "2027-01-09", "2027-01-10"))
+    return sorted(dates)
+
 
 def regular_season_end(season_year: int) -> str:
     """Week 18 Sunday: the last day of the regular season for `season_year`."""
@@ -97,13 +131,20 @@ def season_game_dates(season_year: int) -> list[str]:
     know the shape of the NFL week, which is enough to stop the day board from
     reporting an NFL Sunday as free.
     """
+    if season_year == 2026:
+        return _official_2026_game_dates()
+
     start_iso, _, _ = NFL_SEASON_START[season_year]
     end_iso = regular_season_end(season_year)
     day = datetime.strptime(start_iso, "%Y-%m-%d").date()
     stop = datetime.strptime(end_iso, "%Y-%m-%d").date()
     out = [REGULAR_SEASON_START[season_year][0]]
     while day <= stop:
-        is_saturday = day.weekday() == 5 and day.month in NFL_SATURDAY_MONTHS
+        is_saturday = (
+            day.isoformat() in KNOWN_SATURDAY_DATES.get(season_year, ())
+            if season_year in KNOWN_SATURDAY_DATES
+            else day.weekday() == 5 and day.month in NFL_SATURDAY_MONTHS
+        )
         if day.weekday() in NFL_REGULAR_WEEKDAYS or is_saturday:
             out.append(day.isoformat())
         day += timedelta(days=1)

@@ -13,7 +13,8 @@ broadcast reachable on a standard AM/FM radio in the Outer Sunset (San Francisco
 | League | Source | Status |
 |---|---|---|
 | MLB | `statsapi.mlb.com/api/v1/schedule` (official) | Verified for 2026 and 2027; **fetched live by the app** |
-| NFL | `westwoodonesports.com/nfl-schedule/` (national radio) + `49ers.com/schedule/` | Verified for 2026 |
+| NFL radio | `westwoodonesports.com/nfl-schedule/` (national radio) + `49ers.com/schedule/` | Verified for 2026 radio records |
+| NFL full slate | NFL official schedule release PDF / `nfl.com/nfl-schedule-release/` | 272 official 2026 regular-season matchups; flexible dates and Week 18 TBD where published |
 | NCAAF (Stanford, Cal) | `gostanford.com`, `calbears.com` | Verified, partial kickoffs |
 | NCAAF (Westwood One national radio) | `westwoodonesports.com/ncaa-football` | Verified (station list); many air times TBD |
 | MLS (Earthquakes) | `sjearthquakes.com` | Verified, partial kickoffs |
@@ -29,7 +30,7 @@ Full list with retrieval dates: [`SOURCES.md`](SOURCES.md).
 
 `scripts/lib_windows.py` (Python) and `site/app.js` (browser) implement the same
 algorithm. `tests/test_parity_js.py` runs the real `site/app.js` under Node and
-diffs it against the Python engine for **all 95 dates in the bundle plus the DST
+diffs it against the Python engine for **every date in the generated bundle plus the DST
 boundaries**; they agree to the minute.
 
 ### Step 1 — build an interval per game
@@ -218,6 +219,24 @@ emits one date-level record per playoff round (participants TBA, kickoff TBA, en
 blocked) plus the Pro Bowl Games. Rounds for the 2026-27 season are VERIFIED against the
 NFL's key-dates release; later seasons are derived from the same verified template and
 labelled ESTIMATED in the record's `status` field.
+
+## The full NFL slate is reference data, not a radio claim
+
+`data/verified/nfl_regular_2026.csv` contains all 272 official 2026 regular-season
+matchups from the NFL by-week release. Known dates and Eastern kickoffs are preserved
+and converted to Pacific Time only in the browser reference panel. Flexible Week 16/17
+assignments and every Week 18 date/kickoff remain `TBD`; no third-party future-date
+field is imported to fill them.
+
+The bundle exposes this as `nfl_schedule_2026`. It is intentionally separate from
+`games`: the Section 1–3 interval engine counts the Westwood One national broadcast
+records and the date-level radio backstop, not every game in the league as if it were
+broadcast locally. A day board therefore gives both answers: the radio interval that
+changes free time and the actual NFL games scheduled that day.
+
+`nfl_calendar.season_game_dates(2026)` uses the exact regular-season date set, rather
+than assuming every December Saturday contains a game. The separate 49ers source owns
+preseason occupancy; old generic 2026 season-frame rows are not emitted.
 
 ## The week-window proof
 
