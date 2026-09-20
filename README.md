@@ -31,16 +31,19 @@ computed and shown in the app.
 | Year | Best window | Length | Status |
 |---|---|---|---|
 | 2026 | Feb 9 → Feb 19 | **11 days** | VERIFIED |
-| 2027 | Feb 15 → Feb 18 | 4 days | ESTIMATED |
-| 2028 | Feb 14 → Feb 18 | 5 days | ESTIMATED |
-| 2029 | Feb 12 → Feb 18 | **7 days** | ESTIMATED |
+| 2027 | Feb 1 → Feb 8 | 8 days | MLB VERIFIED, NFL EST |
+| 2028 | Jan 31 → Feb 7 | 8 days | ESTIMATED |
+| 2029 | Jan 29 → Feb 5 | 8 days | ESTIMATED |
 
-> **There is no 1-, 2- or 3-week window with zero MLB and zero NFL games in 2027, 2028
-> or 2029.** The best is 2029 at exactly 7 days.
+> **There is no fully-verified 1-, 2- or 3-week window with zero MLB and zero NFL games
+> in any year, and 2026's 11-day window is already in the past.** The dependable run
+> every year is Conference-Championship Sunday → Pro Bowl Games (Tuesday of Super Bowl
+> week): 8–11 days, never a full two weeks.
 
 ### If only regular season + postseason count
 
 Every year offers 5–6 weeks: **2026 (44 days) > 2029 (41) > 2028 (40) > 2027 (38)**.
+That comfortably satisfies a 2- or 3-week trip.
 
 Full derivation and provenance: [`docs/VACATION-WINDOWS.md`](docs/VACATION-WINDOWS.md).
 
@@ -79,15 +82,16 @@ air on KSAN 107.7 FM, KSFO 810 AM and KTCT 1050 AM.
 This project's core rule is that **a game the site covers is never reported as free**,
 and **an estimate is never presented as a schedule**.
 
-- **2026 is verified** against league-owned sources.
-- **2027–2029 are ESTIMATED** and labelled as such everywhere — in the data, in the UI,
-  and in the docs. `statsapi.mlb.com/api/v1/seasons` returns **2026 only**, which is
-  MLB's own machine-readable signal that those seasons are unreleased. Every estimated
-  row carries a `basis` field explaining the reasoning and a `source` reading
+- **2026 is verified** against league-owned sources; **2027 MLB is verified** (released
+  2026-07-16, provisional pending the CBA).
+- **2028–2029 (MLB) and 2027–2029 (NFL beyond verified Super Bowl sites) are ESTIMATED**
+  and labelled as such everywhere. `statsapi.mlb.com/api/v1/seasons?season=2028` (and
+  2029) returns an empty list — MLB's own machine-readable signal that those schedules
+  are unreleased. Every estimated row carries a `basis` field and a `source` reading
   `"NOT RELEASED"` rather than a fabricated URL.
 - **Games with an official date but no announced time block conservatively** rather than
   disappearing. They render at reduced opacity with a `Time TBD` chip.
-- **50 items are flagged for review** and listed on the Needs Review tab.
+- **53 items are flagged for review** and listed on the Needs Review tab.
 
 ---
 
@@ -122,7 +126,7 @@ scripts/js_harness.js    runs site/app.js under Node for parity testing
 
 data/verified/           hand-curated, source-attributed inputs
 data/analysis/           generated analysis output
-tests/                   39 tests
+tests/                   42 tests (incl. parity + DOM)
 docs/                    methodology, sources, irregularities, limitations
 ```
 
@@ -131,13 +135,13 @@ docs/                    methodology, sources, irregularities, limitations
 ```bash
 python3 scripts/build_data.py          # regenerate the bundle
 python3 scripts/analyze_vacation.py    # print both interpretations
-python3 -m unittest discover -s tests  # 39 tests
+python3 -m unittest discover -s tests  # 42 tests
 ```
 
 The suite includes two unusual checks worth knowing about:
 
 - **`tests/test_parity_js.py`** runs the *real* `site/app.js` under Node and diffs it
-  against the Python engine for **all 94 dates** plus the DST boundaries. They agree to
+  against the Python engine for **all 95 bundle dates** plus the DST boundaries. They agree to
   the minute. Two independent implementations of the same algorithm will drift; this
   catches it.
 - **`tests/render_check.js`** loads the real `index.html` into jsdom, fires

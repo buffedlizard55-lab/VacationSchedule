@@ -77,6 +77,11 @@ def from_westwood_one() -> tuple[list[dict], list[dict]]:
     games, unresolved = [], []
     for row in payload["games"]:
         league = row.get("league", "NFL")
+        # Westwood One's NFL page also lists one NCAA football broadcast
+        # (LSU@Ole Miss). Those are handled by from_westwood_one_ncaaf() with
+        # the full NCAA schedule, so skip them here to avoid double-blocking.
+        if league != "NFL":
+            continue
         label = f"{row['away']} at {row['home']}"
         if row.get("tbd_teams"):
             label = f"{row['feed']} (teams TBA)"
@@ -116,10 +121,17 @@ def from_49ers() -> tuple[list[dict], list[dict]]:
     games, unresolved = [], []
     for row in payload["games"]:
         where = {"home": "vs", "away": "at", "neutral": "vs"}.get(row["site"], "vs")
+        week = row["week"]
+        week_txt = f"Preseason W{week[-1]}" if str(week).startswith("PRE") else f"Week {week}"
+        detail_bits = [week_txt]
+        if row.get("tv"):
+            detail_bits.append(row["tv"])
+        if row.get("note"):
+            detail_bits.append(row["note"])
         games.append({
             "league": "NFL",
             "label": f"San Francisco 49ers {where} {row['opponent']}",
-            "detail": f"Week {row['week']}" + (f" - {row['tv']}" if row.get("tv") else ""),
+            "detail": " - ".join(detail_bits),
             "venue": row.get("venue", ""),
             "priority": "high",
             "source": source,
@@ -132,9 +144,54 @@ def from_49ers() -> tuple[list[dict], list[dict]]:
     for row in payload["unresolved"]:
         unresolved.append({
             "league": "NFL", "date_local": None,
-            "label": f"San Francisco 49ers - {row['week']}",
+            "label": f"San Francisco 49ers - week {row['week']}",
             "reason": row["reason"], "source": source,
         })
+    return games, unresolved
+
+
+def from_westwood_one_ncaaf() -> tuple[list[dict], list[dict]]:
+    """Westwood One's national NCAA football radio broadcasts (2026 season).
+
+    These are live on KNBR 680 AM / 104.5 FM in San Francisco per the official
+    Westwood One Station Finder. Several slots have no published air time and
+    are envelope-blocked (NCAAF 11:00-23:59 PT), never guessed.
+    """
+    payload = load("westwoodone_ncaaf_2026.json")
+    source = payload["_meta"]["source"]
+    games, unresolved = [], []
+    for row in payload["games"]:
+        label = row.get("special") or f"{row['away']} at {row['home']}"
+        has_time = bool(row.get("air_et"))
+        if has_time:
+            # Westwood One publishes Eastern air time (includes pre-game).
+            start_utc = et_to_utc(row["date_local"], row["air_et"])
+            status = "published_air_time"
+            duration = DEFAULT_DURATIONS["NCAAF"]
+        else:
+            start_utc = pt_to_utc(row["date_local"], TBD_ENVELOPE["NCAAF"][0])
+            status = "TBD_envelope"
+            duration = _envelope_minutes("NCAAF")
+        games.append({
+            "league": "NCAAF",
+            "label": label,
+            "detail": "Westwood One national radio" + ("" if has_time else " (air time TBD)"),
+            "venue": row.get("venue", ""),
+            "priority": "normal",
+            "source": row.get("event_url") or source,
+            "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+            "date_local": row["date_local"],
+            "start_utc": start_utc,
+            "duration": duration,
+            "time_status": status,
+        })
+        if not has_time:
+            unresolved.append({
+                "league": "NCAAF", "date_local": row["date_local"],
+                "label": label,
+                "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+                "source": row.get("event_url", source),
+            })
     return games, unresolved
 
 
@@ -309,7 +366,7 @@ def build(use_cache: bool = True) -> dict:
 def _build() -> dict:
     games: list[dict] = []
     unresolved: list[dict] = []
-    for loader in (from_westwood_one, from_49ers, from_ncaaf, from_mls, from_mlb_postseason):
+    for loader in (from_westwood_one, from_49ers, from_westwood_one_ncaaf, from_ncaaf, from_mls, from_mlb_postseason):
         g, u = loader()
         games.extend(g)
         unresolved.extend(u)
@@ -342,6 +399,10 @@ def _build() -> dict:
                     for lg in ("MLB", "NFL", "NCAAF", "MLS")
                 },
                 "high_priority": sum(1 for g in games if g["priority"] == "high"),
+                "westwood_one_ncaaf": sum(
+                    1 for g in games if g.get("network", "").startswith("Westwood One Sports") and g["league"] == "NCAAF"
+                ),
+                "athletics_note": "Athletics (A's) games are carried on KSTE 650 AM (Sacramento) + KNEW 960 AM (Bay Area), NOT KNBR; see docs/SOURCES.md. A's per-game MLB times are fetched live via statsapi.mlb.com like all MLB clubs.",
             },
         },
         "games": games,

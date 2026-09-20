@@ -1,0 +1,23 @@
+{
+  "_meta": {
+    "description": "Westwood One Sports national NCAA Football radio broadcasts, 2026 season, as listed on the official schedule page and its 'Upcoming NCAA Football Broadcasts' event grid. These are college football games the network syndicates nationally; the San Francisco affiliate is KNBR 680 AM / 104.5 FM and KTCT 1050 AM per the Westwood One Station Finder. NOTE: air times are Eastern Time; 'Air time TBD' means the network has not published a time yet and the games must be envelope-blocked, never guessed.",
+    "source": "https://www.westwoodonesports.com/ncaa-football/ and https://www.westwoodonesports.com/more/eventGrid?id=47030&range=current",
+    "retrieved_utc": "2026-09-20T19:00:00Z",
+    "affiliate_note": "Westwood One Station Finder lists San Francisco affiliates KNBR-AM, KNBR-FM and KTCT-AM for NFL and NCAA Football. KNBR 680 AM / 104.5 FM is the SF reference receiver for this project."
+  },
+  "games": [
+    {"date_local": "2026-09-19", "air_et": "19:00", "away": "LSU", "home": "Ole Miss", "venue": "Vaught Hemingway Stadium, Oxford, MS", "event_url": "https://www.westwoodonesports.com/events/557127"},
+    {"date_local": "2026-09-26", "air_et": "15:00", "away": "Oklahoma", "home": "Georgia", "venue": "Sanford Stadium, Athens, GA", "event_url": "https://www.westwoodonesports.com/events/557136"},
+    {"date_local": "2026-10-03", "air_et": null, "away": "Notre Dame", "home": "North Carolina", "venue": "Kenan Stadium, Chapel Hill, NC", "event_url": "https://www.westwoodonesports.com/events/557137", "tbd_time": true},
+    {"date_local": "2026-10-10", "air_et": null, "away": "Indiana", "home": "Nebraska", "venue": "Memorial Stadium, Lincoln, NE", "event_url": "https://www.westwoodonesports.com/events/557139", "tbd_time": true},
+    {"date_local": "2026-10-17", "air_et": null, "away": "Penn State", "home": "Michigan", "venue": "Michigan Stadium, Ann Arbor, MI", "event_url": "https://www.westwoodonesports.com/events/557140", "tbd_time": true},
+    {"date_local": "2026-10-24", "air_et": null, "away": "Ole Miss", "home": "Texas", "venue": "Darrell K Royal–Texas Memorial Stadium, Austin, TX", "event_url": "https://www.westwoodonesports.com/events/557141", "tbd_time": true},
+    {"date_local": "2026-10-31", "air_et": "15:00", "away": "Florida", "home": "Georgia", "venue": "Mercedes-Benz Stadium, Atlanta, GA", "event_url": "https://www.westwoodonesports.com/events/557129"},
+    {"date_local": "2026-11-07", "air_et": null, "away": "Oregon", "home": "Ohio State", "venue": "Ohio Stadium, Columbus, OH", "event_url": "https://www.westwoodonesports.com/events/557143", "tbd_time": true},
+    {"date_local": "2026-11-14", "air_et": null, "away": "Michigan", "home": "Oregon", "venue": "Autzen Stadium, Eugene, OR", "event_url": "https://www.westwoodonesports.com/events/557144", "tbd_time": true},
+    {"date_local": "2026-11-21", "air_et": null, "away": "LSU", "home": "Tennessee", "venue": "Neyland Stadium, Knoxville, TN", "event_url": "https://www.westwoodonesports.com/events/557145", "tbd_time": true},
+    {"date_local": "2026-11-28", "air_et": "11:30", "away": "Michigan", "home": "Ohio State", "venue": "Ohio Stadium, Columbus, OH", "event_url": "https://www.westwoodonesports.com/events/557131"},
+    {"date_local": "2026-12-05", "air_et": "15:30", "away": "SEC Championship", "home": "Game", "venue": "Mercedes-Benz Stadium, Atlanta, GA", "event_url": "https://www.westwoodonesports.com/events/557146", "special": "SEC Championship Game"},
+    {"date_local": "2026-12-12", "air_et": "14:00", "away": "Army", "home": "Navy", "venue": "MetLife Stadium, East Rutherford, NJ", "event_url": "https://www.westwoodonesports.com/events/557132", "special": "Army-Navy Game"}
+  ]
+}

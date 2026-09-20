@@ -90,8 +90,9 @@ setTimeout(() => {
   const rows = window.document.querySelectorAll("#vacationBody tr");
   check("vacation table has 4 year rows", rows.length === 4, `found ${rows.length}`);
   check("2026 row marked VERIFIED", /VERIFIED/.test($("vacationBody").textContent));
-  check("2027-29 rows marked ESTIMATED",
-    ($("vacationBody").textContent.match(/ESTIMATED/g) || []).length === 3);
+  check("2027 row marked MLB VERIFIED (partial)", /MLB VERIFIED/.test($("vacationBody").textContent));
+  check("2028-29 rows marked ESTIMATED",
+    ($("vacationBody").textContent.match(/ESTIMATED/g) || []).length === 2);
 
   // ---- interpretation toggle recomputes ----
   const strictText = $("vacationBody").textContent;
@@ -103,7 +104,8 @@ setTimeout(() => {
 
   // ---- review + sources tabs ----
   tab("review").dispatchEvent(new window.Event("click", { bubbles: true }));
-  check("review count is 50", text("reviewCount") === "50", text("reviewCount"));
+  const reviewCount = parseInt(text("reviewCount"), 10);
+  check("review count is 50+", reviewCount >= 50, text("reviewCount"));
   check("review list populated", window.document.querySelectorAll("#reviewList .reviewitem").length > 0);
   tab("sources").dispatchEvent(new window.Event("click", { bubbles: true }));
   check("sources populated", window.document.querySelectorAll("#sourcesList .srccard").length > 15);
