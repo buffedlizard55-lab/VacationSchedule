@@ -1,0 +1,317 @@
+{
+  "_meta": {
+    "generated_by": "scripts/analyze_vacation.py",
+    "question": "When can I take 1, 2 or 3 weeks off with no MLB and no NFL games scheduled?",
+    "interpretations": {
+      "strict": "Spring Training exhibitions count as MLB games.",
+      "regular": "Only MLB regular season and postseason count."
+    },
+    "method": "For each calendar year we union three blocking spans - the tail of the previous NFL season up to its Super Bowl, that year's MLB season, and that year's NFL season from the Hall of Fame Game to Dec 31 - then report the contiguous unblocked runs."
+  },
+  "results": [
+    {
+      "year": 2026,
+      "interpretation": "strict",
+      "blocked_day_count": 354,
+      "free_day_count": 11,
+      "gaps": [
+        {
+          "start": "2026-02-09",
+          "end": "2026-02-19",
+          "days": 11,
+          "weeks": 1.57
+        }
+      ],
+      "best": {
+        "start": "2026-02-09",
+        "end": "2026-02-19",
+        "days": 11,
+        "weeks": 1.57
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2026-02-08",
+          "status": "VERIFIED",
+          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA"
+        },
+        "mlb_block": {
+          "start": "2026-02-20",
+          "end": "2026-10-31",
+          "status": "VERIFIED",
+          "includes_spring_training": true
+        },
+        "nfl_current_season_start": {
+          "date": "2026-08-06",
+          "status": "VERIFIED",
+          "note": "Hall of Fame Game, per the ESPN league calendar"
+        }
+      }
+    },
+    {
+      "year": 2027,
+      "interpretation": "strict",
+      "blocked_day_count": 361,
+      "free_day_count": 4,
+      "gaps": [
+        {
+          "start": "2027-02-15",
+          "end": "2027-02-18",
+          "days": 4,
+          "weeks": 0.57
+        }
+      ],
+      "best": {
+        "start": "2027-02-15",
+        "end": "2027-02-18",
+        "days": 4,
+        "weeks": 0.57
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2027-02-14",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA"
+        },
+        "mlb_block": {
+          "start": "2027-02-19",
+          "end": "2027-10-31",
+          "status": "ESTIMATED",
+          "includes_spring_training": true
+        },
+        "nfl_current_season_start": {
+          "date": "2027-08-05",
+          "status": "ESTIMATED",
+          "note": "Not released"
+        }
+      }
+    },
+    {
+      "year": 2028,
+      "interpretation": "strict",
+      "blocked_day_count": 361,
+      "free_day_count": 5,
+      "gaps": [
+        {
+          "start": "2028-02-14",
+          "end": "2028-02-18",
+          "days": 5,
+          "weeks": 0.71
+        }
+      ],
+      "best": {
+        "start": "2028-02-14",
+        "end": "2028-02-18",
+        "days": 5,
+        "weeks": 0.71
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2028-02-13",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA"
+        },
+        "mlb_block": {
+          "start": "2028-02-19",
+          "end": "2028-10-31",
+          "status": "ESTIMATED",
+          "includes_spring_training": true
+        },
+        "nfl_current_season_start": {
+          "date": "2028-08-03",
+          "status": "ESTIMATED",
+          "note": "Not released"
+        }
+      }
+    },
+    {
+      "year": 2029,
+      "interpretation": "strict",
+      "blocked_day_count": 358,
+      "free_day_count": 7,
+      "gaps": [
+        {
+          "start": "2029-02-12",
+          "end": "2029-02-18",
+          "days": 7,
+          "weeks": 1.0
+        }
+      ],
+      "best": {
+        "start": "2029-02-12",
+        "end": "2029-02-18",
+        "days": 7,
+        "weeks": 1.0
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2029-02-11",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)"
+        },
+        "mlb_block": {
+          "start": "2029-02-19",
+          "end": "2029-10-31",
+          "status": "ESTIMATED",
+          "includes_spring_training": true
+        },
+        "nfl_current_season_start": {
+          "date": "2029-08-02",
+          "status": "ESTIMATED",
+          "note": "Not released"
+        }
+      }
+    },
+    {
+      "year": 2026,
+      "interpretation": "regular",
+      "blocked_day_count": 321,
+      "free_day_count": 44,
+      "gaps": [
+        {
+          "start": "2026-02-09",
+          "end": "2026-03-24",
+          "days": 44,
+          "weeks": 6.29
+        }
+      ],
+      "best": {
+        "start": "2026-02-09",
+        "end": "2026-03-24",
+        "days": 44,
+        "weeks": 6.29
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2026-02-08",
+          "status": "VERIFIED",
+          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA"
+        },
+        "mlb_block": {
+          "start": "2026-03-25",
+          "end": "2026-10-31",
+          "status": "VERIFIED",
+          "includes_spring_training": false
+        },
+        "nfl_current_season_start": {
+          "date": "2026-08-06",
+          "status": "VERIFIED",
+          "note": "Hall of Fame Game, per the ESPN league calendar"
+        }
+      }
+    },
+    {
+      "year": 2027,
+      "interpretation": "regular",
+      "blocked_day_count": 327,
+      "free_day_count": 38,
+      "gaps": [
+        {
+          "start": "2027-02-15",
+          "end": "2027-03-24",
+          "days": 38,
+          "weeks": 5.43
+        }
+      ],
+      "best": {
+        "start": "2027-02-15",
+        "end": "2027-03-24",
+        "days": 38,
+        "weeks": 5.43
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2027-02-14",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA"
+        },
+        "mlb_block": {
+          "start": "2027-03-25",
+          "end": "2027-10-31",
+          "status": "ESTIMATED",
+          "includes_spring_training": false
+        },
+        "nfl_current_season_start": {
+          "date": "2027-08-05",
+          "status": "ESTIMATED",
+          "note": "Not released"
+        }
+      }
+    },
+    {
+      "year": 2028,
+      "interpretation": "regular",
+      "blocked_day_count": 326,
+      "free_day_count": 40,
+      "gaps": [
+        {
+          "start": "2028-02-14",
+          "end": "2028-03-24",
+          "days": 40,
+          "weeks": 5.71
+        }
+      ],
+      "best": {
+        "start": "2028-02-14",
+        "end": "2028-03-24",
+        "days": 40,
+        "weeks": 5.71
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2028-02-13",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA"
+        },
+        "mlb_block": {
+          "start": "2028-03-25",
+          "end": "2028-10-31",
+          "status": "ESTIMATED",
+          "includes_spring_training": false
+        },
+        "nfl_current_season_start": {
+          "date": "2028-08-03",
+          "status": "ESTIMATED",
+          "note": "Not released"
+        }
+      }
+    },
+    {
+      "year": 2029,
+      "interpretation": "regular",
+      "blocked_day_count": 324,
+      "free_day_count": 41,
+      "gaps": [
+        {
+          "start": "2029-02-12",
+          "end": "2029-03-24",
+          "days": 41,
+          "weeks": 5.86
+        }
+      ],
+      "best": {
+        "start": "2029-02-12",
+        "end": "2029-03-24",
+        "days": 41,
+        "weeks": 5.86
+      },
+      "provenance": {
+        "nfl_previous_season_end": {
+          "date": "2029-02-11",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)"
+        },
+        "mlb_block": {
+          "start": "2029-03-25",
+          "end": "2029-10-31",
+          "status": "ESTIMATED",
+          "includes_spring_training": false
+        },
+        "nfl_current_season_start": {
+          "date": "2029-08-02",
+          "status": "ESTIMATED",
+          "note": "Not released"
+        }
+      }
+    }
+  ]
+}

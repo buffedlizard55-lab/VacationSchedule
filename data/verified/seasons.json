@@ -1,0 +1,168 @@
+{
+  "_meta": {
+    "description": "Season boundary frames for MLB and NFL, 2026-2029. This is the backbone of the vacation-window analysis: a vacation requires dates with zero MLB and zero NFL games, so the season frames matter more than individual games.",
+    "retrieved_utc": "2026-09-20T00:00:00Z",
+    "status_legend": {
+      "VERIFIED": "read directly from a league-owned source on the retrieval date",
+      "VERIFIED_ANCHOR": "a single official fixed date (e.g. a Super Bowl) inside an otherwise unreleased season",
+      "ESTIMATED": "NOT released by the league. Inferred from the 2026 verified frame and the league's published scheduling rules. Must not be treated as a real schedule."
+    },
+    "headline": "The MLB Stats API returns a season record for 2026 ONLY. Requests for 2027, 2028 and 2029 return no seasons, which is the authoritative signal that those schedules are unreleased."
+  },
+  "mlb": {
+    "2026": {
+      "status": "VERIFIED",
+      "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
+      "spring_training_start": "2026-02-20",
+      "spring_training_end": "2026-03-24",
+      "regular_season_start": "2026-03-25",
+      "all_star_game": "2026-07-14",
+      "regular_season_end": "2026-09-27",
+      "postseason_start": "2026-09-29",
+      "postseason_end": "2026-10-31",
+      "offseason_start": "2026-11-01",
+      "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+    },
+    "2027": {
+      "status": "ESTIMATED",
+      "source": "NOT RELEASED. statsapi.mlb.com/api/v1/seasons returns no 2027 record.",
+      "spring_training_start": "2027-02-19",
+      "regular_season_start": "2027-03-25",
+      "all_star_game": "2027-07-13",
+      "regular_season_end": "2027-09-26",
+      "postseason_start": "2027-09-28",
+      "postseason_end": "2027-10-31",
+      "basis": "MLB has opened its regular season between Mar 20 and Mar 31 in every recent season; 2026 opened Wed 2026-03-25. Spring Training pitchers-and-catchers reporting and first exhibition games have landed in the Feb 19-22 band. Postseason runs to Oct 31 because the World Series is anchored to a Game 7 no later than Halloween."
+    },
+    "2028": {
+      "status": "ESTIMATED",
+      "source": "NOT RELEASED. statsapi.mlb.com/api/v1/seasons returns no 2028 record.",
+      "spring_training_start": "2028-02-19",
+      "regular_season_start": "2028-03-25",
+      "all_star_game": "2028-07-11",
+      "regular_season_end": "2028-09-30",
+      "postseason_start": "2028-10-02",
+      "postseason_end": "2028-10-31",
+      "basis": "Same pattern as 2027. Opening Day drifts by weekday; 2028-03-25 is a Saturday so MLB would more likely open Mon 2028-03-27 or Thu 2028-03-23 -- both inside the same week, which does not change the vacation conclusion."
+    },
+    "2029": {
+      "status": "ESTIMATED",
+      "source": "NOT RELEASED. statsapi.mlb.com/api/v1/seasons returns no 2029 record.",
+      "spring_training_start": "2029-02-19",
+      "regular_season_start": "2029-03-25",
+      "all_star_game": "2029-07-10",
+      "regular_season_end": "2029-09-30",
+      "postseason_start": "2029-10-02",
+      "postseason_end": "2029-10-31",
+      "basis": "Same pattern as 2027 and 2028."
+    }
+  },
+  "nfl": {
+    "2026": {
+      "status": "VERIFIED",
+      "source": "http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260920 (league calendar block)",
+      "corroborating_sources": [
+        "https://www.westwoodonesports.com/nfl-schedule/",
+        "https://www.49ers.com/schedule/"
+      ],
+      "hall_of_fame_game": "2026-08-06",
+      "preseason_start": "2026-08-06",
+      "preseason_end": "2026-09-05",
+      "regular_season_week1_start": "2026-09-06",
+      "regular_season_week18_end": "2027-01-12",
+      "wild_card_start": "2027-01-13",
+      "divisional_start": "2027-01-20",
+      "conference_championship_start": "2027-01-27",
+      "pro_bowl_window": "2027-02-03/2027-02-09",
+      "super_bowl": "2027-02-14",
+      "offseason_start": "2027-02-16",
+      "super_bowl_status": "VERIFIED - NFL confirmed Super Bowl LXI at SoFi Stadium, Inglewood CA on Sunday 2027-02-14; host handoff held 2026-02-09.",
+      "week_boundaries": [
+        {"week": "HOF", "start": "2026-08-06", "end": "2026-08-12"},
+        {"week": "PRE1", "start": "2026-08-13", "end": "2026-08-19"},
+        {"week": "PRE2", "start": "2026-08-20", "end": "2026-08-26"},
+        {"week": "PRE3", "start": "2026-08-27", "end": "2026-09-05"},
+        {"week": "1", "start": "2026-09-06", "end": "2026-09-15"},
+        {"week": "2", "start": "2026-09-16", "end": "2026-09-22"},
+        {"week": "3", "start": "2026-09-23", "end": "2026-09-29"},
+        {"week": "4", "start": "2026-09-30", "end": "2026-10-06"},
+        {"week": "5", "start": "2026-10-07", "end": "2026-10-13"},
+        {"week": "6", "start": "2026-10-14", "end": "2026-10-20"},
+        {"week": "7", "start": "2026-10-21", "end": "2026-10-27"},
+        {"week": "8", "start": "2026-10-28", "end": "2026-11-03"},
+        {"week": "9", "start": "2026-11-04", "end": "2026-11-10"},
+        {"week": "10", "start": "2026-11-11", "end": "2026-11-17"},
+        {"week": "11", "start": "2026-11-18", "end": "2026-11-24"},
+        {"week": "12", "start": "2026-11-25", "end": "2026-12-01"},
+        {"week": "13", "start": "2026-12-02", "end": "2026-12-08"},
+        {"week": "14", "start": "2026-12-09", "end": "2026-12-15"},
+        {"week": "15", "start": "2026-12-16", "end": "2026-12-22"},
+        {"week": "16", "start": "2026-12-23", "end": "2026-12-29"},
+        {"week": "17", "start": "2026-12-30", "end": "2027-01-05"},
+        {"week": "18", "start": "2027-01-06", "end": "2027-01-12"},
+        {"week": "WC", "start": "2027-01-13", "end": "2027-01-19"},
+        {"week": "DIV", "start": "2027-01-20", "end": "2027-01-26"},
+        {"week": "CC", "start": "2027-01-27", "end": "2027-02-02"},
+        {"week": "PRO", "start": "2027-02-03", "end": "2027-02-09"},
+        {"week": "SB", "start": "2027-02-10", "end": "2027-02-15"}
+      ]
+    },
+    "2027": {
+      "status": "ESTIMATED",
+      "source": "NOT RELEASED. Only the Super Bowl date is official.",
+      "verified_anchors": {
+        "super_bowl": "2028-02-13",
+        "super_bowl_status": "VERIFIED - NFL set Super Bowl LXII at Mercedes-Benz Stadium, Atlanta for 2028-02-13."
+      },
+      "preseason_start": "2027-08-05",
+      "regular_season_start": "2027-09-09",
+      "regular_season_end": "2028-01-09",
+      "playoffs_start": "2028-01-15",
+      "pro_bowl": "2028-02-08",
+      "super_bowl": "2028-02-13",
+      "basis": "The NFL has played a Thursday season opener in the week containing the first Sunday after Labor Day, an 18-week regular season, four playoff weekends, and the Super Bowl on the second Sunday of February. 2026 is the verified template; 2028-02-13 is the fixed anchor."
+    },
+    "2028": {
+      "status": "ESTIMATED",
+      "source": "NOT RELEASED. Only the Super Bowl date is official.",
+      "verified_anchors": {
+        "super_bowl": "2029-02-11",
+        "super_bowl_status": "PARTIALLY VERIFIED - NFL announced on 2026-03-30 that Las Vegas / Allegiant Stadium will host Super Bowl LXIII in February 2029. The exact date is NOT yet official; 2029-02-11 is the second Sunday of February 2029 and is an ESTIMATE."
+      },
+      "preseason_start": "2028-08-03",
+      "regular_season_start": "2028-09-07",
+      "regular_season_end": "2029-01-07",
+      "playoffs_start": "2029-01-13",
+      "pro_bowl": "2029-02-06",
+      "super_bowl": "2029-02-11",
+      "basis": "Same rule set as 2027, anchored to the officially announced February 2029 Super Bowl."
+    },
+    "2029": {
+      "status": "ESTIMATED",
+      "source": "NOT RELEASED. No official date at all.",
+      "verified_anchors": {
+        "super_bowl": "2030-02-10",
+        "super_bowl_status": "ESTIMATED - no 2030 site or date announced at retrieval time; Nashville was reported as the leading candidate but nothing is official."
+      },
+      "preseason_start": "2029-08-02",
+      "regular_season_start": "2029-09-06",
+      "regular_season_end": "2030-01-06",
+      "playoffs_start": "2030-01-12",
+      "pro_bowl": "2030-02-05",
+      "super_bowl": "2030-02-10",
+      "basis": "Same rule set. The 2029 season's Super Bowl falls in February 2030, which is outside the 2029 calendar year but is the event that closes the 2029 season's NFL footprint."
+    }
+  },
+  "bay_area_teams": {
+    "2026": {
+      "status": "VERIFIED",
+      "stanford_football": {"first_game": "2026-08-29", "last_regular_season_game": "2026-11-28", "acc_championship_if_qualified": "2026-12-05", "source": "https://gostanford.com/news/2026-08-24/2026-season-begins-with-week-0-matchup-against-hawaii-at-stanford-stadium and https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"},
+      "cal_football": {"first_game": "2026-09-05", "last_regular_season_game": "2026-11-28", "acc_championship_if_qualified": "2026-12-05", "source": "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"},
+      "earthquakes": {"first_game": "2026-02-21", "last_regular_season_game": "2026-11-07", "playoffs_if_qualified": "2026-11-22 through 2026-12-12 (MLS Cup)", "source": "https://www.sjearthquakes.com/news/news-earthquakes-announce-2026-major-league-soccer-schedule"}
+    },
+    "2027_2029": {
+      "status": "ESTIMATED",
+      "basis": "NCAA FBS runs roughly the last weekend of August through the last weekend of November, with conference championships the first weekend of December and bowl games late December. MLS runs late February through early December. Both patterns are stable but 2027-2029 schedules are unreleased."
+    }
+  }
+}

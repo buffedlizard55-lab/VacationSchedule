@@ -1,0 +1,102 @@
+{
+  "_meta": {
+    "description": "Bay Area high-priority teams the user flagged: San Francisco 49ers, San Jose Earthquakes, Stanford Cardinal football, California Golden Bears football. MLB Giants and Athletics are handled separately because they come from the MLB Stats API.",
+    "retrieved_utc": "2026-09-20T00:00:00Z",
+    "coverage_warning": "The 49ers list below is INCOMPLETE. The 49ers.com schedule page returned Weeks 3-18 in the retrieval; Weeks 1, 2, 6 and 8 were not captured, and Week 18 has no official date or time. Those gaps are listed in `unresolved` and MUST NOT be assumed empty. The browser app live-fetches the full NFL slate from ESPN to cover them."
+  },
+  "nfl_49ers": {
+    "source": "https://www.49ers.com/schedule/",
+    "status": "PARTIAL - VERIFIED for the weeks listed",
+    "games": [
+      {"week": 3, "date_local": "2026-09-27", "kickoff_pt": "13:05", "opponent": "Arizona Cardinals", "site": "home", "venue": "Levi's Stadium", "tv": "FOX", "radio": "KSFO 810 AM / KSAN 107.7 FM"},
+      {"week": 4, "date_local": "2026-10-04", "kickoff_pt": "13:25", "opponent": "Denver Broncos", "site": "home", "venue": "Levi's Stadium", "tv": "CBS"},
+      {"week": 5, "date_local": "2026-10-11", "kickoff_pt": "13:25", "opponent": "Seattle Seahawks", "site": "away", "venue": "Lumen Field", "tv": "FOX"},
+      {"week": 7, "date_local": "2026-10-25", "kickoff_pt": "10:00", "opponent": "Atlanta Falcons", "site": "away", "venue": "Mercedes-Benz Stadium"},
+      {"week": 9, "date_local": "2026-11-08", "kickoff_pt": "13:05", "opponent": "Las Vegas Raiders", "site": "home", "venue": "Levi's Stadium", "tv": "CBS"},
+      {"week": 10, "date_local": "2026-11-15", "kickoff_pt": "13:25", "opponent": "Dallas Cowboys", "site": "away", "venue": "AT&T Stadium"},
+      {"week": 11, "date_local": "2026-11-22", "kickoff_pt": "17:20", "opponent": "Minnesota Vikings", "site": "neutral", "venue": "Estadio Banorte, Mexico City", "tv": "NBC", "note": "2026 NFL Mexico City Game. Westwood One publishes 19:30 ET for this game; 17:20 PT = 20:20 ET. Conflict logged as IR-01."},
+      {"week": 12, "date_local": "2026-11-29", "kickoff_pt": "13:25", "opponent": "Seattle Seahawks", "site": "home", "venue": "Levi's Stadium", "tv": "FOX"},
+      {"week": 13, "date_local": "2026-12-06", "kickoff_pt": "10:00", "opponent": "New York Giants", "site": "away", "venue": "MetLife Stadium", "tv": "FOX"},
+      {"week": 14, "date_local": "2026-12-13", "kickoff_pt": "13:25", "opponent": "Los Angeles Rams", "site": "home", "venue": "Levi's Stadium"},
+      {"week": 15, "date_local": "2026-12-17", "kickoff_pt": "17:15", "opponent": "Los Angeles Chargers", "site": "away", "venue": "SoFi Stadium", "note": "Thursday Night Football. Westwood One publishes 19:30 ET; 17:15 PT = 20:15 ET. Conflict logged as IR-01."},
+      {"week": 16, "date_local": "2026-12-27", "kickoff_pt": "13:25", "opponent": "Kansas City Chiefs", "site": "away", "venue": "Arrowhead Stadium", "tv": "CBS"},
+      {"week": 17, "date_local": "2027-01-03", "kickoff_pt": "17:20", "opponent": "Philadelphia Eagles", "site": "home", "venue": "Levi's Stadium", "tv": "NBC"}
+    ],
+    "unresolved": [
+      {"week": 1, "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed."},
+      {"week": 2, "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed."},
+      {"week": 6, "reason": "Captured only as a Levi's Stadium game on ESPN/ABC with no opponent, date or time in the retrieval."},
+      {"week": 8, "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed."},
+      {"week": 18, "reason": "49ers.com lists 'TBD' for date and time. Opponent is the Arizona Cardinals at State Farm Stadium. Falls inside the 2027-01-06 to 2027-01-12 Week 18 window per the ESPN league calendar."},
+      {"week": "preseason", "reason": "The user explicitly asked for preseason games. No 49ers preseason fixture list was retrieved. The NFL league calendar confirms preseason ran 2026-08-06 to 2026-09-05, so 49ers preseason games exist inside that window but the specific dates are UNVERIFIED here."},
+      {"week": "playoffs", "reason": "Postseason participation is not yet determined."}
+    ]
+  },
+  "ncaaf": {
+    "source": [
+      "https://gostanford.com/news/2026-08-24/2026-season-begins-with-week-0-matchup-against-hawaii-at-stanford-stadium",
+      "https://gostanford.com/news/2026-05-27/game-times-tv-networks-announced-for-select-games",
+      "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"
+    ],
+    "status": "VERIFIED dates. Kickoff times are official only where noted; several remain TBD per the ACC/ESPN announcement schedule.",
+    "games": [
+      {"team": "Stanford", "date_local": "2026-08-29", "kickoff_pt": "16:00", "time_status": "official", "opponent": "Hawaii", "site": "home", "venue": "Stanford Stadium", "tv": "ACC Network"},
+      {"team": "Stanford", "date_local": "2026-09-04", "kickoff_pt": "18:00", "time_status": "official", "opponent": "Miami", "site": "home", "venue": "Stanford Stadium", "tv": "ESPN", "note": "Friday night ACC opener"},
+      {"team": "Stanford", "date_local": "2026-09-19", "kickoff_pt": "13:00", "time_status": "official", "opponent": "Duke", "site": "away", "venue": "Wallace Wade Stadium, Durham NC", "tv": "The CW"},
+      {"team": "Stanford", "date_local": "2026-09-26", "kickoff_pt": "19:30", "time_status": "official", "opponent": "Georgia Tech", "site": "home", "venue": "Stanford Stadium", "tv": "ESPN"},
+      {"team": "Stanford", "date_local": "2026-10-03", "kickoff_pt": null, "time_status": "TBD", "opponent": "Wake Forest", "site": "away"},
+      {"team": "Stanford", "date_local": "2026-10-10", "kickoff_pt": null, "time_status": "TBD", "opponent": "Notre Dame", "site": "away", "tv": "NBC (per 247Sports)"},
+      {"team": "Stanford", "date_local": "2026-10-17", "kickoff_pt": null, "time_status": "TBD", "opponent": "Elon", "site": "home", "venue": "Stanford Stadium"},
+      {"team": "Stanford", "date_local": "2026-10-23", "kickoff_pt": "19:30", "time_status": "official", "opponent": "NC State", "site": "home", "venue": "Stanford Stadium", "tv": "ESPN", "note": "Friday night"},
+      {"team": "Stanford", "date_local": "2026-10-31", "kickoff_pt": null, "time_status": "TBD", "opponent": "Louisville", "site": "away"},
+      {"team": "Stanford", "date_local": "2026-11-14", "kickoff_pt": null, "time_status": "TBD", "opponent": "Virginia Tech", "site": "away"},
+      {"team": "Stanford", "date_local": "2026-11-21", "kickoff_pt": null, "time_status": "TBD", "opponent": "California", "site": "away", "venue": "California Memorial Stadium", "note": "129th Big Game"},
+      {"team": "Stanford", "date_local": "2026-11-28", "kickoff_pt": null, "time_status": "TBD", "opponent": "SMU", "site": "home", "venue": "Stanford Stadium"},
+      {"team": "California", "date_local": "2026-09-05", "kickoff_pt": "19:30", "time_status": "official", "opponent": "UCLA", "site": "home", "venue": "California Memorial Stadium", "tv": "ESPN"},
+      {"team": "California", "date_local": "2026-09-12", "kickoff_pt": "12:30", "time_status": "corroborated", "opponent": "Syracuse", "site": "away", "venue": "JMA Wireless Dome", "tv": "ACC Network", "note": "3:30 PM ET = 12:30 PT. Two independent sources agree (sportsbrackets 3:30 PM ET; The Athletic structured data 20:30+01:00 = 19:30Z). A third source (calfootball.com) publishes 16:30Z which is the outlier; logged as IR-04."},
+      {"team": "California", "date_local": "2026-09-19", "kickoff_pt": "12:30", "time_status": "corroborated", "opponent": "Wagner", "site": "home", "venue": "California Memorial Stadium", "tv": "ACC Network", "note": "3:30 PM ET = 12:30 PT"},
+      {"team": "California", "date_local": "2026-09-25", "kickoff_pt": "19:30", "time_status": "official", "opponent": "Clemson", "site": "home", "venue": "California Memorial Stadium", "tv": "ESPN", "note": "Friday night ACC Football; ACC home opener"},
+      {"team": "California", "date_local": "2026-10-03", "kickoff_pt": "12:30", "time_status": "corroborated", "opponent": "UNLV", "site": "away", "venue": "Allegiant Stadium", "tv": "CBS Sports Network", "note": "3:30 PM ET = 12:30 PT"},
+      {"team": "California", "date_local": "2026-10-10", "kickoff_pt": null, "time_status": "TBD", "opponent": "Virginia Tech", "site": "home", "venue": "California Memorial Stadium"},
+      {"team": "California", "date_local": "2026-10-17", "kickoff_pt": null, "time_status": "TBD", "opponent": "Wake Forest", "site": "home", "venue": "California Memorial Stadium"},
+      {"team": "California", "date_local": "2026-10-24", "kickoff_pt": null, "time_status": "TBD", "opponent": "SMU", "site": "away"},
+      {"team": "California", "date_local": "2026-10-31", "kickoff_pt": null, "time_status": "TBD", "opponent": "NC State", "site": "away"},
+      {"team": "California", "date_local": "2026-11-14", "kickoff_pt": null, "time_status": "TBD", "opponent": "Virginia", "site": "away"},
+      {"team": "California", "date_local": "2026-11-21", "kickoff_pt": null, "time_status": "TBD", "opponent": "Stanford", "site": "home", "venue": "California Memorial Stadium", "note": "129th Big Game - same game as Stanford 2026-11-21; de-duplicated by the builder"},
+      {"team": "California", "date_local": "2026-11-28", "kickoff_pt": null, "time_status": "TBD", "opponent": "Pittsburgh", "site": "home", "venue": "California Memorial Stadium"},
+      {"team": "ACC Championship", "date_local": "2026-12-05", "kickoff_pt": "09:00", "time_status": "official", "opponent": "ACC Championship Game", "site": "neutral", "venue": "Bank of America Stadium, Charlotte NC", "tv": "ABC", "note": "Only relevant if Stanford or Cal qualifies. Blocked conditionally."}
+    ],
+    "unresolved": [
+      {"reason": "11 of 24 Stanford/Cal games have no announced kickoff time. The builder marks those dates as blocked for the whole NCAA afternoon/evening envelope (11:00-23:59 PT) rather than guessing a time. See docs/METHODOLOGY.md 'TBD envelope'."},
+      {"reason": "Post-season bowl assignments for Stanford and Cal are not determined. Bowl games run roughly 2026-12-19 to 2027-01-01 and the College Football Playoff National Championship is 2027-01-11 at Allegiant Stadium."}
+    ]
+  },
+  "mls_earthquakes": {
+    "source": "https://www.sjearthquakes.com/news/news-earthquakes-announce-2026-major-league-soccer-schedule",
+    "status": "VERIFIED - official club release, times in PT",
+    "games": [
+      {"date_local": "2026-08-01", "kickoff_pt": "19:30", "opponent": "FC Cincinnati", "site": "away", "venue": "TQL Stadium"},
+      {"date_local": "2026-08-15", "kickoff_pt": "19:30", "opponent": "St. Louis City SC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-08-19", "kickoff_pt": "19:30", "opponent": "LA Galaxy", "site": "away", "venue": "Dignity Health Sports Park"},
+      {"date_local": "2026-08-22", "kickoff_pt": "19:30", "opponent": "Minnesota United FC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-08-29", "kickoff_pt": "17:30", "opponent": "Houston Dynamo FC", "site": "away", "venue": "Shell Energy Stadium"},
+      {"date_local": "2026-09-05", "kickoff_pt": "17:30", "opponent": "Austin FC", "site": "away", "venue": "Q2 Stadium"},
+      {"date_local": "2026-09-09", "kickoff_pt": "19:30", "opponent": "San Diego FC", "site": "away", "venue": "Snapdragon Stadium"},
+      {"date_local": "2026-09-12", "kickoff_pt": "19:30", "opponent": "Houston Dynamo FC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-09-19", "kickoff_pt": "16:30", "opponent": "LAFC", "site": "home", "venue": "Levi's Stadium, Santa Clara"},
+      {"date_local": "2026-09-26", "kickoff_pt": "19:30", "opponent": "Portland Timbers", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-10-10", "kickoff_pt": "18:30", "opponent": "Colorado Rapids", "site": "away", "venue": "Dick's Sporting Goods Park"},
+      {"date_local": "2026-10-14", "kickoff_pt": "18:30", "opponent": "Real Salt Lake", "site": "away", "venue": "America First Field"},
+      {"date_local": "2026-10-17", "kickoff_pt": "19:30", "opponent": "Nashville SC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-10-24", "kickoff_pt": "17:30", "opponent": "FC Dallas", "site": "away", "venue": "Toyota Stadium"},
+      {"date_local": "2026-10-28", "kickoff_pt": "19:30", "opponent": "Colorado Rapids", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-10-31", "kickoff_pt": null, "time_status": "TBD", "opponent": "Real Salt Lake", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-11-07", "kickoff_pt": "16:00", "opponent": "Minnesota United FC", "site": "away", "venue": "Allianz Field"}
+    ],
+    "unresolved": [
+      {"reason": "Matchday 33 vs Real Salt Lake on 2026-10-31 has no official kickoff time (club release says 'Time TBD'). Builder applies the TBD envelope."},
+      {"reason": "MLS Cup Playoffs: if the Earthquakes qualify, additional games fall roughly 2026-11-22 to 2026-12-12. Not determined at retrieval time."},
+      {"reason": "Only matches from 2026-08-01 onward are listed; the February-July portion of the 2026 season was not retrieved and is therefore NOT in the snapshot. The club release confirms the season opened 2026-02-21."}
+    ]
+  }
+}
