@@ -29,6 +29,10 @@
   const HIGH_PRIORITY_TEAMS = ["San Francisco 49ers", "San Jose Earthquakes", "Stanford", "California", "San Francisco Giants", "Athletics"];
 
   const MLB_TBD_SENTINEL = "07:33:00";
+  // A day report is evaluated for multiple scopes/frame variants by parity tests.
+  // Interval construction is independent of the selected scope, so cache it by
+  // game object and avoid repeating expensive Intl timezone conversions.
+  const INTERVAL_CACHE = new WeakMap();
 
   const SECTIONS = (DATA.sections && DATA.sections.sections) || [];
   const EXTRA_SCOPE = (DATA.sections && DATA.sections.extra_scope) || { id: "all", short: "Everything tracked" };
@@ -52,12 +56,27 @@
     return Math.round((asUTC - tsMs) / 60000);
   }
 
-  /** UTC epoch-ms for a wall-clock time in the user's timezone. Iterates to converge across DST. */
-  function ptWallToUtc(dateStr, hhmm) {
+  /** UTC epoch-ms for a wall-clock time in an IANA timezone. */
+  function zoneWallToUtc(dateStr, hhmm, zone) {
     const base = Date.parse(`${dateStr}T${hhmm}:00Z`);
     let ts = base;
-    for (let i = 0; i < 3; i++) ts = base - ptOffsetMinutes(ts) * 60000;
+    for (let i = 0; i < 3; i++) {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: zone, hour12: false,
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+      }).formatToParts(new Date(ts));
+      const m = {};
+      parts.forEach((p) => { m[p.type] = p.value; });
+      const asUTC = Date.parse(`${m.year}-${m.month}-${m.day}T${m.hour}:${m.minute}:${m.second}Z`);
+      ts = base - Math.round((asUTC - ts) / 60000) * 60000;
+    }
     return ts;
+  }
+
+  /** UTC epoch-ms for a Pacific wall-clock time. Iterates across DST. */
+  function ptWallToUtc(dateStr, hhmm) {
+    return zoneWallToUtc(dateStr, hhmm, TZ);
   }
 
   function addDaysStr(dateStr, n) {
@@ -110,12 +129,17 @@
   }
 
   function gameToInterval(game) {
-    if (!game.start_utc) return null;
+    if (INTERVAL_CACHE.has(game)) return INTERVAL_CACHE.get(game);
+    if (!game.start_utc) {
+      INTERVAL_CACHE.set(game, null);
+      return null;
+    }
     const minutes = game.duration || DURATIONS[game.league];
+    let result;
 
     if (timeIsUnconfirmed(game)) {
       const [s, e] = TBD_ENVELOPE[game.league];
-      return {
+      result = {
         start: ptWallToUtc(game.date_local, s),
         end: ptWallToUtc(game.date_local, e),
         label: game.label + " (time not announced)",
@@ -125,21 +149,23 @@
         timeConfirmed: false,
         provisional: false,
       };
+    } else {
+      let start = Date.parse(game.start_utc);
+      const end = start + (minutes * 60000);
+      // Conservative widening: block from the radio air time if it precedes kickoff.
+      if (game.radio_air_utc) {
+        const air = Date.parse(game.radio_air_utc);
+        if (air < start) start = air;
+      }
+      result = {
+        start: start, end: end,
+        label: game.label, priority: game.priority || "normal",
+        league: game.league, source: game.source || "", timeConfirmed: true,
+        provisional: false,
+      };
     }
-
-    let start = Date.parse(game.start_utc);
-    const end = start + (minutes * 60000);
-    // Conservative widening: block from the radio air time if it precedes kickoff.
-    if (game.radio_air_utc) {
-      const air = Date.parse(game.radio_air_utc);
-      if (air < start) start = air;
-    }
-    return {
-      start: start, end: end,
-      label: game.label, priority: game.priority || "normal",
-      league: game.league, source: game.source || "", timeConfirmed: true,
-      provisional: false,
-    };
+    INTERVAL_CACHE.set(game, result);
+    return result;
   }
 
   function recordIsOnDate(game, dateStr) {
@@ -351,7 +377,8 @@
     box.innerHTML =
       `<strong>Section ${esc(s.id === "all" ? "" : s.id)}${esc(s.id === "all" ? " (superset)" : "")} &mdash; ${esc(s.name)}</strong>` +
       `<ul class="def">${s.definition.map((d) => `<li>${esc(d)}</li>`).join("")}</ul>` +
-      (s.radio && s.radio.length ? `<span class="r">On the radio: ${s.radio.map(esc).join(" &middot; ")}</span>` : "");
+      (s.radio && s.radio.length ? `<span class="r">On the radio: ${s.radio.map(esc).join(" &middot; ")}</span>` : "") +
+      `<span class="r"><strong>Scope limit:</strong> Warriors (KGMZ 95.7) and Sharks broadcasts are not included in Sections 1&ndash;3; a displayed free window is not an all-sports-radio guarantee.</span>`;
   }
 
   function renderMlbNote(dateStr) {
@@ -443,6 +470,79 @@
       `</div></div>`;
   }
 
+  function nflScheduleRowsForDate(dateStr) {
+    const payload = DATA.nfl_schedule_2026 || {};
+    return (payload.games || []).filter((g) =>
+      g.date_local === dateStr || (!g.date_local && (g.date_window || []).indexOf(dateStr) !== -1)
+    );
+  }
+
+  function nflScheduleTime(g, dateForTbd) {
+    if (!g.date_local || !g.kickoff_et) return "TBD";
+    const ts = zoneWallToUtc(g.date_local, g.kickoff_et, "America/New_York");
+    return fmtTime(ts) + " PT";
+  }
+
+  function nflScheduleDate(g) {
+    if (g.date_local) return g.date_local;
+    const window = g.date_window || [];
+    return `TBD (official Week ${g.week} window: ${window.join(" – ")})`;
+  }
+
+  function nflIsHigh(g) {
+    return g.away === "San Francisco 49ers" || g.home === "San Francisco 49ers";
+  }
+
+  function renderNflReference(dateStr) {
+    const box = $("nflReference");
+    if (!box) return;
+    const rows = nflScheduleRowsForDate(dateStr);
+    if (!rows.length) {
+      box.innerHTML = "";
+      return;
+    }
+    const week = rows[0].week;
+    const hasTbd = rows.some((g) => !g.date_local);
+    box.innerHTML =
+      `<h3 class="sect">NFL 2026 full-slate reference &mdash; Week ${week}</h3>` +
+      `<div class="note info"><strong>${rows.length} official league game${rows.length === 1 ? "" : "s"} shown.</strong> ` +
+      (hasTbd
+        ? `Some Week ${week} flexible assignments are official matchups, but their date/time is not published.`
+        : "Kickoffs are converted from the official Eastern-time schedule to Pacific Time.") +
+      " This reference does not add every NFL game to the Bay Area radio busy interval; the radio selection is listed above when published." +
+      ` <a href="${esc((DATA.nfl_schedule_2026 || {}).source || "")}" target="_blank" rel="noopener">Verify the official release</a></div>` +
+      `<div class="nflrefgrid">` + rows.map((g) =>
+        `<div class="nflrefrow${nflIsHigh(g) ? " high" : ""}">` +
+          `<div class="nflreftime">${esc(nflScheduleTime(g, dateStr))}<span>${esc(nflScheduleDate(g))}</span></div>` +
+          `<div><strong>${esc(g.label)}</strong><span class="det">${!g.date_local ? "official matchup; date/time TBD" : "official regular-season game"}</span></div>` +
+          `<div class="meta">${nflIsHigh(g) ? '<span class="pill high">49ers</span>' : ""}</div>` +
+        `</div>`
+      ).join("") + `</div>`;
+  }
+
+  function renderNflSlate() {
+    const payload = DATA.nfl_schedule_2026 || {};
+    const games = payload.games || [];
+    const meta = $("nflSlateMeta");
+    const box = $("nflSlate");
+    if (!meta || !box) return;
+    meta.innerHTML = `${games.length} of ${esc(payload.expected_games || 272)} games in the verified matchup snapshot. ` +
+      `Flexible Week 16/17 assignments and Week 18 date/time fields are intentionally unresolved. ` +
+      `<a href="${esc(payload.source || "")}" target="_blank" rel="noopener">Official source</a>`;
+    const byWeek = {};
+    games.forEach((g) => { (byWeek[g.week] = byWeek[g.week] || []).push(g); });
+    box.innerHTML = Object.keys(byWeek).sort((a, b) => Number(a) - Number(b)).map((week) =>
+      `<details class="nflweek"${week === "1" ? " open" : ""}><summary>Week ${week} <span>${byWeek[week].length} games</span></summary>` +
+      `<table><thead><tr><th>Date</th><th>Kickoff PT</th><th>Matchup</th><th>Status</th></tr></thead><tbody>` +
+      byWeek[week].map((g) => `<tr${nflIsHigh(g) ? ' class="nflhigh"' : ""}>` +
+        `<td>${esc(nflScheduleDate(g))}</td>` +
+        `<td>${esc(nflScheduleTime(g))}</td>` +
+        `<td>${esc(g.label)}${nflIsHigh(g) ? ' <span class="pill high">49ers</span>' : ""}</td>` +
+        `<td>${g.date_local ? "Official date/time" : "Official matchup; date/time TBD"}</td>` +
+      `</tr>`).join("") + `</tbody></table></details>`
+    ).join("");
+  }
+
   function renderScoreboard(rep, games) {
     const box = $("scoreboard");
     box.innerHTML = "";
@@ -514,6 +614,7 @@
     renderTimeline(rep);
     renderFree(rep);
     renderScoreboard(rep, games);
+    renderNflReference(dateStr);
     renderMlbNote(dateStr);
   }
 
@@ -682,7 +783,9 @@
       { label: "MLB Stats API &mdash; 2026 postseason dates (verified per date; times are the 07:33Z sentinel)", url: "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W" },
       { label: "MLB.com &mdash; current playoff picture and clinch status", url: "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026" },
       { label: "MLB.com &mdash; 2027 schedule released 2026-07-16", url: "https://www.mlb.com/news/mlb-2027-schedule-released" },
-      { label: "Westwood One Sports &mdash; official NFL schedule", url: "https://www.westwoodonesports.com/nfl-schedule/" },
+      { label: "NFL &mdash; official 2026 schedule release (272 games)", url: "https://www.nfl.com/nfl-schedule-release/" },
+      { label: "NFL &mdash; official 2026 by-week schedule PDF", url: "https://media.nfl.com/content/dam/communications/football-communications/2026/news/05%2014%2026%20-%202026%20NFL%20Schedule%20-%20By%20Week.pdf" },
+      { label: "Westwood One Sports &mdash; official NFL radio schedule", url: "https://www.westwoodonesports.com/nfl-schedule/" },
       { label: "Westwood One Sports &mdash; station finder (San Francisco market affiliates)", url: "https://www.westwoodonesports.com/station-finder/" },
       { label: "NFL key dates 2026-27 (Wild Card, Divisional, Championships, Super Bowl LXI)", url: "https://www.seahawks.com/news/nfl-announces-important-dates-for-2026-2027" },
       { label: "NFL Operations &mdash; 2026 Pro Bowl Games moved to Super Bowl week", url: "https://operations.nfl.com/updates/the-game/2026-pro-bowl-games-presented-by-verizon-moved-to-tuesday-of-super-bowl-lx-week-in-bay-area/" },
@@ -783,6 +886,7 @@
 
     renderScopePicker();
     renderScopeNote();
+    renderNflSlate();
     renderVacation();
     renderCompare();
     renderReview();

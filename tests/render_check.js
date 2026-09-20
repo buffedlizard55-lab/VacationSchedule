@@ -56,6 +56,20 @@ setTimeout(() => {
   check("scoreboard has game rows", games.length > 0, `found ${games.length}`);
   check("scoreboard has league groups", window.document.querySelectorAll("#scoreboard .leaguegroup").length > 0);
 
+  // ---- the complete NFL slate is visible without pretending every game is radio ----
+  $("dateInput").value = "2026-09-13";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  check("NFL reference panel shows the actual Week 1 slate",
+    window.document.querySelectorAll("#nflReference .nflrefrow").length === 13,
+    `found ${window.document.querySelectorAll("#nflReference .nflrefrow").length}`);
+  check("NFL reference names an actual Week 1 matchup", /Chicago Bears at Carolina Panthers/.test(text("nflReference")));
+  check("old generic NFL radio-window label is absent", !/national radio window TBA/.test(window.document.body.textContent));
+  tab("nfl").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("NFL slate tab activates", $("tab-nfl").classList.contains("active"));
+  check("NFL slate tab exposes all 272 games", /272 of 272 games/.test(text("nflSlateMeta")), text("nflSlateMeta"));
+  check("NFL slate tab has 18 week groups", window.document.querySelectorAll("#nflSlate .nflweek").length === 18);
+  tab("day").dispatchEvent(new window.Event("click", { bubbles: true }));
+
   // ---- free windows rendered ----
   const wins = window.document.querySelectorAll("#freeList .freewin");
   check("free windows rendered", wins.length > 0 || /No free time/.test(text("freeList")));
@@ -93,6 +107,7 @@ setTimeout(() => {
   const scopeBtns = () => window.document.querySelectorAll("#scopePicker .scopebtn");
   check("section picker rendered with 4 options", scopeBtns().length === 4, `found ${scopeBtns().length}`);
   check("section 3 is the default", scopeBtns()[2].classList.contains("active"));
+  check("scope note exposes the Warriors/Sharks limitation", /Warriors/.test(text("scopeNote")) && /Sharks/.test(text("scopeNote")));
 
   // 2026-08-29: Stanford opens its season and the Earthquakes play. Section 1 does
   // not count either; section 3 counts both.

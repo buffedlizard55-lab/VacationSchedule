@@ -111,11 +111,16 @@ and **an estimate is never presented as a schedule**.
 - **Super Bowl LXIII is now official** (Las Vegas, 2029-02-11) — this closes IR-12.
 - **Games with an official date but no announced time block conservatively** rather than
   disappearing. They render at reduced opacity with a `Time TBD` chip.
-- **A day inside an NFL season the bundle has no game for is blocked, not called free.**
-  The project tracks the 49ers and the Westwood One national feed — not all 272 NFL
-  games — so every remaining NFL game day (Sunday/Monday/Thursday, plus December
-  Saturdays) carries a date-level placeholder. That is 440 records instead of 203.
-- **87 items are flagged for review** and listed on the Needs Review tab.
+- **The complete 272-game 2026 NFL slate is bundled as reference data.** The day board
+  shows the actual league matchups and official PT conversions instead of a generic
+  season-frame row. Only the Westwood One selection (or a clearly labelled conservative
+  radio backstop when that selection is not published) affects Sections 1–3 occupancy;
+  Week 16/17 flexible assignments and Week 18 date/kickoff fields remain TBD.
+- **90 items are flagged for review** and listed on the Needs Review tab. The exact count
+  is generated from the current source snapshot and may change when feeds are refreshed.
+- **Warriors and Sharks are intentionally outside Sections 1–3.** Their Bay Area radio
+  broadcasts can overlap a displayed window; this is a documented scope decision, not a
+  claim that the window is quiet on every station. See `docs/LIMITATIONS-NEXT.md`.
 
 ---
 
@@ -143,7 +148,7 @@ Details in [`docs/IRREGULARITIES.md`](docs/IRREGULARITIES.md).
 ## Layout
 
 ```
-site/index.html          scoreboard + calendar UI (6 tabs)
+site/index.html          scoreboard + calendar UI (7 tabs, including full NFL slate)
 site/styles.css          dark scoreboard theme
 site/app.js              browser engine + rendering
 site/data/               generated bundle - do not hand-edit

@@ -89,17 +89,19 @@ class TestJsPythonParity(unittest.TestCase):
         cls.dates = sorted(dates)
         cls.bundle = b
 
-        def run(scope, frames):
-            args = [NODE, str(HARNESS), "--scope", scope, "--frames", "1" if frames else "0", *cls.dates]
-            proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=300)
-            if proc.returncode != 0:
-                raise RuntimeError("js_harness failed: " + proc.stderr[-2000:])
-            return json.loads(proc.stdout)
-
-        cls.js = run("all", False)
-        cls.js_frames = run("all", True)
-        cls.js_scope1 = run("1", True)
-        cls.js_scope3 = run("3", True)
+        # One Node process is materially faster than spawning four copies of the
+        # browser harness.  Keep the variants explicit so adding a scope does not
+        # accidentally remove a parity case.
+        variants = "all:0,all:1,1:1,3:1"
+        args = [NODE, str(HARNESS), "--variants", variants, *cls.dates]
+        proc = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, timeout=300)
+        if proc.returncode != 0:
+            raise RuntimeError("js_harness failed: " + proc.stderr[-2000:])
+        output = json.loads(proc.stdout)
+        cls.js = output["all:0"]
+        cls.js_frames = output["all:1"]
+        cls.js_scope1 = output["1:1"]
+        cls.js_scope3 = output["3:1"]
 
     def test_harness_covered_every_date(self):
         self.assertEqual(set(self.js.keys()), set(self.dates))

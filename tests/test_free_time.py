@@ -396,6 +396,49 @@ class TestBuiltBundle(unittest.TestCase):
         self.assertEqual(payload["_meta"]["counts"]["games"], len(self.bundle["games"]))
 
 
+class TestNflFullSchedule(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = build()
+        cls.schedule = cls.bundle["nfl_schedule_2026"]
+
+    def test_official_schedule_has_272_games_and_all_weeks(self):
+        games = self.schedule["games"]
+        self.assertEqual(len(games), 272)
+        self.assertEqual({g["week"] for g in games}, set(range(1, 19)))
+        self.assertEqual(self.schedule["expected_games"], 272)
+        self.assertIn("nfl.com", self.schedule["source"])
+        appearances = {}
+        for game in games:
+            for team in (game["away_abbr"], game["home_abbr"]):
+                appearances[team] = appearances.get(team, 0) + 1
+        self.assertEqual(set(appearances.values()), {17})
+        self.assertEqual(len(appearances), 32)
+
+    def test_schedule_has_no_shape_only_2026_frame_rows(self):
+        self.assertFalse(
+            any(g.get("season_frame") and g.get("season_year") == 2026
+                for g in self.bundle["games"]),
+            "2026 regular-season dates must come from the official slate/backstop",
+        )
+        self.assertFalse(any("national radio window TBA" in g["label"]
+                             for g in self.bundle["games"]))
+
+    def test_flexible_and_week_18_games_stay_unresolved(self):
+        games = self.schedule["games"]
+        tbd = [g for g in games if g["time_status"] == "TBD_official_window"]
+        self.assertEqual(len(tbd), 24)
+        self.assertTrue(all(g["date_local"] is None and g["kickoff_et"] is None for g in tbd))
+        self.assertTrue(all(len(g["date_window"]) == 2 for g in tbd))
+        self.assertEqual({g["week"] for g in tbd}, {16, 17, 18})
+
+    def test_radio_backstop_is_not_a_matchup_claim(self):
+        backstops = [g for g in self.bundle["games"] if g.get("schedule_backstop")]
+        self.assertTrue(backstops)
+        self.assertTrue(all("selection" in g["label"] for g in backstops))
+        self.assertTrue(all(g["time_status"] == "TBD_envelope" for g in backstops))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 

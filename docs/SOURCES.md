@@ -264,8 +264,15 @@ Every URL below was opened during this pass. Nothing here is cited from memory.
   and `https://www.foxsports.com/stories/mlb/2026-mlb-playoff-schedule-dates-rounds-how-watch`
   **SECONDARY cross-checks** that agree with the API on the round dates.
 
-## NFL — calendar, rounds and the Pro Bowl
+## NFL — full 2026 slate, calendar, rounds and the Pro Bowl
 
+- `https://www.nfl.com/nfl-schedule-release/` **PRIMARY.** NFL's official 2026 schedule-release page.
+- `https://media.nfl.com/content/dam/communications/football-communications/2026/news/05%2014%2026%20-%202026%20NFL%20Schedule%20-%20By%20Week.pdf`
+  **PRIMARY.** The official by-week release retrieved 2026-09-20. It states the
+  18-week, 272-game regular-season slate. Known dates and Eastern kickoffs are stored
+  in `data/verified/nfl_regular_2026.csv`; Week 16/17 flexible assignments and Week 18
+  date/kickoff fields remain TBD exactly as published. This source is a league slate,
+  not evidence that every game airs on the San Francisco Westwood One affiliate.
 - `https://www.seahawks.com/news/nfl-announces-important-dates-for-2026-2027` **PRIMARY**
   (club republication of the NFL's key-dates release, 2026-07-07): Wild Card weekend
   **2027-01-16..18**, Divisional **2027-01-23..24**, Conference Championships

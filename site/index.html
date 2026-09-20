@@ -17,6 +17,7 @@
   </div>
   <nav class="tabs">
     <button class="tab active" data-tab="day" type="button">Day Board</button>
+    <button class="tab" data-tab="nfl" type="button">NFL 2026 Slate</button>
     <button class="tab" data-tab="vacation" type="button">Vacation Windows</button>
     <button class="tab" data-tab="compare" type="button">Compare 3 Sections</button>
     <button class="tab" data-tab="radio" type="button">Radio</button>
@@ -64,8 +65,23 @@
     <h3 class="sect">Games on the radio</h3>
     <div id="scoreboard" class="scoreboard"></div>
 
+    <div id="nflReference"></div>
     <div id="outsideScope" class="note hidden"></div>
     <div id="mlbNote" class="note hidden"></div>
+  </section>
+
+  <!-- ===================== NFL REFERENCE ===================== -->
+  <section id="tab-nfl" class="panel">
+    <h2 class="dayheading">2026 NFL regular-season slate</h2>
+    <div class="note warn">
+      <strong>Reference, not 272 radio broadcasts.</strong> This is the complete official 272-game
+      league schedule used to show real matchups on the day board. Section 1&ndash;3 occupancy still
+      counts only the Westwood One national-radio record (or a clearly labelled conservative
+      date-level backstop when that selection is not published). Flexible Week 16/17 assignments
+      and Week 18 matchup dates/times remain TBD.
+    </div>
+    <div id="nflSlateMeta" class="lede"></div>
+    <div id="nflSlate" class="nflslate"></div>
   </section>
 
   <!-- ===================== VACATION ===================== -->

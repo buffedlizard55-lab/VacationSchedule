@@ -388,12 +388,39 @@ the A's as reachable only via KNEW 960 AM. Flagged `NEEDS_MANUAL_CHECK` in
 `data/verified/radio_stations.json`; the A's are still counted as busy either way, so no
 conclusion depends on it.
 
-### IR-29 — The day board can read "free" on an NFL Sunday the project does not track (KNOWN LIMITATION)
+### IR-29 — The day board could read "free" on an NFL date without a radio record (RESOLVED 2026-09-20)
 
-Sections 1–3 name only the 49ers and the Westwood One national feed, not all 272 NFL
-games. On a Sunday where the 49ers are on bye *and* Westwood One's national window has
-not been published, the day board would show that Sunday as free of NFL. The
-**vacation analysis** does not have this hole (it blocks the whole NFL season span), and
-the visible failure mode is a listed day with an obviously empty scoreboard. Recorded
-here rather than fixed, because fixing it means bundling the full NFL schedule — see
-`docs/LIMITATIONS-NEXT.md` for the proposed next step.
+Sections 1–3 still count only the 49ers and Westwood One, not all 272 league games. The
+failure mode was that a date with no published national selection had no day-board
+record at all. The official full slate is now bundled and `from_nfl_schedule_radio_backstop`
+adds one conservative, unresolved date-level radio envelope when needed. The day board
+also displays the actual league matchups separately, so a date is never represented by
+a generic season-frame phrase. The radio envelope remains visibly provisional: it does
+not claim that every scheduled NFL game is on the Bay Area affiliate.
+
+The 2027–2029 schedules are not released, so estimated season-frame records remain
+necessary for those years and are still labelled ESTIMATED.
+
+
+### IR-30 — 2026 NFL full slate was missing from the day board (RESOLVED 2026-09-20)
+
+The earlier bundle had only 49ers and Westwood One records plus generic season-frame
+rows. That made a user asking about a date see a shape-only NFL placeholder rather than
+the actual league matchups. The official NFL by-week PDF now supplies all 272 regular-
+season games in `data/verified/nfl_regular_2026.csv` and `nfl_schedule_2026` in the
+browser bundle. The day board renders those rows in a separate reference panel.
+
+This does **not** turn all 272 games into local radio occupancy. Westwood One remains the
+radio source of truth. Dates with a full slate but no published Westwood One selection
+get one conservative, visibly unresolved radio envelope; no matchup is invented for
+that radio record. Week 16/17 flexible assignments and Week 18 date/kickoff fields are
+preserved as TBD.
+
+### IR-31 — Warriors/Sharks scope decision (RESOLVED 2026-09-20)
+
+Warriors games on KGMZ 95.7 and Sharks broadcasts can overlap the recommended winter
+windows, but they are not part of the three definitions requested. This release keeps
+them outside Sections 1–3 so the comparison remains exactly MLB/49ers/Westwood One,
+then Stanford/Cal, then Earthquakes. They remain prominently documented as an
+out-of-scope limitation; a future opt-in section must source both official schedules
+and Bay Area radio carriage before changing any score.
