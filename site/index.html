@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Time Scoreboard &mdash; SF Bay Area Radio Blackout Calendar</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <h1>Free Time Scoreboard</h1>
+    <p class="tagline">
+      When is the radio quiet? Bay Area AM/FM blackout calendar &middot; all times
+      <strong>America/Los_Angeles</strong> (PDT/PST shown per date)
+    </p>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="day" type="button">Day Board</button>
+    <button class="tab" data-tab="vacation" type="button">Vacation Windows</button>
+    <button class="tab" data-tab="review" type="button">Needs Review <span id="reviewCount" class="badge">0</span></button>
+    <button class="tab" data-tab="sources" type="button">Sources</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ===================== DAY BOARD ===================== -->
+  <section id="tab-day" class="panel active">
+    <div class="datebar">
+      <button id="prevDay" class="navbtn" type="button" title="Yesterday">&laquo; Yesterday</button>
+      <div class="datepick">
+        <input type="date" id="dateInput" min="2026-08-01" max="2027-02-28">
+        <button id="todayBtn" class="navbtn ghost" type="button">Today</button>
+      </div>
+      <button id="nextDay" class="navbtn" type="button" title="Tomorrow">Tomorrow &raquo;</button>
+    </div>
+
+    <h2 id="dayHeading" class="dayheading">&mdash;</h2>
+
+    <div id="verdict" class="verdict">&mdash;</div>
+
+    <div class="freebar">
+      <div class="freebar-head">
+        <span>24-hour timeline</span>
+        <span id="freeSummary" class="freebar-summary">&mdash;</span>
+      </div>
+      <div id="timeline" class="timeline" role="img" aria-label="Timeline of the day"></div>
+      <div class="axis" id="axis"></div>
+    </div>
+
+    <h3 class="sect">Your free windows (PT)</h3>
+    <div id="freeList" class="freelist"></div>
+
+    <h3 class="sect">Games on the radio</h3>
+    <div id="scoreboard" class="scoreboard"></div>
+
+    <div id="mlbNote" class="note hidden"></div>
+  </section>
+
+  <!-- ===================== VACATION ===================== -->
+  <section id="tab-vacation" class="panel">
+    <h2 class="dayheading">Best vacation windows, 2026&ndash;2029</h2>
+    <div class="note warn">
+      <strong>Read this first.</strong> 2026 is the only year in this range whose MLB and NFL
+      schedules are officially released. The MLB Stats API returns a season record for 2026 and
+      <em>nothing</em> for 2027, 2028 or 2029, so every 2027&ndash;2029 figure below is an
+      <strong>estimate</strong> built from the verified 2026 frame plus the league's own
+      scheduling rules. Estimates are marked. Only the Super Bowl dates for 2027 and 2028 are
+      league-confirmed.
+    </div>
+
+    <div class="interp">
+      <label><input type="radio" name="interp" value="strict" checked> <strong>Strict</strong> &mdash; Spring Training exhibitions count as MLB games</label>
+      <label><input type="radio" name="interp" value="regular"> <strong>Regular season only</strong> &mdash; ignore Spring Training exhibitions</label>
+    </div>
+
+    <table class="vtable">
+      <thead>
+        <tr><th>Year</th><th>Longest clean run</th><th>Dates</th><th>Weeks</th><th>Free days in year</th><th>Data status</th></tr>
+      </thead>
+      <tbody id="vacationBody"></tbody>
+    </table>
+
+    <div id="vacationDetail"></div>
+  </section>
+
+  <!-- ===================== REVIEW ===================== -->
+  <section id="tab-review" class="panel">
+    <h2 class="dayheading">Flagged for review</h2>
+    <p class="lede">
+      Everything the build could not resolve from an official source. Nothing here was guessed
+      into a time &mdash; that is the point of this list.
+    </p>
+    <div id="reviewList"></div>
+  </section>
+
+  <!-- ===================== SOURCES ===================== -->
+  <section id="tab-sources" class="panel">
+    <h2 class="dayheading">Sources &amp; how to re-verify</h2>
+    <p class="lede">
+      Each row is a link you can open yourself. The retrieval date matters: schedules change.
+      Full citation list lives in <code>docs/SOURCES.md</code>.
+    </p>
+    <div id="sourcesList"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span id="genStamp">&mdash;</span>
+  &middot; Durations: MLB 2:44, NFL 3:12, NCAAF 3:24, MLS 2:00 (verified averages, see docs/METHODOLOGY.md)
+  &middot; <button id="refreshMlb" class="linkbtn" type="button">Re-fetch MLB from statsapi.mlb.com</button>
+</footer>
+
+<script src="data/schedule-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+:root {
+  --bg: #0b1020;
+  --panel: #141b31;
+  --panel2: #1b2340;
+  --ink: #e8ecf8;
+  --muted: #93a0c4;
+  --line: #2a3457;
+  --free: #2ecc71;
+  --busy: #e74c3c;
+  --high: #f1c40f;
+  --mlb: #3498db;
+  --nfl: #e67e22;
+  --ncaaf: #9b59b6;
+  --mls: #1abc9c;
+  --tbd: #7f8c8d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.topbar {
+  padding: 18px 22px 0;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #101735, #0b1020);
+}
+
+.brand h1 { margin: 0 0 2px; font-size: 22px; letter-spacing: .3px; }
+.tagline { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+.tagline strong { color: var(--ink); }
+
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.tab {
+  background: transparent; border: 0; border-bottom: 2px solid transparent;
+  color: var(--muted); padding: 10px 14px; cursor: pointer; font-size: 14px; font-weight: 600;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--ink); border-bottom-color: var(--free); }
+.badge {
+  background: var(--busy); color: #fff; border-radius: 10px;
+  font-size: 11px; padding: 1px 7px; margin-left: 4px;
+}
+
+main { padding: 22px; max-width: 1180px; margin: 0 auto; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ---- date navigation ---- */
+.datebar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.datepick { display: flex; align-items: center; gap: 8px; }
+.navbtn {
+  background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 14px;
+}
+.navbtn:hover { border-color: var(--free); }
+.navbtn.ghost { background: transparent; }
+input[type="date"] {
+  background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 10px; font-size: 14px; color-scheme: dark;
+}
+
+.dayheading { font-size: 26px; margin: 6px 0 10px; }
+.sect { font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 22px 0 10px; }
+
+/* ---- verdict banner ---- */
+.verdict {
+  border-radius: 10px; padding: 14px 16px; font-size: 17px; font-weight: 700;
+  border: 1px solid var(--line); background: var(--panel);
+}
+.verdict.free { border-color: var(--free); background: rgba(46,204,113,.13); }
+.verdict.busy { border-color: var(--busy); background: rgba(231,76,60,.13); }
+.verdict .sub { display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-top: 5px; }
+
+/* ---- timeline ---- */
+.freebar { margin-top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.freebar-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+.freebar-summary { color: var(--ink); font-weight: 700; letter-spacing: 0; text-transform: none; }
+.timeline {
+  position: relative; height: 34px; border-radius: 6px; overflow: hidden;
+  background: repeating-linear-gradient(90deg, rgba(46,204,113,.20) 0 1px, rgba(46,204,113,.07) 1px 100%);
+  border: 1px solid var(--line);
+}
+.blk { position: absolute; top: 0; bottom: 0; background: var(--busy); opacity: .88; border-left: 1px solid rgba(0,0,0,.35); }
+.blk.high { background: var(--high); }
+.axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* ---- free windows ---- */
+.freelist { display: flex; flex-wrap: wrap; gap: 8px; }
+.freewin {
+  background: rgba(46,204,113,.12); border: 1px solid var(--free); border-radius: 8px;
+  padding: 8px 12px; font-variant-numeric: tabular-nums;
+}
+.freewin .t { font-weight: 700; font-size: 15px; }
+.freewin .d { font-size: 11px; color: var(--muted); }
+.freewin.longest { box-shadow: 0 0 0 2px rgba(46,204,113,.35); }
+.freewin.best::after { content: " longest"; font-size: 10px; color: var(--free); text-transform: uppercase; letter-spacing: 1px; }
+.empty { color: var(--muted); font-style: italic; }
+
+/* ---- scoreboard ---- */
+.scoreboard { display: grid; gap: 8px; }
+.leaguegroup { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.leaguehead {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  background: var(--panel2); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+}
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.dot.MLB { background: var(--mlb); }
+.dot.NFL { background: var(--nfl); }
+.dot.NCAAF { background: var(--ncaaf); }
+.dot.MLS { background: var(--mls); }
+.leaguehead .cnt { margin-left: auto; color: var(--muted); font-weight: 400; }
+
+.game {
+  display: grid; grid-template-columns: 92px 1fr auto; gap: 10px; align-items: center;
+  padding: 10px 12px; border-top: 1px solid var(--line); background: var(--panel);
+}
+.game.high { border-left: 3px solid var(--high); }
+.game .time { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; }
+.game .time .tz { display: block; font-size: 10px; color: var(--muted); font-weight: 400; }
+.game .who { font-size: 14px; }
+.game .who .det { display: block; font-size: 11px; color: var(--muted); }
+.game .who .net { display: block; font-size: 11px; color: #6fd3ff; }
+.game .meta { text-align: right; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.game .meta a { color: #6fd3ff; text-decoration: none; }
+.pill {
+  display: inline-block; border-radius: 4px; padding: 1px 6px; font-size: 10px;
+  font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+}
+.pill.high { background: var(--high); color: #1a1a1a; }
+.pill.tbd { background: var(--tbd); color: #fff; }
+
+/* ---- notes / tables ---- */
+.note { border-radius: 8px; padding: 12px 14px; font-size: 13px; margin: 16px 0; border: 1px solid var(--line); background: var(--panel); }
+.note.warn { border-color: var(--high); background: rgba(241,196,15,.09); }
+.note.info { border-color: var(--mlb); background: rgba(52,152,219,.09); }
+.note.hidden { display: none; }
+.lede { color: var(--muted); max-width: 76ch; }
+
+.interp { display: flex; flex-direction: column; gap: 6px; margin: 14px 0 18px; font-size: 14px; }
+.interp label { cursor: pointer; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+tbody tr.best { background: rgba(46,204,113,.10); }
+td.num { font-variant-numeric: tabular-nums; }
+.statusV { color: var(--free); font-weight: 700; }
+.statusE { color: var(--high); font-weight: 700; }
+
+.reviewgroup { margin-bottom: 22px; }
+.reviewgroup h3 { font-size: 14px; margin: 0 0 8px; }
+.reviewitem {
+  border: 1px solid var(--line); border-left: 3px solid var(--high); border-radius: 6px;
+  padding: 9px 12px; margin-bottom: 6px; background: var(--panel); font-size: 13px;
+}
+.reviewitem .r { color: var(--muted); display: block; margin-top: 3px; }
+.reviewitem a { color: #6fd3ff; }
+
+.srcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+.srccard { border: 1px solid var(--line); border-radius: 8px; padding: 11px 13px; background: var(--panel); font-size: 13px; }
+.srccard h4 { margin: 0 0 4px; font-size: 13px; }
+.srccard a { color: #6fd3ff; word-break: break-all; text-decoration: none; }
+.srccard .when { color: var(--muted); font-size: 11px; display: block; margin-top: 4px; }
+
+.foot { padding: 18px 22px 34px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); margin-top: 26px; }
+.linkbtn { background: none; border: 0; color: #6fd3ff; cursor: pointer; font-size: 12px; padding: 0; text-decoration: underline; }
+code { background: var(--panel2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+@media (max-width: 720px) {
+  .game { grid-template-columns: 78px 1fr; }
+  .game .meta { grid-column: 1 / -1; text-align: left; }
+}
