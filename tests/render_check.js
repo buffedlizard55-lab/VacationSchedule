@@ -73,16 +73,46 @@ setTimeout(() => {
     window.document.querySelectorAll("#scoreboard .pill.tbd").length > 0);
 
   // ---- a genuinely free day still reads free ----
-  $("dateInput").value = "2026-03-08";
+  // 2026-10-02 is the MLB postseason travel day between the Wild Card Series and
+  // the Division Series: no game under any scenario, and no NFL/MLS/college game.
+  $("dateInput").value = "2026-10-02";
   $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
-  check("2026-03-08 (offseason) IS free", /FULLY FREE/.test(text("verdict")), text("verdict"));
+  check("2026-10-02 (postseason travel day) IS free", /FULLY FREE/.test(text("verdict")), text("verdict"));
+  check("2026-10-02 shows no game rows",
+    window.document.querySelectorAll("#scoreboard .game").length === 0);
 
   // ---- navigation buttons move the date ----
   const before = $("dateInput").value;
   $("nextDay").dispatchEvent(new window.Event("click", { bubbles: true }));
-  check("next-day button advances the date", $("dateInput").value === "2026-03-09", `${before} -> ${$("dateInput").value}`);
+  check("next-day button advances the date", $("dateInput").value === "2026-10-03", `${before} -> ${$("dateInput").value}`);
+  check("2026-10-03 (Division Series) is NOT free", /BUSY/.test(text("verdict")), text("verdict"));
   $("prevDay").dispatchEvent(new window.Event("click", { bubbles: true }));
-  check("prev-day button rewinds the date", $("dateInput").value === "2026-03-08", $("dateInput").value);
+  check("prev-day button rewinds the date", $("dateInput").value === "2026-10-02", $("dateInput").value);
+
+  // ---- the section switcher ----
+  const scopeBtns = () => window.document.querySelectorAll("#scopePicker .scopebtn");
+  check("section picker rendered with 4 options", scopeBtns().length === 4, `found ${scopeBtns().length}`);
+  check("section 3 is the default", scopeBtns()[2].classList.contains("active"));
+
+  // 2026-08-29: Stanford opens its season and the Earthquakes play. Section 1 does
+  // not count either; section 3 counts both.
+  $("dateInput").value = "2026-08-29";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  const scope3Rows = window.document.querySelectorAll("#scoreboard .game").length;
+  scopeBtns()[0].dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("clicking a section activates it", scopeBtns()[0].classList.contains("active"));
+  check("section 1 verdict names the section", /section:\s*1\./.test(text("verdict").replace(/\s+/g, " ")), text("verdict"));
+  const scope1Rows = window.document.querySelectorAll("#scoreboard .game").length;
+  check("section 1 shows fewer games than section 3 on 2026-08-29", scope1Rows < scope3Rows, `${scope1Rows} vs ${scope3Rows}`);
+  check("outside-section games are disclosed, not hidden",
+    window.document.querySelectorAll("#outsideScope .game").length > 0, text("outsideScope"));
+  check("outside-section note names the section", /not counted in 1\./.test(text("outsideScope")), text("outsideScope"));
+
+  // The MLB season frame still blocks: MLB is in season and no per-game data is bundled.
+  check("offline MLB season frame blocks conservatively", /MLB is in season/.test(text("verdict")), text("verdict"));
+
+  // Back to section 3 for the vacation-tab assertions below.
+  scopeBtns()[2].dispatchEvent(new window.Event("click", { bubbles: true }));
 
   // ---- vacation tab ----
   tab("vacation").dispatchEvent(new window.Event("click", { bubbles: true }));
@@ -94,13 +124,40 @@ setTimeout(() => {
   check("2028-29 rows marked ESTIMATED",
     ($("vacationBody").textContent.match(/ESTIMATED/g) || []).length === 2);
 
+  // ---- vacation table reports the 1/2/3-week requirements ----
+  check("vacation table reports 1-week / 2-week / 3-week columns",
+    /1 week/.test($("tab-vacation").textContent) && /2 weeks/.test($("tab-vacation").textContent) && /3 weeks/.test($("tab-vacation").textContent));
+  check("strict section 3 cannot reach two weeks", /no/.test($("vacationBody").textContent));
+
   // ---- interpretation toggle recomputes ----
   const strictText = $("vacationBody").textContent;
   const regular = window.document.querySelector('input[name="interp"][value="regular"]');
   regular.checked = true;
   regular.dispatchEvent(new window.Event("change", { bubbles: true }));
   check("interpretation toggle changes the table", $("vacationBody").textContent !== strictText);
-  check("regular interpretation shows 44 days for 2026", /44 days/.test($("vacationBody").textContent));
+
+  // Section 1 under the regular-season reading is the 44-day 2026 window; section 3
+  // is the 12-day one. Both must be reachable from the UI without a reload.
+  scopeBtns()[0].dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("section 1 regular reading shows the 44-day window", /44 d/.test($("vacationBody").textContent), $("vacationBody").textContent.slice(0, 120));
+  scopeBtns()[2].dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("section 3 regular reading shows the 12-day window", /12 d/.test($("vacationBody").textContent), $("vacationBody").textContent.slice(0, 120));
+
+  // ---- compare + radio tabs ----
+  tab("compare").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("compare tab activates", $("tab-compare").classList.contains("active"));
+  check("compare table has a row per year",
+    window.document.querySelectorAll("#compareTable2 tbody tr").length === 4,
+    `found ${window.document.querySelectorAll("#compareTable2 tbody tr").length}`);
+  check("compare table marks the selected section",
+    window.document.querySelectorAll("#compareTable2 .cmpcell.current").length === 4);
+  check("compare notes explain the MLS delta", /Earthquakes/.test(text("compareSummary")), text("compareSummary").slice(0, 160));
+
+  tab("radio").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("radio tab lists stations", window.document.querySelectorAll("#radioList .station").length >= 6,
+    `found ${window.document.querySelectorAll("#radioList .station").length}`);
+  check("radio tab names KNBR", /KNBR/.test(text("radioList")));
+  check("radio tab discloses the Westwood One affiliates", /Westwood One/.test(text("radioList")));
 
   // ---- review + sources tabs ----
   tab("review").dispatchEvent(new window.Event("click", { bubbles: true }));

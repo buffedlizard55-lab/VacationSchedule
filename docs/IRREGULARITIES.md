@@ -313,3 +313,87 @@ Without this block the 2027+ windows were over-optimistic by one day.
 ESTIMATED-pattern).
 
 **Still open:** exact 2027+ Pro Bowl dates/venues are not yet published by the NFL.
+
+---
+
+## Items added in the 2026-09-20 second pass
+
+### IR-12 (UPDATED) — Super Bowl LXIII's date is now official (RESOLVED)
+
+Was MEDIUM / open: "Super Bowl LXIII has no confirmed date". The NFL announced on
+2026-03-30, at the Annual Meeting, that Super Bowl LXIII will be played at Allegiant
+Stadium, Las Vegas, on **2029-02-11**. The date the project had been carrying as an
+estimate was correct, and is now VERIFIED with a source. `scripts/nfl_calendar.py` and
+`data/verified/seasons.json` were updated; a test asserts the status is VERIFIED.
+
+### IR-22 — California football's radio home is KSFO 810 AM, not KNBR (MEDIUM, resolved)
+
+The Cumulus 49ers release (2026-04-15) describes KNBR as the radio home of "Stanford
+Cardinal, Cal Golden Bears, USF men's basketball and San Jose Earthquakes", and the
+earlier revision of this project therefore labelled every Stanford **and** Cal game as
+KNBR. Cal's own 2026 schedule page disagrees: it lists **Radio: KSFO 810 AM** for every
+game except the 129th Big Game (2026-11-21), which is on **KNBR 104.5 FM / 680 AM**.
+
+**Resolution:** the team's own schedule page wins for game broadcasts; the Cumulus
+release stands as a marketing description. Both are Cumulus stations in the same Daly
+City building, both are strong in 94122, and neither changes any Section 2 conclusion —
+the games still block. The site now says which station carries which, on the Radio tab.
+
+### IR-23 — Westwood One's affiliate table is still labelled 2025 (LOW)
+
+The station finder's NFL table is headed "NFL Regular Season (2025)". The San Francisco
+rows (KNBR-AM, KNBR-F2, KNBR-FM, KTCT-AM) are what resolve IR-10, but they may not be
+current for 2026. **Action:** re-check at the start of each season; the affiliate line is
+now a single constant in `data/verified/radio_stations.json`, so it is a one-line update.
+
+### IR-24 — 2026 postseason first-pitch times still do not exist (HIGH, self-resolving)
+
+Unchanged in substance from IR-02 (this is the same issue, re-verified): every 2026
+postseason game is served with the `07:33:00Z` sentinel. What *did* get resolved is the
+**date** list — read game-by-game from the Stats API rather than assumed as a span — and
+the correction that **no game can be played on 2026-10-02, 10-21, 10-22, 10-25 or
+10-29**. Those five days are now correctly free of MLB where they were previously
+blocked. **Action:** re-fetch daily from 2026-09-27, when MLB sets the times.
+
+### IR-25 — The MLB season-frame fallback blocks the All-Star break (LOW, accepted)
+
+The frame for each year spans Spring Training start → postseason end, so 2026-07-15 to
+2026-07-18 (the All-Star break, when no games are played) is marked busy. Accepted
+deliberately: the fallback's job is to fail safe, the break is mid-July, and it sits
+outside the August–February window the request is about. A future revision could add
+`complete_ranges` for the break; the 2026 postseason already has them.
+
+### IR-26 — Sections 1 and 2 have identical results (INFORMATIONAL, not a bug)
+
+Every Stanford and Cal game date already falls inside the MLB season frame or the NFL
+season span, so the two sections produce the same longest run in all four years under
+both readings. This is reported on the Compare tab rather than hidden, because it is the
+answer to "does adding college football cost me anything?" — it does not. The only days
+college football adds are the early-January bowl window, which is conditional on
+qualifying and never creates or destroys a 7-day window.
+
+### IR-27 — Adding the Earthquakes *does* cost the whole trip (INFORMATIONAL)
+
+Sections 1 and 2 give a 38–44 day corridor in the regular-season reading; Section 3 gives
+12 days. MLS plays weekends from late February and every 7-day window contains a weekend.
+The Compare tab states this explicitly, because it is the one place where the choice of
+section changes the recommendation.
+
+### IR-28 — A's and KSTE reception in 94122 is not documented (MEDIUM, open)
+
+KSTE 650 (Rancho Cordova, 21,000 W) is the A's flagship but is roughly 90 miles from the
+Outer Sunset and its coverage of San Francisco is undocumented in any source found.
+**Action for the next session:** verify with an SDR or FCC field-strength map, or treat
+the A's as reachable only via KNEW 960 AM. Flagged `NEEDS_MANUAL_CHECK` in
+`data/verified/radio_stations.json`; the A's are still counted as busy either way, so no
+conclusion depends on it.
+
+### IR-29 — The day board can read "free" on an NFL Sunday the project does not track (KNOWN LIMITATION)
+
+Sections 1–3 name only the 49ers and the Westwood One national feed, not all 272 NFL
+games. On a Sunday where the 49ers are on bye *and* Westwood One's national window has
+not been published, the day board would show that Sunday as free of NFL. The
+**vacation analysis** does not have this hole (it blocks the whole NFL season span), and
+the visible failure mode is a listed day with an obviously empty scoreboard. Recorded
+here rather than fixed, because fixing it means bundling the full NFL schedule — see
+`docs/LIMITATIONS-NEXT.md` for the proposed next step.

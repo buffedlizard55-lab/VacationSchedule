@@ -6,6 +6,10 @@
  * This is not cosmetic -- JS Date subtraction is already UTC-based, but the
  * wall-clock <-> UTC conversions below must iterate because the America/
  * Los_Angeles offset changes twice a year.
+ *
+ * Sections: the user asked to compare three definitions of "busy" (see
+ * data/verified/profiles.json). Every game carries a `sections` list computed at
+ * build time, and every report is produced once per section.
  */
 (function () {
   "use strict";
@@ -21,9 +25,15 @@
   const TBD_ENVELOPE = { MLB: ["15:00", "23:59"], NFL: ["09:00", "23:59"], NCAAF: ["11:00", "23:59"], MLS: ["16:00", "23:59"] };
 
   const LEAGUE_NAMES = { MLB: "MLB", NFL: "NFL", NCAAF: "College Football", MLS: "MLS" };
+  const LEAGUE_ORDER = ["MLB", "NFL", "NCAAF", "MLS"];
   const HIGH_PRIORITY_TEAMS = ["San Francisco 49ers", "San Jose Earthquakes", "Stanford", "California", "San Francisco Giants", "Athletics"];
 
   const MLB_TBD_SENTINEL = "07:33:00";
+
+  const SECTIONS = (DATA.sections && DATA.sections.sections) || [];
+  const EXTRA_SCOPE = (DATA.sections && DATA.sections.extra_scope) || { id: "all", short: "Everything tracked" };
+  const SCOPES = SECTIONS.map((s) => ({ id: s.id, short: s.short, name: s.name, definition: s.definition, radio: s.radio }))
+    .concat([{ id: EXTRA_SCOPE.id, short: EXTRA_SCOPE.short, name: EXTRA_SCOPE.name, definition: EXTRA_SCOPE.definition || [], radio: [] }]);
 
   // ---------------------------------------------------------------------
   // Timezone helpers
@@ -89,6 +99,11 @@
   // Interval engine (mirror of lib_windows.py)
   // ---------------------------------------------------------------------
 
+  function gameInScope(game, scope) {
+    if (!scope || scope === "all") return true;
+    return (game.sections || []).indexOf(scope) !== -1;
+  }
+
   function timeIsUnconfirmed(game) {
     if (game.time_status === "TBD_official_date" || game.time_status === "TBD_envelope") return true;
     return !!game.start_utc && game.league === "MLB" && game.start_utc.slice(11, 19) === MLB_TBD_SENTINEL;
@@ -108,6 +123,7 @@
         league: game.league,
         source: game.source || "",
         timeConfirmed: false,
+        provisional: false,
       };
     }
 
@@ -122,6 +138,57 @@
       start: start, end: end,
       label: game.label, priority: game.priority || "normal",
       league: game.league, source: game.source || "", timeConfirmed: true,
+      provisional: false,
+    };
+  }
+
+  function recordIsOnDate(game, dateStr) {
+    if (game.date_local === dateStr) return true;
+    if (!game.start_utc) return false;
+    const ts = Date.parse(game.start_utc);
+    if (isNaN(ts)) return false;
+    return ptDateOf(ts) === dateStr;
+  }
+
+  function ptDateOf(tsMs) {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit",
+    }).formatToParts(new Date(tsMs));
+    const m = {};
+    parts.forEach((p) => { m[p.type] = p.value; });
+    return `${m.year}-${m.month}-${m.day}`;
+  }
+
+  function mlbFrameFor(dateStr, frames) {
+    if (!frames) return null;
+    const keys = Object.keys(frames).sort();
+    for (let i = 0; i < keys.length; i++) {
+      const f = frames[keys[i]];
+      if (f && f.start && f.end && f.start <= dateStr && dateStr <= f.end) return f;
+    }
+    return null;
+  }
+
+  function mlbFrameIsCovered(dateStr, frame) {
+    const ranges = (frame && frame.complete_ranges) || [];
+    for (let i = 0; i < ranges.length; i++) {
+      if (ranges[i][0] <= dateStr && dateStr <= ranges[i][1]) return true;
+    }
+    return false;
+  }
+
+  function mlbCoveredOnDate(games, dateStr) {
+    return games.some((g) => g.league === "MLB" && recordIsOnDate(g, dateStr));
+  }
+
+  function framePlaceholderInterval(dateStr, frame) {
+    const [s, e] = TBD_ENVELOPE.MLB;
+    return {
+      start: ptWallToUtc(dateStr, s),
+      end: ptWallToUtc(dateStr, e),
+      label: (frame.label || "MLB") + " - per-game time not in the bundled snapshot",
+      priority: "normal", league: "MLB", source: frame.source || "",
+      timeConfirmed: false, provisional: true,
     };
   }
 
@@ -130,7 +197,7 @@
     return {
       start: Math.max(iv.start, s), end: Math.min(iv.end, e),
       label: iv.label, priority: iv.priority, league: iv.league,
-      source: iv.source, timeConfirmed: iv.timeConfirmed,
+      source: iv.source, timeConfirmed: iv.timeConfirmed, provisional: iv.provisional,
     };
   }
 
@@ -168,9 +235,10 @@
   // Day report
   // ---------------------------------------------------------------------
 
-  function dayReport(dateStr, extraGames) {
+  function dayReport(dateStr, extraGames, scope, useFrames) {
     const day = localDay(dateStr);
-    const all = DATA.games.concat(extraGames || []);
+    const games = DATA.games.concat(extraGames || []);
+    const all = games.filter((g) => gameInScope(g, scope));
     const busy = [];
     const unplaced = [];
 
@@ -181,6 +249,14 @@
       if (c) busy.push(c);
     });
 
+    const frames = useFrames === false ? null : DATA.mlb_frames;
+    const frame = mlbFrameFor(dateStr, frames);
+    const frameUsed = !!(frame && !mlbCoveredOnDate(all, dateStr) && !mlbFrameIsCovered(dateStr, frame));
+    if (frameUsed) {
+      const c = clip(framePlaceholderInterval(dateStr, frame), day.start, day.end);
+      if (c) busy.push(c);
+    }
+
     const merged = merge(busy);
     const wins = freeWindows(day.start, day.end, busy);
     const busyMs = merged.reduce((a, iv) => a + (iv.end - iv.start), 0);
@@ -188,8 +264,15 @@
     const unconfirmed = merged.filter((iv) => !iv.timeConfirmed);
     const longest = wins.reduce((a, w) => (!a || w.end - w.start > a.end - a.start ? w : a), null);
 
+    // Games the project tracks that this section does NOT count. Shown, never hidden.
+    const outside = games.filter((g) => !gameInScope(g, scope))
+      .map((g) => ({ g: g, iv: gameToInterval(g) }))
+      .filter((x) => x.iv && x.iv.start < day.end && x.iv.end > day.start)
+      .sort((a, b) => a.iv.start - b.iv.start);
+
     return {
       date: dateStr,
+      scope: scope || "all",
       dayMinutes: day.minutes,
       busyMinutes: Math.round(busyMin * 10) / 10,
       freeMinutes: Math.round((day.minutes - busyMin) * 10) / 10,
@@ -197,9 +280,12 @@
       hasHighPriority: merged.some((iv) => iv.priority === "high"),
       hasUnconfirmed: unconfirmed.length > 0,
       unconfirmedMinutes: Math.round(unconfirmed.reduce((a, iv) => a + (iv.end - iv.start), 0) / 60000 * 10) / 10,
+      mlbFrameFallback: frameUsed,
+      mlbFrame: frame,
       longest: longest,
       freeWindows: wins,
       busy: merged,
+      outside: outside,
       unplaced: unplaced,
       dayStart: day.start, dayEnd: day.end,
     };
@@ -216,10 +302,65 @@
   // every navigation and must not silently erase it. Without this, clicking "next
   // day" wiped the warning that you are looking at bundled rather than live data.
   let mlbFeedState = { mode: "pending", message: "" };
+  let scope = "3";      // the site's original definition; switchable in the header
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
+  function scopeLabel(id) {
+    const s = SCOPES.filter((x) => x.id === id)[0];
+    return s ? s.name : id;
+  }
+
+  function scopeShort(id) {
+    const s = SCOPES.filter((x) => x.id === id)[0];
+    return s ? s.short : id;
+  }
+
+  function fmtDuration(mins) {
+    const m = Math.round(mins);
+    return m >= 60 ? Math.floor(m / 60) + "h " + (m % 60 ? (m % 60) + "m" : "") : m + "m";
+  }
+
+  function renderScopePicker() {
+    const box = $("scopePicker");
+    if (!box) return;
+    box.innerHTML = SCOPES.map((s) =>
+      `<button type="button" class="scopebtn${s.id === scope ? " active" : ""}" data-scope="${esc(s.id)}" ` +
+      `title="${esc(s.name)}">${esc(s.short)}</button>`
+    ).join("");
+    box.querySelectorAll(".scopebtn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        scope = btn.dataset.scope;
+        renderScopePicker();
+        renderScopeNote();
+        renderDay(currentDate);
+        renderVacation();
+        renderCompare();
+      });
+    });
+  }
+
+  function renderScopeNote() {
+    const box = $("scopeNote");
+    if (!box) return;
+    const s = SCOPES.filter((x) => x.id === scope)[0];
+    if (!s) { box.className = "note hidden"; return; }
+    box.className = "note info";
+    box.innerHTML =
+      `<strong>Section ${esc(s.id === "all" ? "" : s.id)}${esc(s.id === "all" ? " (superset)" : "")} &mdash; ${esc(s.name)}</strong>` +
+      `<ul class="def">${s.definition.map((d) => `<li>${esc(d)}</li>`).join("")}</ul>` +
+      (s.radio && s.radio.length ? `<span class="r">On the radio: ${s.radio.map(esc).join(" &middot; ")}</span>` : "");
+  }
 
   function renderMlbNote(dateStr) {
     const note = $("mlbNote");
     const extras = (liveMlb && liveMlb.dateStr === dateStr) ? liveMlb.games : [];
+    const frame = DATA.mlb_frames && Object.keys(DATA.mlb_frames)
+      .map((k) => DATA.mlb_frames[k])
+      .filter((f) => f.start <= dateStr && dateStr <= f.end)
+      .sort((a, b) => (a.start < b.start ? -1 : 1))[0];
     if (extras.length) {
       note.className = "note info";
       note.innerHTML = `Showing <strong>${extras.length} MLB games fetched live</strong> from statsapi.mlb.com for ${esc(dateStr)}. ` +
@@ -227,19 +368,14 @@
     } else if (mlbFeedState.mode === "offline") {
       note.className = "note warn";
       note.innerHTML = `<strong>Live MLB fetch failed</strong> (${esc(mlbFeedState.message)}). Showing the bundled verified snapshot instead. ` +
-        "The app works offline by design; open it over http(s) with network access for the live feed.";
+        (frame ? `Because ${esc(frame.label)} is in progress and no per-game times are bundled for this date, the day is blocked conservatively from ${esc(TBD_ENVELOPE.MLB[0])} to ${esc(TBD_ENVELOPE.MLB[1])} PT rather than being called free.` : "");
     } else if (mlbFeedState.mode === "empty") {
       note.className = "note info";
-      note.innerHTML = `No MLB games on <strong>${esc(dateStr)}</strong> per the live statsapi.mlb.com feed. ` +
-        (extras.length ? "" : "This date is genuinely clear of MLB.");
+      note.innerHTML = `No MLB games on <strong>${esc(dateStr)}</strong> per the live statsapi.mlb.com feed.`;
     } else {
       note.className = "note hidden";
       note.innerHTML = "";
     }
-  }
-
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   }
 
   function pctOf(ts, dayStart, dayEnd) {
@@ -251,7 +387,7 @@
     el.innerHTML = "";
     rep.busy.forEach((iv) => {
       const d = document.createElement("div");
-      d.className = "blk" + (iv.priority === "high" ? " high" : "");
+      d.className = "blk" + (iv.priority === "high" ? " high" : "") + (iv.provisional ? " provisional" : "");
       d.style.left = pctOf(iv.start, rep.dayStart, rep.dayEnd) + "%";
       d.style.width = Math.max(pctOf(iv.end, rep.dayStart, rep.dayEnd) - pctOf(iv.start, rep.dayStart, rep.dayEnd), 0.35) + "%";
       d.title = `${fmtTime(iv.start)} - ${fmtTime(iv.end)}  ${iv.label}`;
@@ -281,56 +417,71 @@
       div.className = "freewin" + (rep.longest && w === rep.longest ? " best" : "");
       div.innerHTML =
         `<div class="t">${esc(fmtTime(w.start))} &ndash; ${esc(fmtTime(w.end))}</div>` +
-        `<div class="d">${mins >= 60 ? Math.floor(mins / 60) + "h " + (mins % 60 ? mins % 60 + "m" : "") : mins + "m"} free</div>`;
+        `<div class="d">${fmtDuration(mins)} free</div>`;
       box.appendChild(div);
     });
+  }
+
+  function gameRow(x) {
+    const g = x.g, iv = x.iv;
+    const timeTxt = iv.timeConfirmed ? esc(fmtTime(iv.start)) : "TBD";
+    const tzTxt = iv.timeConfirmed ? esc(fmtTZ(iv.start)) : "no time set";
+    const endTxt = iv.timeConfirmed ? esc(fmtTime(iv.end)) : "";
+    const srcLink = g.source ? `<a href="${esc(g.source)}" target="_blank" rel="noopener">verify</a>` : "";
+    return `<div class="game${g.priority === "high" ? " high" : ""}${iv.timeConfirmed ? "" : " tbdgame"}">` +
+      `<div class="time">${timeTxt}<span class="tz">${tzTxt}</span></div>` +
+      `<div class="who"><span class="onair">&#9679; on air</span> ${esc(g.label)}` +
+        `<span class="det">${esc(g.detail || "")}${endTxt ? " &middot; ends ~" + endTxt : ""}</span>` +
+        (g.network ? `<span class="net">${esc(g.network)}</span>` : "") +
+        (g.status ? `<span class="r">${esc(g.status)}</span>` : "") +
+      `</div>` +
+      `<div class="meta">` +
+        (g.priority === "high" ? '<span class="pill high">High priority</span> ' : "") +
+        (!iv.timeConfirmed ? '<span class="pill tbd">Time TBD</span> ' : "") +
+        (iv.provisional ? '<span class="pill tbd">season frame</span> ' : "") +
+        srcLink +
+      `</div></div>`;
   }
 
   function renderScoreboard(rep, games) {
     const box = $("scoreboard");
     box.innerHTML = "";
-    const todays = games
+    const inScope = games
       .map((g) => ({ g: g, iv: gameToInterval(g) }))
-      .filter((x) => x.iv && x.iv.start < rep.dayEnd && x.iv.end > rep.dayStart)
+      .filter((x) => x.iv && x.iv.start < rep.dayEnd && x.iv.end > rep.dayStart && gameInScope(x.g, scope))
       .sort((a, b) => a.iv.start - b.iv.start);
 
-    if (!todays.length) {
-      box.innerHTML = '<div class="empty">No games scheduled in the covered sources for this date.</div>';
-      return;
+    if (!inScope.length) {
+      box.innerHTML = `<div class="empty">No game in <strong>${esc(scopeShort(scope))}</strong> on this date.</div>`;
+    } else {
+      LEAGUE_ORDER.forEach((league) => {
+        const mine = inScope.filter((x) => x.g.league === league);
+        if (!mine.length) return;
+        const group = document.createElement("div");
+        group.className = "leaguegroup";
+        group.innerHTML =
+          `<div class="leaguehead"><span class="dot ${league}"></span>${esc(LEAGUE_NAMES[league] || league)}` +
+          `<span class="cnt">${mine.length} game${mine.length > 1 ? "s" : ""}</span></div>` +
+          mine.map(gameRow).join("");
+        box.appendChild(group);
+      });
     }
 
-    const byLeague = {};
-    todays.forEach((x) => { (byLeague[x.g.league] = byLeague[x.g.league] || []).push(x); });
-
-    Object.keys(byLeague).sort().forEach((league) => {
-      const group = document.createElement("div");
-      group.className = "leaguegroup";
-      group.innerHTML =
-        `<div class="leaguehead"><span class="dot ${league}"></span>${esc(LEAGUE_NAMES[league] || league)}` +
-        `<span class="cnt">${byLeague[league].length} game${byLeague[league].length > 1 ? "s" : ""}</span></div>`;
-
-      byLeague[league].forEach((x) => {
-        const row = document.createElement("div");
-        row.className = "game" + (x.g.priority === "high" ? " high" : "");
-        const timeTxt = x.iv.timeConfirmed ? esc(fmtTime(x.iv.start)) : "TBD";
-        const tzTxt = x.iv.timeConfirmed ? esc(fmtTZ(x.iv.start)) : "no time set";
-        const endTxt = x.iv.timeConfirmed ? esc(fmtTime(x.iv.end)) : "";
-        const srcLink = x.g.source ? `<a href="${esc(x.g.source)}" target="_blank" rel="noopener">verify</a>` : "";
-        row.innerHTML =
-          `<div class="time">${timeTxt}<span class="tz">${tzTxt}</span></div>` +
-          `<div class="who">${esc(x.g.label)}` +
-            `<span class="det">${esc(x.g.detail || "")}${endTxt ? " &middot; ends ~" + endTxt : ""}</span>` +
-            (x.g.network ? `<span class="net">${esc(x.g.network)}</span>` : "") +
-          `</div>` +
-          `<div class="meta">` +
-            (x.g.priority === "high" ? '<span class="pill high">High priority</span> ' : "") +
-            (!x.iv.timeConfirmed ? '<span class="pill tbd">Time TBD</span> ' : "") +
-            srcLink +
-          `</div>`;
-        group.appendChild(row);
-      });
-      box.appendChild(group);
-    });
+    const out = $("outsideScope");
+    if (rep.outside.length) {
+      const groups = {};
+      rep.outside.forEach((x) => { (groups[x.g.league] = groups[x.g.league] || []).push(x); });
+      out.className = "note info";
+      out.innerHTML = `<strong>Tracked, but not counted in ${esc(scopeShort(scope))}.</strong> ` +
+        "These games are live on Bay Area radio and are included in a wider section, so this date is not free there:" +
+        Object.keys(groups).sort().map((lg) =>
+          `<div class="leaguegroup"><div class="leaguehead"><span class="dot ${lg}"></span>${esc(LEAGUE_NAMES[lg] || lg)}` +
+          `<span class="cnt">${groups[lg].length}</span></div>` + groups[lg].map(gameRow).join("") + "</div>"
+        ).join("");
+    } else {
+      out.className = "note hidden";
+      out.innerHTML = "";
+    }
   }
 
   function renderDay(dateStr) {
@@ -338,7 +489,7 @@
     $("dateInput").value = dateStr;
 
     const extras = (liveMlb && liveMlb.dateStr === dateStr) ? liveMlb.games : [];
-    const rep = dayReport(dateStr, extras);
+    const rep = dayReport(dateStr, extras, scope, extras.length ? false : undefined);
     const games = DATA.games.concat(extras);
 
     $("dayHeading").textContent = fmtLongDate(dateStr) +
@@ -347,13 +498,15 @@
     const v = $("verdict");
     v.className = "verdict " + (rep.isFreeDay ? "free" : "busy");
     if (rep.isFreeDay) {
-      v.innerHTML = "FULLY FREE &mdash; no scheduled game in any covered source" +
-        `<span class="sub">All ${Math.round(rep.dayMinutes / 60)} hours are open.</span>`;
+      v.innerHTML = "FULLY FREE for " + esc(scopeShort(scope)) +
+        `<span class="sub">No scheduled game in this section &mdash; all ${Math.round(rep.dayMinutes / 60)} hours are open.</span>`;
     } else {
       const parts = [];
       parts.push(`Free time: <strong>${Math.round(rep.freeMinutes / 60 * 10) / 10}h</strong> of ${Math.round(rep.dayMinutes / 60 * 10) / 10}h`);
       if (rep.hasHighPriority) parts.push("includes a <strong>high-priority</strong> Bay Area team");
-      if (rep.hasUnconfirmed) parts.push("<strong>some start times are not yet announced</strong> &mdash; the shaded block is a conservative estimate, not a confirmed window");
+      if (rep.hasUnconfirmed) parts.push("<strong>some start times are not yet announced</strong> &mdash; the shaded block is a conservative envelope, not a confirmed window");
+      if (rep.mlbFrameFallback) parts.push("MLB is in season but its per-game times are not in the offline snapshot, so the MLB window is blocked conservatively");
+      parts.push("section: <strong>" + esc(scopeShort(scope)) + "</strong>");
       v.innerHTML = "BUSY &mdash; games are scheduled" + `<span class="sub">${parts.join(" &middot; ")}</span>`;
     }
 
@@ -361,7 +514,6 @@
     renderTimeline(rep);
     renderFree(rep);
     renderScoreboard(rep, games);
-
     renderMlbNote(dateStr);
   }
 
@@ -369,53 +521,106 @@
   // Vacation tab
   // ---------------------------------------------------------------------
 
+  function interp() {
+    const el = document.querySelector('input[name="interp"]:checked');
+    return el ? el.value : "strict";
+  }
+
+  function rq(ok) { return ok ? '<span class="yes">yes</span>' : '<span class="no">no</span>'; }
+
   function renderVacation() {
-    const interp = document.querySelector('input[name="interp"]:checked').value;
-    const rows = DATA.vacation.filter((r) => r.interpretation === interp);
+    const which = interp();
+    const rows = DATA.vacation.filter((r) => r.interpretation === which && r.section === scope);
     const body = $("vacationBody");
     body.innerHTML = "";
-    let bestYear = null;
-    let bestDays = -1;
-    rows.forEach((r) => {
-      if (r.year > 2026 && r.best && r.best.days > bestDays) { bestDays = r.best.days; bestYear = r.year; }
-    });
+
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="7">No analysis rows for section ${esc(scope)}.</td></tr>`;
+      return;
+    }
 
     rows.forEach((r) => {
       const mlb = (DATA.seasons && DATA.seasons.mlb && DATA.seasons.mlb[String(r.year)]) || {};
       const mlbVerified = mlb.status === "VERIFIED";
       const fullVerified = r.year === 2026;
       const tr = document.createElement("tr");
-      if (r.year === bestYear) tr.className = "best";
+      const b = r.best_3_weeks || r.best_2_weeks || r.best_1_week || r.best;
       tr.innerHTML =
-        `<td class="num"><strong>${r.year}</strong>${r.year === bestYear ? " &#9733;" : ""}</td>` +
-        `<td class="num">${r.best ? r.best.days + " days" : "none"}</td>` +
-        `<td class="num">${r.best ? esc(r.best.start) + " &rarr; " + esc(r.best.end) : "&mdash;"}</td>` +
-        `<td class="num">${r.best ? r.best.weeks : 0}</td>` +
+        `<td class="num"><strong>${r.year}</strong></td>` +
+        `<td class="num">${b ? b.days + " d" : "none"}</td>` +
+        `<td class="num">${b ? esc(b.start) + " &rarr; " + esc(b.end) : "&mdash;"}</td>` +
+        `<td class="num">${rq(r.requirements.week_1)}</td>` +
+        `<td class="num">${rq(r.requirements.weeks_2)}</td>` +
+        `<td class="num">${rq(r.requirements.weeks_3)}</td>` +
         `<td class="num">${r.free_day_count}</td>` +
         `<td class="${fullVerified ? "statusV" : (mlbVerified ? "statusP" : "statusE")}">` +
-        `${fullVerified ? "VERIFIED" : (mlbVerified ? "MLB VERIFIED, NFL EST" : "ESTIMATED")}</td>`;
+        `${fullVerified ? "VERIFIED" : (mlbVerified ? "MLB VERIFIED, rest EST" : "ESTIMATED")}</td>`;
       body.appendChild(tr);
     });
 
     const detail = $("vacationDetail");
     detail.innerHTML = rows.map((r) => {
       const p = r.provenance;
-      return `<div class="reviewgroup"><h3>${r.year} &mdash; how this was derived</h3>` +
-        `<div class="reviewitem">Previous NFL season: Super Bowl on <strong>${esc(p.nfl_previous_season_end.date)}</strong> &mdash; ${esc(p.nfl_previous_season_end.status)}: ${esc(p.nfl_previous_season_end.note)}` +
+      const pb = p.nfl_previous_season_end.pro_bowl_games;
+      const reqs = r.requirements;
+      return `<div class="reviewgroup"><h3>${r.year} &mdash; ${esc(r.section_name)}</h3>` +
+        `<div class="reviewitem"><strong>1 week (7 d): ${reqs.week_1 ? "yes" : "no"} &middot; 2 weeks (14 d): ${reqs.weeks_2 ? "yes" : "no"} &middot; 3 weeks (21 d): ${reqs.weeks_3 ? "yes" : "no"}</strong>` +
+        `<span class="r">Longest run: ${r.best ? r.best.days + " days (" + esc(r.best.start) + " &rarr; " + esc(r.best.end) + ")" : "none"}` +
+        `${r.best_3_weeks ? " &middot; best 3-week: " + esc(r.best_3_weeks.start) + " &rarr; " + esc(r.best_3_weeks.end) : ""}` +
+        `${!r.best_3_weeks && r.best_2_weeks ? " &middot; best 2-week: " + esc(r.best_2_weeks.start) + " &rarr; " + esc(r.best_2_weeks.end) : ""}` +
+        `${!r.best_2_weeks && r.best_1_week ? " &middot; best 1-week: " + esc(r.best_1_week.start) + " &rarr; " + esc(r.best_1_week.end) : ""}</span></div>` +
+        `<div class="reviewitem">Previous NFL season: Super Bowl on <strong>${esc(p.nfl_previous_season_end.super_bowl)}</strong> &mdash; ${esc(p.nfl_previous_season_end.status)}: ${esc(p.nfl_previous_season_end.note)}` +
         `<span class="r">Playoff dates blocked this year: ${esc((p.nfl_previous_season_end.playoff_dates_in_year || []).join(", "))}</span></div>` +
-        `<div class="reviewitem">Pro Bowl Games (NFL all-star): <strong>${esc(p.nfl_previous_season_end.pro_bowl_games.date)}</strong> &mdash; ${esc(p.nfl_previous_season_end.pro_bowl_games.status)}: ${esc(p.nfl_previous_season_end.pro_bowl_games.note)}</div>` +
-        `<div class="reviewitem">MLB blocks <strong>${esc(p.mlb_block.start)} &rarr; ${esc(p.mlb_block.end)}</strong> &mdash; ${esc(p.mlb_block.status)}${p.mlb_block.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}` +
-        `<span class="r">Source: statsapi.mlb.com/api/v1/seasons</span></div>` +
-        `<div class="reviewitem">Current NFL season opens <strong>${esc(p.nfl_current_season_start.date)}</strong> &mdash; ${esc(p.nfl_current_season_start.status)}: ${esc(p.nfl_current_season_start.note)}` +
-        `<span class="r">Source: NFL league calendar</span></div>` +
-        `<div class="reviewitem">All clean runs found: ` +
-        r.gaps.map((g) => `${esc(g.start)} &rarr; ${esc(g.end)} (${g.days}d)`).join("; ") +
-        `</div></div>`;
+        `<div class="reviewitem">Pro Bowl Games (NFL all-star): <strong>${esc(pb.date)}</strong> &mdash; ${esc(pb.status)}: ${esc(pb.note)}</div>` +
+        (p.mlb_block ? `<div class="reviewitem">MLB blocks <strong>${esc(p.mlb_block.start)} &rarr; ${esc(p.mlb_block.end)}</strong> &mdash; ${esc(p.mlb_block.status)}${p.mlb_block.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}` +
+          `<span class="r">Source: statsapi.mlb.com/api/v1/seasons</span></div>` : "") +
+        `<div class="reviewitem">Current NFL season opens <strong>${esc(p.nfl_current_season_start.date)}</strong> &mdash; ${esc(p.nfl_current_season_start.status)}: ${esc(p.nfl_current_season_start.note)}</div>` +
+        (p.ncaaf_blocks || []).map((s) => `<div class="reviewitem">College football: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
+        (p.mls_blocks || []).map((s) => `<div class="reviewitem">MLS: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
+        `<div class="reviewitem">All clean runs found: ${r.gaps.slice(0, 12).map((g) => `${esc(g.start)} &rarr; ${esc(g.end)} (${g.days}d)`).join("; ")}${r.gaps.length > 12 ? " &hellip; " + (r.gaps.length - 12) + " more" : ""}</div>` +
+        `</div>`;
     }).join("");
   }
 
   // ---------------------------------------------------------------------
-  // Review + sources tabs
+  // Compare tab
+  // ---------------------------------------------------------------------
+
+  function renderCompare() {
+    const which = interp();
+    const cmp = (DATA.vacation_compare && DATA.vacation_compare[which]) || {};
+    const ids = SCOPES.map((s) => s.id);
+    let html = "<thead><tr><th>Year</th>" + ids.map((id) => `<th>${esc(scopeShort(id))}</th>`).join("") + "</tr></thead><tbody>";
+    Object.keys(cmp).sort().forEach((year) => {
+      html += `<tr><td class="num"><strong>${esc(year)}</strong></td>`;
+      ids.forEach((id) => {
+        const row = cmp[year][id];
+        if (!row) { html += "<td>&mdash;</td>"; return; }
+        const labels = [];
+        if (row.requirements.weeks_3) labels.push('<span class="pill ok">3 weeks</span>');
+        else if (row.requirements.weeks_2) labels.push('<span class="pill ok">2 weeks</span>');
+        else if (row.requirements.week_1) labels.push('<span class="pill warn">1 week</span>');
+        else labels.push('<span class="pill bad">none</span>');
+        html += `<td class="cmpcell${id === scope ? " current" : ""}">` +
+          `<div class="big">${row.longest_days} d</div>` +
+          `<div class="small">${row.longest_start ? esc(row.longest_start) + " &rarr; " + esc(row.longest_end) : "&mdash;"}</div>` +
+          `<div>${labels.join("")}</div>` +
+          `<div class="small">${row.free_days} free days in the year</div></td>`;
+      });
+      html += "</tr>";
+    });
+    html += "</tbody>";
+    ["compareTable", "compareTable2"].forEach((id) => {
+      const t = $(id);
+      if (t) t.innerHTML = html;
+    });
+
+    const summary = $("compareSummary");
+    if (summary) summary.innerHTML = (DATA.vacation_compare_notes || []).map((n) => `<li>${esc(n.text || n)}</li>`).join("");
+  }
+
+  // ---------------------------------------------------------------------
+  // Review + sources + radio tabs
   // ---------------------------------------------------------------------
 
   function renderReview() {
@@ -434,6 +639,34 @@
     }).join("");
   }
 
+  function renderRadio() {
+    const box = $("radioList");
+    if (!box) return;
+    const radio = DATA.radio || { stations: [] };
+    box.innerHTML = (radio.stations || []).map((s) => {
+      const rec = s.reception_94122 || "";
+      const cls = /STRONG/.test(rec) ? "ok" : (/MEDIUM/.test(rec) ? "warn" : "bad");
+      return `<div class="srccard station">` +
+        `<h4>${esc(s.call_letters)} &mdash; ${esc(s.dial)}</h4>` +
+        `<div class="small">${esc(s.city_of_license)} &middot; ${esc(s.operator || "")}</div>` +
+        `<div class="pill ${cls}">94122 reception: ${esc(rec)}</div>` +
+        `<span class="r">${esc(s.reception_basis || "")}</span>` +
+        `<ul class="def">${(s.carries || []).map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` +
+        `<span class="r">${(s.sources || []).map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a>`).join("<br>")}</span>` +
+        `</div>`;
+    }).join("") +
+      (radio.westwood_one_affiliates_in_market
+        ? `<div class="srccard station"><h4>Westwood One Sports &mdash; San Francisco market affiliates</h4>` +
+          `<ul class="def">${radio.westwood_one_affiliates_in_market.stations.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` +
+          `<span class="r">${esc(radio.westwood_one_affiliates_in_market.note)}</span>` +
+          `<span class="r"><a href="${esc(radio.westwood_one_affiliates_in_market.source)}" target="_blank" rel="noopener">${esc(radio.westwood_one_affiliates_in_market.source)}</a></span></div>`
+        : "") +
+      ((radio.affiliates_outside_sections || []).map((a) =>
+        `<div class="srccard station"><h4>${esc(a.call_letters)} &mdash; ${esc(a.dial)}</h4>` +
+        `<ul class="def">${(a.carries || []).map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` +
+        `<span class="r">${esc(a.note || "")}</span></div>`).join(""));
+  }
+
   function renderSources() {
     const seen = {};
     const rows = [];
@@ -446,19 +679,20 @@
     const fixed = [
       { label: "MLB Stats API &mdash; season frames 2026-2029", url: "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029" },
       { label: "MLB Stats API &mdash; schedule (live, used by this page)", url: "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-20&endDate=2026-09-20&gameType=R" },
-      { label: "MLB Stats API &mdash; 2026 postseason bracket (placeholder teams + 07:33Z sentinel times)", url: "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W" },
+      { label: "MLB Stats API &mdash; 2026 postseason dates (verified per date; times are the 07:33Z sentinel)", url: "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W" },
+      { label: "MLB.com &mdash; current playoff picture and clinch status", url: "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026" },
+      { label: "MLB.com &mdash; 2027 schedule released 2026-07-16", url: "https://www.mlb.com/news/mlb-2027-schedule-released" },
       { label: "Westwood One Sports &mdash; official NFL schedule", url: "https://www.westwoodonesports.com/nfl-schedule/" },
-      { label: "Westwood One Sports &mdash; station finder", url: "https://www.westwoodonesports.com/station-finder" },
-      { label: "ESPN NFL league calendar (week boundaries, preseason, playoffs)", url: "http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260920" },
-      { label: "San Francisco 49ers &mdash; official schedule", url: "https://www.49ers.com/schedule/" },
-      { label: "49ers / KNBR flagship partnership through 2030 (Cumulus)", url: "https://www.cumulusmedia.com/2026-04-15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/" },
-      { label: "Stanford Cardinal &mdash; 2026 season opener", url: "https://gostanford.com/news/2026-08-24/2026-season-begins-with-week-0-matchup-against-hawaii-at-stanford-stadium" },
-      { label: "Stanford Cardinal &mdash; announced kickoff times", url: "https://gostanford.com/news/2026-05-27/game-times-tv-networks-announced-for-select-games" },
-      { label: "California Golden Bears &mdash; ACC Friday Football / 2026 schedule", url: "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx" },
+      { label: "Westwood One Sports &mdash; station finder (San Francisco market affiliates)", url: "https://www.westwoodonesports.com/station-finder/" },
+      { label: "NFL key dates 2026-27 (Wild Card, Divisional, Championships, Super Bowl LXI)", url: "https://www.seahawks.com/news/nfl-announces-important-dates-for-2026-2027" },
+      { label: "NFL Operations &mdash; 2026 Pro Bowl Games moved to Super Bowl week", url: "https://operations.nfl.com/updates/the-game/2026-pro-bowl-games-presented-by-verizon-moved-to-tuesday-of-super-bowl-lx-week-in-bay-area/" },
+      { label: "Super Bowl LXIII awarded to Las Vegas, 2029-02-11", url: "https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029" },
+      { label: "49ers / Cumulus &mdash; KNBR flagship extension, 2026-04-15", url: "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/" },
+      { label: "California Golden Bears &mdash; 2026 football schedule (radio: KSFO 810 AM)", url: "https://calbears.com/sports/football/schedule" },
+      { label: "Stanford Cardinal &mdash; 2026 football schedule", url: "https://gostanford.com/sports/football/schedule" },
+      { label: "Athletics &mdash; radio affiliates (KSTE 650 AM, KNEW 960 AM)", url: "https://www.mlb.com/athletics/schedule/watch" },
       { label: "San Jose Earthquakes &mdash; 2026 MLS schedule", url: "https://www.sjearthquakes.com/news/news-earthquakes-announce-2026-major-league-soccer-schedule" },
-      { label: "MLB.com &mdash; playoff picture and clinched teams", url: "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026" },
-      { label: "NFL &mdash; Super Bowl LXIII awarded to Las Vegas (2029)", url: "https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029" },
-      { label: "NFL &mdash; Super Bowl LXII at Mercedes-Benz Stadium (2028)", url: "https://www.nfl.com/news/mercedes-benz-stadium-in-atlanta-to-host-super-bowl-lxii-in-2028" },
+      { label: "Cumulus Media surrenders 560 AM; KSFO is now 810 AM (50 kW)", url: "https://www.radioworld.com/news-and-business/cumulus-media-surrenders-license-of-san-franciscos-560-am" },
     ];
     $("sourcesList").innerHTML =
       '<div class="srcgrid">' + fixed.concat(rows).map((r) =>
@@ -490,8 +724,9 @@
             priority: isHigh ? "high" : "normal",
             source: "https://www.mlb.com/schedule",
             date_local: dateStr,
-            start_utc: g.gameDate.replace("Z", "Z"),
+            start_utc: g.gameDate,
             duration: DURATIONS.MLB,
+            sections: ["1", "2", "3"],
             time_status: g.gameDate.slice(11, 19) === MLB_TBD_SENTINEL ? "TBD_official_date" : "official",
           });
         });
@@ -500,7 +735,7 @@
   }
 
   function refreshMlb(dateStr) {
-    fetchMlbFor(dateStr)
+    return fetchMlbFor(dateStr)
       .then((games) => {
         liveMlb = { dateStr: dateStr, games: games };
         mlbFeedState = { mode: games.length ? "live" : "empty", message: "" };
@@ -510,6 +745,7 @@
       .catch((err) => {
         mlbFeedState = { mode: "offline", message: String(err && err.message ? err.message : err) };
         renderMlbNote(currentDate);
+        renderDay(currentDate);
       });
   }
 
@@ -527,7 +763,7 @@
     initialised = true;
 
     $("genStamp").textContent = "Bundle generated " + DATA._meta.generated_utc +
-      " &middot; " + DATA._meta.counts.games + " games, " + DATA._meta.counts.unresolved + " flagged for review";
+      " · " + DATA._meta.counts.games + " games, " + DATA._meta.counts.unresolved + " flagged for review";
 
     document.querySelectorAll(".tab").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -543,10 +779,14 @@
     $("todayBtn").addEventListener("click", () => { renderDay(new Date().toISOString().slice(0, 10)); refreshMlb(currentDate); });
     $("dateInput").addEventListener("change", (e) => { if (e.target.value) { renderDay(e.target.value); refreshMlb(currentDate); } });
     $("refreshMlb").addEventListener("click", () => refreshMlb(currentDate));
-    document.querySelectorAll('input[name="interp"]').forEach((r) => r.addEventListener("change", renderVacation));
+    document.querySelectorAll('input[name="interp"]').forEach((r) => r.addEventListener("change", () => { renderVacation(); renderCompare(); }));
 
+    renderScopePicker();
+    renderScopeNote();
     renderVacation();
+    renderCompare();
     renderReview();
+    renderRadio();
     renderSources();
     renderDay(currentDate);
     refreshMlb(currentDate);
@@ -566,6 +806,8 @@
     localDay: localDay, ptWallToUtc: ptWallToUtc, ptOffsetMinutes: ptOffsetMinutes,
     gameToInterval: gameToInterval, clip: clip, merge: merge,
     freeWindows: freeWindows, dayReport: dayReport, timeIsUnconfirmed: timeIsUnconfirmed,
-    DURATIONS: DURATIONS, TBD_ENVELOPE: TBD_ENVELOPE, TZ: TZ,
+    gameInScope: gameInScope, recordIsOnDate: recordIsOnDate, ftDateOf: ptDateOf,
+    DURATIONS: DURATIONS, TBD_ENVELOPE: TBD_ENVELOPE, TZ: TZ, SCOPES: SCOPES,
+    getScope: function () { return scope; }, setScope: function (s) { scope = s; },
   };
 })();

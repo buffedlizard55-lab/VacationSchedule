@@ -1,0 +1,123 @@
+{
+  "_meta": {
+    "description": "Every AM/FM station that a Section 1-3 game is carried on in the San Francisco Bay Area, focused on the Outer Sunset (94122). Reception notes are deliberately conservative: only facility facts (power, class, city of license) that were read from a source this pass are asserted, and anything unverified is marked NEEDS_MANUAL_CHECK rather than guessed.",
+    "retrieved_utc": "2026-09-20T00:00:00Z",
+    "why_this_matters": "A game counts as busy only if it is reachable on a standard radio. This file is the audit trail for that assumption.",
+    "regulatory_note": "County-by-county AM/FM reception cannot be proven from documents. Nothing here claims a measured field strength; see docs/LIMITATIONS-NEXT.md."
+  },
+  "stations": [
+    {
+      "call_letters": "KNBR",
+      "dial": "680 AM",
+      "city_of_license": "San Francisco, CA",
+      "operator": "Cumulus Media (Radio License Holding SRC LLC)",
+      "facility": {"class": "A", "power_watts": 50000, "directional": false, "hours": "unlimited", "fcc_facility_id": 35208},
+      "carries": [
+        "San Francisco Giants (flagship)",
+        "San Francisco 49ers (flagship since 2005)",
+        "Stanford Cardinal football",
+        "California Golden Bears (named by Cumulus as a radio home)",
+        "USF men's basketball",
+        "San Jose Earthquakes",
+        "Westwood One Sports national NFL feed (verified affiliate)"
+      ],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "STRONG",
+      "reception_basis": "50,000 W non-directional Class A, licensed to San Francisco, transmitter in Redwood City; the same facility serves the whole Bay Area day and night.",
+      "sources": [
+        "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/",
+        "https://publicfiles.fcc.gov/am-profile/knbr",
+        "https://www.westwoodonesports.com/station-finder/"
+      ]
+    },
+    {
+      "call_letters": "KNBR-FM",
+      "dial": "104.5 FM",
+      "city_of_license": "San Francisco, CA",
+      "operator": "Cumulus Media",
+      "facility": {"note": "full-time simulcast of KNBR 680 since 2019-09-06; FM facility data not re-verified this pass"},
+      "carries": ["Everything KNBR 680 carries, including the 49ers, Giants, Stanford, Cal, Earthquakes and the Westwood One NFL feed"],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "STRONG",
+      "reception_basis": "FM signal serving the San Francisco market; simulcast of the KNBR 680 programming.",
+      "sources": [
+        "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/",
+        "https://www.westwoodonesports.com/station-finder/"
+      ]
+    },
+    {
+      "call_letters": "KTCT",
+      "dial": "1050 AM",
+      "city_of_license": "San Mateo, CA",
+      "operator": "Cumulus Media",
+      "facility": {"note": "NEEDS_MANUAL_CHECK - power/class not read from a source this pass; transmitter reported near Hayward"},
+      "carries": ["Westwood One Sports national NFL feed (verified affiliate)", "KNBR 49ers programming (Cumulus lists KNBR programming on KTCT 1050)"],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "MEDIUM",
+      "reception_basis": "AM facility licensed to San Mateo serving the San Francisco market; day/night coverage across the Bay is commonly reported but was NOT re-verified this pass.",
+      "sources": ["https://www.westwoodonesports.com/station-finder/", "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/"]
+    },
+    {
+      "call_letters": "KSAN",
+      "dial": "107.7 FM (107.7 The Bone)",
+      "city_of_license": "San Mateo, CA",
+      "operator": "Cumulus Media",
+      "facility": {"class": "B", "erp_watts": 8900, "haat_meters": 354, "fcc_facility_id": 14484},
+      "carries": ["San Francisco 49ers Radio Network (FM flagship)", "Cumulus 49ers programming per the 2026-04-15 club/press announcement"],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "STRONG",
+      "reception_basis": "Class B FM on San Bruno Mountain-class facilities serving the whole Bay Area.",
+      "sources": ["https://en.wikipedia.org/wiki/KSAN_(FM)", "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/"]
+    },
+    {
+      "call_letters": "KSFO",
+      "dial": "810 AM",
+      "city_of_license": "San Francisco, CA",
+      "operator": "Cumulus Media",
+      "facility": {"power_watts": 50000, "note": "the former KGO 810 facility; Cumulus moved the KSFO calls and programming from 560 AM to 810 AM on 2025-01-01, and the 560 AM licence was surrendered in August 2026"},
+      "carries": ["California Golden Bears football (the 2026 calbears.com schedule lists 'Radio: KSFO 810 AM' for every game except the Big Game)", "San Francisco 49ers (Cumulus lists 810 AM KSFO as a 49ers outlet)"],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "STRONG",
+      "reception_basis": "50,000 W non-directional facility serving Northern California; the move from 560 AM to 810 AM explicitly traded up to this signal.",
+      "sources": ["https://calbears.com/sports/football/schedule", "https://www.radioworld.com/news-and-business/cumulus-media-surrenders-license-of-san-franciscos-560-am", "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/"]
+    },
+    {
+      "call_letters": "KNEW",
+      "dial": "960 AM (iHeart Sports 960)",
+      "city_of_license": "Oakland, CA",
+      "operator": "iHeartMedia",
+      "facility": {"note": "NEEDS_MANUAL_CHECK - power/class not read from a source this pass"},
+      "carries": ["Athletics (A's) - listed by MLB.com as the Bay Area radio affiliate"],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "MEDIUM",
+      "reception_basis": "Listed by MLB.com as the Bay Area affiliate (city of license Oakland). Signal into the Outer Sunset was NOT verified.",
+      "sources": ["https://www.mlb.com/athletics/schedule/watch", "https://radioinsight.com/headlines/294839/kste-to-serve-as-athletics-flagship-station/"]
+    },
+    {
+      "call_letters": "KSTE",
+      "dial": "650 AM (Talk 650)",
+      "city_of_license": "Rancho Cordova, CA",
+      "operator": "iHeartMedia",
+      "facility": {"power_watts": 21000, "note": "Sacramento-market AM"},
+      "carries": ["Athletics (A's) flagship - all spring training, regular season and potential postseason games"],
+      "section_relevance": ["1", "2", "3"],
+      "reception_94122": "WEAK / UNVERIFIED",
+      "reception_basis": "21,000 W AM licensed to Rancho Cordova, roughly 90 miles from the Outer Sunset, with no documented coverage of San Francisco. Treat the A's as 'on the radio in SF' via KNEW 960 AM, not via KSTE. Flagged NEEDS_MANUAL_CHECK.",
+      "sources": ["https://www.sacbee.com/sports/article300334119.html", "https://www.mlb.com/athletics/schedule/watch"]
+    }
+  ],
+  "affiliates_outside_sections": [
+    {
+      "call_letters": "KGMZ",
+      "dial": "95.7 FM (95.7 The Game)",
+      "carries": ["Golden State Warriors (NBA) - NOT part of Sections 1, 2 or 3"],
+      "note": "Listed so the gap is visible rather than hidden: Warriors and Sharks games are live on Bay Area radio and the NBA/NHL seasons overlap the January-February vacation windows. See docs/LIMITATIONS-NEXT.md."
+    }
+  ],
+  "westwood_one_affiliates_in_market": {
+    "source": "https://www.westwoodonesports.com/station-finder/ (NFL tab; list is labelled 'NFL Regular Season (2025)' on the page itself)",
+    "stations": ["KNBR-AM", "KNBR-F2", "KNBR-FM", "KTCT-AM"],
+    "sacramento_market": ["KHTK-AM", "KYMX-F2"],
+    "note": "This resolves IR-10: Westwood One's San Francisco NFL affiliates are KNBR 680 AM, the 104.5 FM HD-2 subchannel, 104.5 FM, and KTCT 1050 AM. The affiliate table is still labelled 2025 on the site, which is itself an irregularity to re-check each season."
+  }
+}

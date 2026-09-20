@@ -35,7 +35,7 @@ from lib_windows import (  # noqa: E402
     parse_utc,
     span_minutes,
 )
-from analyze_vacation import analyze, blocked_days_for_year  # noqa: E402
+from analyze_vacation import NFL_SEASON_START, analyze, blocked_days_for_year  # noqa: E402
 from build_data import build, mlb_regular_season_days  # noqa: E402
 
 
@@ -362,7 +362,13 @@ class TestBuiltBundle(unittest.TestCase):
                     f"postseason row must keep the MLB sentinel, got {game['start_utc']}",
                 )
                 self.assertEqual(game["time_status"], "TBD_official_date")
-        self.assertEqual(placeholders, 30, "expected one placeholder per postseason date")
+        payload = json.loads(
+            (ROOT / "data" / "verified" / "mlb_postseason_2026.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            placeholders, len(payload["dates_with_a_reserved_game"]),
+            "expected exactly one placeholder per officially reserved postseason date",
+        )
 
     def test_high_priority_teams_are_flagged(self):
         labels = " ".join(g["label"] for g in self.bundle["games"] if g["priority"] == "high")
@@ -392,3 +398,303 @@ class TestBuiltBundle(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestCoverageSections(unittest.TestCase):
+    """The three sections the user asked to compare must be exactly what he wrote.
+
+    These tests exist so that a future edit cannot quietly widen or narrow a
+    section: the definitions are asserted verbatim against the request.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = build()
+        cls.profiles = json.loads(
+            (ROOT / "data" / "verified" / "profiles.json").read_text(encoding="utf-8")
+        )
+
+    def test_three_sections_plus_superset(self):
+        ids = [s["id"] for s in self.profiles["sections"]]
+        self.assertEqual(ids, ["1", "2", "3"])
+        self.assertEqual(self.profiles["extra_scope"]["id"], "all")
+
+    def test_section_definitions_match_the_request(self):
+        by_id = {s["id"]: s for s in self.profiles["sections"]}
+        self.assertEqual(by_id["1"]["definition"], [
+            "MLB (Giants and A's flagged high priority; all 30 clubs shown)",
+            "NFL - San Francisco 49ers, preseason and regular season and postseason (high priority)",
+            "Westwood One Sports national NFL radio broadcasts",
+        ])
+        self.assertEqual(by_id["2"]["definition"], [
+            "MLB (Giants and A's flagged high priority; all 30 clubs shown)",
+            "NFL - San Francisco 49ers, preseason and regular season and postseason (high priority)",
+            "Stanford NCAAF, California NCAAF (high priority)",
+            "Westwood One Sports national NFL radio broadcasts",
+        ])
+        self.assertEqual(by_id["3"]["definition"], [
+            "MLB (Giants and A's flagged high priority; all 30 clubs shown)",
+            "NFL - San Francisco 49ers, preseason and regular season and postseason (high priority)",
+            "Stanford NCAAF, California NCAAF (high priority)",
+            "San Jose Earthquakes MLS (high priority)",
+            "Westwood One Sports national NFL radio broadcasts",
+        ])
+
+    def test_every_game_carries_a_sections_list(self):
+        for game in self.bundle["games"]:
+            self.assertIsInstance(game.get("sections"), list, game.get("label"))
+
+    def test_tagging_is_what_the_request_implies(self):
+        def sections_for(pred):
+            out = set()
+            for g in self.bundle["games"]:
+                if pred(g):
+                    out.update(g["sections"])
+            return out
+
+        mlb = sections_for(lambda g: g["league"] == "MLB")
+        niners = sections_for(lambda g: "NFL:49ers" in (g.get("tags") or []))
+        ww_nfl = sections_for(lambda g: g["league"] == "NFL" and "NFL:national" in (g.get("tags") or []))
+        college_bay = sections_for(lambda g: (g.get("tags") or [])[:1] == ["NCAAF:California"]
+                                   or (g.get("tags") or [])[:1] == ["NCAAF:Stanford"])
+        college_national = sections_for(lambda g: "NCAAF:national" in (g.get("tags") or []))
+        mls = sections_for(lambda g: "MLS:Earthquakes" in (g.get("tags") or []))
+
+        self.assertEqual(mlb, {"1", "2", "3"})
+        self.assertEqual(niners, {"1", "2", "3"})
+        self.assertEqual(ww_nfl, {"1", "2", "3"})
+        self.assertEqual(mls, {"3"})
+        self.assertTrue(college_bay <= {"2", "3"} and college_bay, "Bay Area college football is section 2+")
+        self.assertFalse(college_bay & {"1"}, "Stanford/Cal must not be in section 1")
+        self.assertEqual(
+            college_national, set(),
+            "Westwood One national NCAA football is tracked but is NOT in any of the three sections",
+        )
+
+    def test_a_game_outside_the_section_is_not_counted(self):
+        """2026-08-29 has Stanford + an Earthquakes match but no MLB/NFL game data."""
+        date = "2026-08-29"
+        s1 = day_report(self.bundle["games"], date, scope="1")
+        s3 = day_report(self.bundle["games"], date, scope="3")
+        self.assertNotIn("NCAAF", [w["league"] for w in s1["busy_windows"]])
+        self.assertIn("NCAAF", [w["league"] for w in s3["busy_windows"]])
+        self.assertGreater(s1["free_minutes"], s3["free_minutes"])
+
+    def test_section_filter_is_monotonic(self):
+        for date in ("2026-08-29", "2026-10-03", "2026-11-21", "2027-01-17"):
+            free = [day_report(self.bundle["games"], date, scope=s)["free_minutes"] for s in ("1", "2", "3", "all")]
+            self.assertGreaterEqual(free[0], free[1], date)
+            self.assertGreaterEqual(free[1], free[2], date)
+
+
+class TestMlbSeasonFrameFallback(unittest.TestCase):
+    """When only the season frame is known, the day must not be called free."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = build()
+        cls.frames = cls.bundle["mlb_frames"]
+
+    def test_in_season_date_without_per_game_data_is_blocked(self):
+        date = "2026-03-01"  # Spring Training, no bundled game
+        with_frames = day_report(self.bundle["games"], date, scope="1", mlb_frames=self.frames)
+        without = day_report(self.bundle["games"], date, scope="1")
+        self.assertTrue(with_frames["is_free_day"] is False)
+        self.assertTrue(with_frames["mlb_frame_fallback"])
+        self.assertTrue(without["is_free_day"], "the fallback is what prevents the free reading")
+        self.assertEqual(with_frames["busy_minutes"], 539.0)  # 15:00 -> 23:59 PT
+
+    def test_verified_postseason_off_day_stays_free(self):
+        """2026-10-02 is inside the frame but the bundle's list is complete, and empty."""
+        date = "2026-10-02"
+        report = day_report(self.bundle["games"], date, scope="1", mlb_frames=self.frames)
+        self.assertTrue(report["is_free_day"], "no game is possible on this date")
+        self.assertFalse(report["mlb_frame_fallback"])
+
+    def test_frame_never_calls_a_dated_game_free(self):
+        for game in self.bundle["games"]:
+            if game["league"] != "MLB":
+                continue
+            report = day_report(self.bundle["games"], game["date_local"], scope="1", mlb_frames=self.frames)
+            self.assertFalse(report["is_free_day"], game["date_local"])
+
+    def test_estimated_frames_are_labelled(self):
+        self.assertFalse(self.frames["2026"]["estimated"])
+        self.assertFalse(self.frames["2027"]["estimated"])
+        self.assertTrue(self.frames["2028"]["estimated"])
+        self.assertTrue(self.frames["2029"]["estimated"])
+
+
+class TestPostseason2026(unittest.TestCase):
+    """The 2026 postseason must come from the official per-date list, not a span."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bundle = build()
+        cls.payload = json.loads(
+            (ROOT / "data" / "verified" / "mlb_postseason_2026.json").read_text(encoding="utf-8")
+        )
+
+    def test_official_dates_are_the_ones_in_the_bundle(self):
+        bundled = {g["date_local"] for g in self.bundle["games"]
+                   if g["league"] == "MLB" and g.get("time_status") == "TBD_official_date"}
+        self.assertEqual(bundled, set(self.payload["dates_with_a_reserved_game"]))
+
+    def test_travel_days_are_not_blocked(self):
+        """An earlier revision blocked 09-29..10-31 continuously and hid these five days."""
+        for date in self.payload["off_days_with_no_possible_game"]:
+            mlb_games = [g for g in self.bundle["games"]
+                         if g["league"] == "MLB" and g["date_local"] == date]
+            self.assertEqual(mlb_games, [], f"{date} should carry no MLB game")
+
+    def test_first_pitch_times_are_never_invented(self):
+        for game in self.bundle["games"]:
+            if game["league"] == "MLB" and game.get("placeholder"):
+                self.assertTrue(game["start_utc"].endswith("T07:33:00Z"), game["date_local"])
+                self.assertFalse(game.get("time_confirmed", False))
+
+    def test_clinched_clubs_are_recorded_with_a_source(self):
+        self.assertGreaterEqual(len(self.payload["clinch_status"]["clinched_postseason_berth"]), 5)
+        self.assertIn("mlb.com", self.payload["clinch_status"]["source"])
+
+    def test_postseason_placeholders_never_name_an_unqualified_club(self):
+        for game in self.bundle["games"]:
+            if game["league"] == "MLB" and game.get("placeholder"):
+                self.assertIn("TBD", game["label"], game["label"])
+
+
+class TestWeekWindowInvariant(unittest.TestCase):
+    """No 7-day run can exist inside a season that plays every weekend.
+
+    This is what makes the conservative NFL/MLS/college spans safe: they cannot
+    hide a week-long window, because a week always contains a Sunday.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.mlb = json.loads(
+            (ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8")
+        )["mlb"]
+
+    def test_no_week_long_run_inside_the_nfl_season(self):
+        for section in ("1", "2", "3"):
+            for year in (2026, 2027, 2028, 2029):
+                hall_of_fame, _, _ = NFL_SEASON_START[year]
+                for interpretation in (True, False):
+                    row = analyze(year, self.mlb, count_spring_training=interpretation, section=section)
+                    for gap in row["gaps"]:
+                        if gap["days"] >= 7:
+                            self.assertLess(
+                                gap["end"], hall_of_fame,
+                                f"{year} section {section} strict={interpretation}: "
+                                f"{gap['start']}..{gap['end']} runs into the NFL season",
+                            )
+
+    def test_requirements_are_consistent_with_days(self):
+        for section in ("1", "2", "3"):
+            for year in (2026, 2027, 2028, 2029):
+                row = analyze(year, self.mlb, count_spring_training=True, section=section)
+                req = row["requirements"]
+                self.assertEqual(req["weeks_3"], req["weeks_2"] and req["week_1"])
+                for gap in row["gaps"]:
+                    self.assertEqual(gap["weeks_2"], gap["days"] >= 14)
+                    self.assertEqual(gap["weeks_3"], gap["days"] >= 21)
+
+    def test_sections_1_and_2_have_the_same_longest_run(self):
+        for year in (2026, 2027, 2028, 2029):
+            for interpretation in (True, False):
+                a = analyze(year, self.mlb, interpretation, "1")["best"]["days"]
+                b = analyze(year, self.mlb, interpretation, "2")["best"]["days"]
+                self.assertEqual(a, b, f"{year} strict={interpretation}")
+
+
+class TestNflSeasonFrame(unittest.TestCase):
+    """Every NFL game day must carry a record, even when the project has no
+    per-game data for it.
+
+    Sections 1-3 name the 49ers and the Westwood One national feed, not all 272 NFL
+    games. Before this layer existed, a Sunday where the 49ers were on bye and the
+    national window had not been published read as a FREE day. See IR-29.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        import nfl_calendar
+        cls.cal = nfl_calendar
+        cls.bundle = build()
+
+    def test_every_nfl_game_date_has_a_record(self):
+        for season_year in (2026, 2027, 2028, 2029):
+            for date_iso in self.cal.season_game_dates(season_year):
+                game = next(
+                    (g for g in self.bundle["games"]
+                     if g["league"] == "NFL" and g["date_local"] == date_iso),
+                    None,
+                )
+                self.assertIsNotNone(
+                    game, f"{date_iso} is an NFL game day with no record in the bundle")
+
+    def test_no_nfl_sunday_reads_free(self):
+        """The reported failure mode, asserted directly for all four seasons."""
+        for season_year in (2026, 2027, 2028, 2029):
+            for date_iso in self.cal.season_game_dates(season_year):
+                rep = day_report(self.bundle["games"], date_iso, scope="1",
+                                 mlb_frames=self.bundle["mlb_frames"])
+                self.assertFalse(
+                    rep["is_free_day"], f"{date_iso} (NFL {season_year} season) reads FREE")
+
+    def test_playoff_rounds_are_recorded_for_every_season(self):
+        for season_year in (2026, 2027, 2028, 2029):
+            sb_iso, _, _ = self.cal.super_bowl_for_season(season_year)
+            rounds = self.cal.previous_season_nfl_dates(sb_iso)
+            self.assertTrue(rounds, f"{season_year}: no playoff rounds derived")
+            for round_name, dates in rounds.items():
+                for date_iso in dates:
+                    self.assertTrue(
+                        any(g["league"] == "NFL" and g["date_local"] == date_iso
+                            for g in self.bundle["games"]),
+                        f"{season_year} {round_name} on {date_iso} has no record",
+                    )
+
+    def test_placeholders_never_name_a_team(self):
+        """A date-level placeholder must not imply a specific matchup."""
+        teams = ("49ers", "Giants", "Athletics", "A's", "Stanford", "California",
+                 "Earthquakes", "Rams", "Seahawks", "Patriots", "Eagles")
+        for game in self.bundle["games"]:
+            if not game.get("season_frame"):
+                continue
+            for team in teams:
+                self.assertNotIn(
+                    team, game["label"],
+                    f"{game['date_local']}: season-frame placeholder names a team",
+                )
+            self.assertEqual(game["time_status"], "TBD_envelope")
+            # An un-timed day must be reported as unconfirmed, not silently certain.
+            rep = day_report(self.bundle["games"], game["date_local"])
+            self.assertTrue(rep["has_unconfirmed_times"], game["date_local"])
+
+    def test_estimated_seasons_are_labelled_and_have_no_fake_url(self):
+        for game in self.bundle["games"]:
+            if not game.get("season_frame"):
+                continue
+            year = game["season_year"]
+            if year == 2026:
+                self.assertEqual(game["status"], "VERIFIED")
+                self.assertIn("nfl.com", game["source"])
+            else:
+                self.assertIn(game["status"], ("ESTIMATED", "PROJECTED"))
+                self.assertIn("NOT RELEASED", game["source"])
+                self.assertNotIn("http", game["source"])
+
+    def test_the_frame_agrees_with_the_super_bowl(self):
+        """Week 18 is 35 days before the Super Bowl, and the frame ends there."""
+        for season_year in (2026, 2027, 2028, 2029):
+            sb_iso, _, _ = self.cal.super_bowl_for_season(season_year)
+            end = self.cal.regular_season_end(season_year)
+            delta = (datetime.strptime(sb_iso, "%Y-%m-%d").date()
+                     - datetime.strptime(end, "%Y-%m-%d").date()).days
+            self.assertEqual(delta, 35, f"{season_year}: Week 18 must be 35 days before the Super Bowl")
+            self.assertTrue(
+                any(g["league"] == "NFL" and g["date_local"] == end
+                    for g in self.bundle["games"]),
+                f"{season_year}: the regular-season finale {end} has no NFL record")
