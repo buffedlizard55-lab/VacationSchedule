@@ -283,11 +283,24 @@ def longest_free_window(windows: Sequence[Interval]) -> Interval | None:
 #: free window than to advertise one that turns out to have a game on the radio.
 TBD_ENVELOPE_PT = {"NCAAF": ("11:00", "23:59"), "MLS": ("16:00", "23:59"), "NFL": ("09:00", "23:59"), "MLB": ("15:00", "23:59")}
 
+#: Envelope for a date known to be inside the MLB regular season but whose specific
+#: games are not in the offline bundle (the app fetches those live).  Regular-season
+#: playout runs far wider than the postseason: the earliest first pitches are ~10:05
+#: PT (1:05 PM ET day games) and the latest West Coast games finish near midnight.
+#: Using the postseason's evening-only 15:00 window here would wrongly report every
+#: MLB morning and afternoon as free.
+MLB_REGULAR_ENVELOPE_PT = ("10:00", "23:59")
+
 
 def _envelope_interval(game: dict, date_iso: str, table: dict[str, int]) -> Interval:
-    """Build the conservative all-day-ish block for an un-timed but dated game."""
+    """Build the conservative all-day-ish block for an un-timed but dated game.
+
+    A row may override the league default via `envelope_pt: ["HH:MM", "HH:MM"]`.
+    The MLB regular season needs this: its envelope spans the whole day's playout
+    (10:00-23:59 PT) rather than the evening-only window used for postseason games.
+    """
     league = game["league"]
-    start_hhmm, end_hhmm = TBD_ENVELOPE_PT[league]
+    start_hhmm, end_hhmm = game.get("envelope_pt") or TBD_ENVELOPE_PT[league]
     day = date_iso or parse_utc(game["start_utc"]).astimezone(USER_TZ).date().isoformat()
     return Interval(
         local_wall_clock(day, start_hhmm),
@@ -299,9 +312,13 @@ def _envelope_interval(game: dict, date_iso: str, table: dict[str, int]) -> Inte
     )
 
 
+#: Time statuses meaning "we know the date is busy but not the exact hours".
+UNCONFIRMED_TIME_STATUSES = ("TBD_official_date", "TBD_envelope", "season_in_progress")
+
+
 def game_time_is_unconfirmed(game: dict) -> bool:
     """True when the date is known but no official start time has been published."""
-    if game.get("time_status") in ("TBD_official_date", "TBD_envelope"):
+    if game.get("time_status") in UNCONFIRMED_TIME_STATUSES:
         return True
     start_raw = game.get("start_utc")
     return bool(start_raw) and game["league"] == "MLB" and is_tbd_utc(start_raw)
@@ -322,13 +339,17 @@ def game_to_interval(
     table = durations or DEFAULT_DURATIONS
     league = game["league"]
     start_raw = game.get("start_utc")
-    if not start_raw:
-        return None
 
     if game_time_is_unconfirmed(game):
+        # Checked BEFORE the start_utc guard: a row can be unambiguously busy on a
+        # known date with no start time at all (the MLB regular-season markers).
+        # Bailing out here is what once made every regular-season date read as free.
         interval = _envelope_interval(game, game.get("date_local"), table)
         interval.time_confirmed = False
         return interval
+
+    if not start_raw:
+        return None
 
     start = parse_utc(start_raw)
     minutes = int(game.get("duration") or table[league])
@@ -377,14 +398,41 @@ def intervals_for_day(
     return busy, skipped
 
 
+def coverage_span(games: Iterable[dict]) -> tuple[str, str]:
+    """First and last local date the dataset actually says something about."""
+    dates = sorted(g["date_local"] for g in games if g.get("date_local"))
+    return (dates[0], dates[-1]) if dates else ("", "")
+
+
 def day_report(
     games: Iterable[dict],
     date_iso: str,
     durations: dict[str, int] | None = None,
     overrun_buffer_min: int = DEFAULT_OVERRUN_BUFFER_MIN,
+    coverage: tuple[str, str] | None = None,
 ) -> dict:
-    """Full free/busy report for one local day, in the user's timezone."""
+    """Full free/busy report for one local day, in the user's timezone.
+
+    `coverage` is the (first, last) date span the dataset speaks for.  A date
+    outside it yields `data_coverage = "none"` and is never reported as a free
+    day, because "we have no data" is not the same claim as "nothing is on".
+    Without this the board told users 2027-06-15 was FULLY FREE simply because
+    the bundle ends in January 2027.
+    """
     games = list(games)
+    if coverage is None:
+        coverage = coverage_span(games)
+    cov_start, cov_end = coverage
+    if cov_start and cov_end:
+        if date_iso < cov_start:
+            data_coverage = "before"
+        elif date_iso > cov_end:
+            data_coverage = "after"
+        else:
+            data_coverage = "within"
+    else:
+        data_coverage = "none"
+
     day_start, day_end = local_day_bounds(date_iso)
     busy, skipped = intervals_for_day(games, date_iso, durations, overrun_buffer_min)
     merged = merge(busy)
@@ -401,10 +449,12 @@ def day_report(
     # reported such days as free, which is the bug being fixed.
     return {
         "date": date_iso,
+        "data_coverage": data_coverage,
         "day_length_minutes": total_minutes,
         "busy_minutes": round(busy_minutes, 1),
         "free_minutes": round(total_minutes - busy_minutes, 1),
-        "is_free_day": not merged,
+        # A day with no data is NOT a free day. Only "within" coverage can be free.
+        "is_free_day": (not merged) and data_coverage == "within",
         "has_high_priority": any(iv.priority == "high" for iv in merged),
         "has_unconfirmed_times": bool(unconfirmed),
         "unconfirmed_minutes": round(unconfirmed_minutes, 1),

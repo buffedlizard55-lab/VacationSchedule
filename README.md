@@ -79,6 +79,8 @@ air on KSAN 107.7 FM, KSFO 810 AM and KTCT 1050 AM.
 This project's core rule is that **a game the site covers is never reported as free**,
 and **an estimate is never presented as a schedule**.
 
+- **The board covers 2026-03-25 &rarr; 2027-01-10** (261 distinct dates, 342 games).
+  Dates outside that span show an amber **NO DATA** verdict rather than a green free one.
 - **2026 is verified** against league-owned sources.
 - **2027–2029 are ESTIMATED** and labelled as such everywhere — in the data, in the UI,
   and in the docs. `statsapi.mlb.com/api/v1/seasons` returns **2026 only**, which is
@@ -87,23 +89,25 @@ and **an estimate is never presented as a schedule**.
   `"NOT RELEASED"` rather than a fabricated URL.
 - **Games with an official date but no announced time block conservatively** rather than
   disappearing. They render at reduced opacity with a `Time TBD` chip.
-- **50 items are flagged for review** and listed on the Needs Review tab.
+- **51 items are flagged for review** and listed on the Needs Review tab.
 
 ---
 
 ## The bug this project was built to fix
 
 An earlier version reported **2026-09-29 (MLB Wild Card Game 1) as a free day**, because
-games whose start times were unannounced were dropped from the calculation. Three real
-bugs were found and fixed:
+games whose start times were unannounced were dropped from the calculation. Five real
+bugs of the same family were found and fixed:
 
 | Bug | Effect | Fix |
 |---|---|---|
 | Un-timed games returned `None` | Wild Card day reported **free** | Block the league's TBD envelope; flag `time_confirmed = False` |
+| Bundle held postseason MLB only | All 187 regular-season dates read **free** offline | Emit a blocking marker per in-season date |
+| Dates beyond the dataset read free | 2029 dates showed green **FULLY FREE** | Third amber **NO DATA** verdict |
 | Same-`tzinfo` datetime subtraction | Every DST day read as 24 h | Normalize to UTC before all arithmetic |
 | Filtering without clipping | Overnight games double-counted | Added `clip()` |
 
-Details in [`docs/IRREGULARITIES.md`](docs/IRREGULARITIES.md) (IR-14, IR-15, IR-16).
+Details in [`docs/IRREGULARITIES.md`](docs/IRREGULARITIES.md) (IR-14 through IR-18).
 
 ---
 
@@ -122,7 +126,7 @@ scripts/js_harness.js    runs site/app.js under Node for parity testing
 
 data/verified/           hand-curated, source-attributed inputs
 data/analysis/           generated analysis output
-tests/                   39 tests
+tests/                   43 tests
 docs/                    methodology, sources, irregularities, limitations
 ```
 
@@ -131,13 +135,13 @@ docs/                    methodology, sources, irregularities, limitations
 ```bash
 python3 scripts/build_data.py          # regenerate the bundle
 python3 scripts/analyze_vacation.py    # print both interpretations
-python3 -m unittest discover -s tests  # 39 tests
+python3 -m unittest discover -s tests  # 43 tests
 ```
 
 The suite includes two unusual checks worth knowing about:
 
 - **`tests/test_parity_js.py`** runs the *real* `site/app.js` under Node and diffs it
-  against the Python engine for **all 94 dates** plus the DST boundaries. They agree to
+  against the Python engine for **all 265 dates** plus the DST boundaries. They agree to
   the minute. Two independent implementations of the same algorithm will drift; this
   catches it.
 - **`tests/render_check.js`** loads the real `index.html` into jsdom, fires
@@ -155,7 +159,7 @@ Optional, for the render check: `npm install --no-save jsdom`.
 | [`docs/VACATION-WINDOWS.md`](docs/VACATION-WINDOWS.md) | The answer, both interpretations, year-by-year provenance |
 | [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) | The algorithm, timezone rules, durations, the TBD envelope |
 | [`docs/SOURCES.md`](docs/SOURCES.md) | Every source with trust level, plus abandoned ones |
-| [`docs/IRREGULARITIES.md`](docs/IRREGULARITIES.md) | 16 flagged irregularities, what was done about each |
+| [`docs/IRREGULARITIES.md`](docs/IRREGULARITIES.md) | 18 flagged irregularities, what was done about each |
 | [`docs/LIMITATIONS-NEXT.md`](docs/LIMITATIONS-NEXT.md) | Real gaps and suggested next work |
 
 All sources retrieved **2026-09-20**.

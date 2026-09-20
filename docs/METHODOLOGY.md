@@ -24,7 +24,7 @@ Full list with retrieval dates: [`SOURCES.md`](SOURCES.md).
 
 `scripts/lib_windows.py` (Python) and `site/app.js` (browser) implement the same
 algorithm. `tests/test_parity_js.py` runs the real `site/app.js` under Node and
-diffs it against the Python engine for **all 94 dates in the bundle plus the DST
+diffs it against the Python engine for **all 265 dates in the bundle plus the DST
 boundaries**; they agree to the minute.
 
 ### Step 1 — build an interval per game

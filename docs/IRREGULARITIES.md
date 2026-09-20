@@ -239,4 +239,67 @@ day — precisely the bug the user reported.
 `unconfirmed_minutes`, and `is_free_day = not merged`. Tests:
 `test_tbd_mlb_game_blocks_conservatively`, `test_postseason_dates_are_never_free`,
 `test_no_game_day_is_reported_free` (asserts **no** date carrying a game reads free,
-across all 155 bundle rows).
+across all 342 bundle rows).
+
+---
+
+## IR-17 — The whole MLB regular season was missing from the offline bundle (HIGH, fixed)
+
+**Found:** the bundle held **30 MLB rows, all postseason.** `mlb_regular_season_days()`
+computed all **187 regular-season dates** but only used them for a metadata count — they
+never became blocking intervals.
+
+**Concrete failure:** every regular-season date read as a **completely free day** whenever
+the app ran offline, including **Opening Day 2026-03-25**:
+
+```
+2026-03-25: is_free_day=True  busy=0 min  free=1440   <- WRONG
+2026-06-14: is_free_day=True  busy=0 min  free=1440   <- WRONG
+2026-07-04: is_free_day=True  busy=0 min  free=1440   <- WRONG
+```
+
+The live `statsapi.mlb.com` fetch masked this online, which is why it survived review.
+It is the same bug class as IR-16 and IR-01, one level up: a whole season rather than one
+game.
+
+**Fixed:** `from_mlb_regular_season()` now emits one marker per regular-season date
+(**217 MLB rows, 342 total**). Each carries `time_status: "season_in_progress"`, an empty
+`start_utc` (no time is invented) and `envelope_pt: ["10:00", "23:59"]` — the regular
+season needs a wider envelope than the postseason because day games start ~10:05 PT.
+The app still supersedes markers with live per-game times.
+
+Also fixed in the engine: `game_to_interval` checked `if not start_raw: return None`
+*before* the unconfirmed-time branch, so a busy-on-a-known-date row with no time vanished.
+The check order is now reversed.
+
+Tests: `test_mlb_regular_season_dates_are_never_free_offline`,
+`test_mlb_regular_envelope_covers_day_games`, `test_every_game_is_placeable`.
+
+---
+
+## IR-18 — Dates with no data were reported as free (HIGH, fixed)
+
+**Found:** `day_report` treated an empty interval list as "free" regardless of whether the
+dataset covered that date at all. The bundle ends **2027-01-10**, so every later date read
+as a green **FULLY FREE**:
+
+```
+2027-06-15: is_free_day=True   <- no data at all
+2029-02-14: is_free_day=True   <- no data at all
+```
+
+**Why it matters:** this is the exact failure the user reported — a site confidently
+showing free time where it has no idea. "We have not looked" and "nothing is on" are
+different claims and must not render identically.
+
+**Fixed:** `coverage_span()` derives the span the dataset speaks for, and `day_report`
+returns `data_coverage` ∈ `before | within | after | none`. A day is free only when
+`data_coverage == "within"` **and** nothing is scheduled. The UI gained a third, amber
+**NO DATA** verdict, visually distinct from green FREE and red BUSY.
+
+Navigation is deliberately **not** clamped to the span: walking past the edge shows the
+amber verdict, which teaches the boundary instead of silently pinning the date and making
+the buttons look broken. `min`/`max` on the date input still steer the native picker.
+
+Tests: `test_dates_outside_coverage_are_never_reported_free`, plus render checks asserting
+an out-of-coverage date shows `NO DATA` and never `FULLY FREE`.

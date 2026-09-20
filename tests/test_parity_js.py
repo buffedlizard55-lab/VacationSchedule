@@ -42,6 +42,7 @@ def python_side(date_str):
     longest = rep["longest_free_window"]
     return {
         "date": rep["date"],
+        "data_coverage": rep["data_coverage"],
         "day_minutes": rep["day_length_minutes"],
         "busy_minutes": rep["busy_minutes"],
         "free_minutes": rep["free_minutes"],

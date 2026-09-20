@@ -74,10 +74,10 @@ Late-December dates may be under-blocked.
 
 ### 6. MLB per-game times are fetched live, not stored (LOW, by design)
 
-The bundle has **30 MLB rows**, not 187 dates. The app fetches the authoritative
-schedule from `statsapi.mlb.com` for the viewed date and falls back to the bundle
-offline. Correct design, but it means the snapshot alone cannot answer "is
-2026-06-14 free?"
+**Fixed.** The bundle now carries all **187 regular-season date markers** (217 MLB rows
+total), so the snapshot alone answers "is 2026-06-14 free?" with a correct *no*. Each
+marker blocks the regular-season playout envelope 10:00-23:59 PT; the app supersedes it
+with live per-game times. See IR-17.
 
 ### 7. Radio affiliates partly unconfirmed (MEDIUM)
 
@@ -174,7 +174,7 @@ If you change the engine, keep these true. All are covered by tests.
 | Overnight games split across both dates | `test_overnight_game_blocks_two_dates` |
 | DST days are 23 h / 25 h, not 24 h | `test_span_minutes_is_dst_safe`, `test_day_report_uses_true_dst_day_length` |
 | Games 1–5 and 8–10 PM leave 5–8 PM free | `test_user_stated_example_1pm_to_5pm_and_8pm_to_10pm` |
-| JS and Python agree to the minute on all 94 dates | `test_day_reports_match_exactly` |
+| JS and Python agree to the minute on all 265 dates | `test_day_reports_match_exactly` |
 | Estimated seasons are never labelled verified | `test_2027_2029_strict_windows` |
 
 **Two rules worth repeating:**

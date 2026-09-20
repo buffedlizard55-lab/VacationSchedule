@@ -89,17 +89,19 @@
   // Interval engine (mirror of lib_windows.py)
   // ---------------------------------------------------------------------
 
+  // Must match UNCONFIRMED_TIME_STATUSES in lib_windows.py.
+  const UNCONFIRMED_STATUSES = ["TBD_official_date", "TBD_envelope", "season_in_progress"];
+
   function timeIsUnconfirmed(game) {
-    if (game.time_status === "TBD_official_date" || game.time_status === "TBD_envelope") return true;
+    if (UNCONFIRMED_STATUSES.indexOf(game.time_status) !== -1) return true;
     return !!game.start_utc && game.league === "MLB" && game.start_utc.slice(11, 19) === MLB_TBD_SENTINEL;
   }
 
   function gameToInterval(game) {
-    if (!game.start_utc) return null;
-    const minutes = game.duration || DURATIONS[game.league];
-
+    // Unconfirmed is checked BEFORE the start_utc guard: the MLB regular-season
+    // markers are busy on a known date with no start time at all.
     if (timeIsUnconfirmed(game)) {
-      const [s, e] = TBD_ENVELOPE[game.league];
+      const [s, e] = game.envelope_pt || TBD_ENVELOPE[game.league];
       return {
         start: ptWallToUtc(game.date_local, s),
         end: ptWallToUtc(game.date_local, e),
@@ -110,6 +112,9 @@
         timeConfirmed: false,
       };
     }
+
+    if (!game.start_utc) return null;
+    const minutes = game.duration || DURATIONS[game.league];
 
     let start = Date.parse(game.start_utc);
     const end = start + (minutes * 60000);
@@ -168,9 +173,22 @@
   // Day report
   // ---------------------------------------------------------------------
 
+  function coverageSpan(games) {
+    const dates = games.map((g) => g.date_local).filter(Boolean).sort();
+    return dates.length ? [dates[0], dates[dates.length - 1]] : ["", ""];
+  }
+
   function dayReport(dateStr, extraGames) {
     const day = localDay(dateStr);
     const all = DATA.games.concat(extraGames || []);
+    // A date outside the span the dataset speaks for is "unknown", never "free".
+    // Without this the board reported 2027-06-15 as FULLY FREE purely because the
+    // bundle's last row is in January 2027.
+    const span = coverageSpan(all);
+    let dataCoverage = "none";
+    if (span[0] && span[1]) {
+      dataCoverage = dateStr < span[0] ? "before" : (dateStr > span[1] ? "after" : "within");
+    }
     const busy = [];
     const unplaced = [];
 
@@ -190,10 +208,12 @@
 
     return {
       date: dateStr,
+      dataCoverage: dataCoverage,
       dayMinutes: day.minutes,
       busyMinutes: Math.round(busyMin * 10) / 10,
       freeMinutes: Math.round((day.minutes - busyMin) * 10) / 10,
-      isFreeDay: merged.length === 0,
+      // A day with no data is NOT a free day. Only "within" coverage can be free.
+      isFreeDay: merged.length === 0 && dataCoverage === "within",
       hasHighPriority: merged.some((iv) => iv.priority === "high"),
       hasUnconfirmed: unconfirmed.length > 0,
       unconfirmedMinutes: Math.round(unconfirmed.reduce((a, iv) => a + (iv.end - iv.start), 0) / 60000 * 10) / 10,
@@ -345,8 +365,14 @@
       (rep.dayMinutes !== 1440 ? `  (${Math.round(rep.dayMinutes / 60)}h day, DST)` : "");
 
     const v = $("verdict");
-    v.className = "verdict " + (rep.isFreeDay ? "free" : "busy");
-    if (rep.isFreeDay) {
+    v.className = "verdict " + (rep.dataCoverage !== "within" ? "unknown" : (rep.isFreeDay ? "free" : "busy"));
+    if (rep.dataCoverage !== "within") {
+      const span = coverageSpan(DATA.games);
+      v.innerHTML = "NO DATA &mdash; outside the verified coverage window" +
+        `<span class="sub">This dataset speaks for <strong>${esc(span[0])} &rarr; ${esc(span[1])}</strong> only. ` +
+        "An absence of games here means <em>we have not looked</em>, not that nothing is on. " +
+        "See Needs Review for the known gaps.</span>";
+    } else if (rep.isFreeDay) {
       v.innerHTML = "FULLY FREE &mdash; no scheduled game in any covered source" +
         `<span class="sub">All ${Math.round(rep.dayMinutes / 60)} hours are open.</span>`;
     } else {
@@ -534,10 +560,19 @@
       });
     });
 
-    $("prevDay").addEventListener("click", () => { renderDay(addDaysStr(currentDate, -1)); refreshMlb(currentDate); });
-    $("nextDay").addEventListener("click", () => { renderDay(addDaysStr(currentDate, 1)); refreshMlb(currentDate); });
-    $("todayBtn").addEventListener("click", () => { renderDay(new Date().toISOString().slice(0, 10)); refreshMlb(currentDate); });
-    $("dateInput").addEventListener("change", (e) => { if (e.target.value) { renderDay(e.target.value); refreshMlb(currentDate); } });
+    // min/max steer the native picker, but navigation is deliberately NOT clamped:
+    // walking past the edge of the dataset shows the amber "NO DATA" verdict, which
+    // teaches the boundary instead of silently pinning the date and looking broken.
+    // The verdict itself is what stops an uncovered date reading as free.
+    const span = coverageSpan(DATA.games);
+    $("dateInput").min = span[0];
+    $("dateInput").max = span[1];
+    const go = (d) => { renderDay(d); refreshMlb(currentDate); };
+
+    $("prevDay").addEventListener("click", () => go(addDaysStr(currentDate, -1)));
+    $("nextDay").addEventListener("click", () => go(addDaysStr(currentDate, 1)));
+    $("todayBtn").addEventListener("click", () => go(new Date().toISOString().slice(0, 10)));
+    $("dateInput").addEventListener("change", (e) => { if (e.target.value) go(e.target.value); });
     $("refreshMlb").addEventListener("click", () => refreshMlb(currentDate));
     document.querySelectorAll('input[name="interp"]').forEach((r) => r.addEventListener("change", renderVacation));
 

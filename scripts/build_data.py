@@ -20,7 +20,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from lib_windows import DEFAULT_DURATIONS, MLB_TBD_SENTINEL_UTC, USER_TZ
+from lib_windows import (DEFAULT_DURATIONS, MLB_REGULAR_ENVELOPE_PT,
+                         MLB_TBD_SENTINEL_UTC, USER_TZ)
 
 ROOT = Path(__file__).resolve().parent.parent
 VERIFIED = ROOT / "data" / "verified"
@@ -263,6 +264,48 @@ def from_mlb_postseason() -> tuple[list[dict], list[dict]]:
     return games, unresolved
 
 
+def from_mlb_regular_season() -> tuple[list[dict], list[dict]]:
+    """One row per date the 2026 MLB regular season is in progress (187 dates).
+
+    Why this exists: without these rows the bundle only knew about the postseason,
+    so every regular-season date -- including Opening Day 2026-03-25 -- reported as
+    a completely free day whenever the app ran offline. That is the exact bug class
+    this project was built to eliminate.
+
+    The specific games are NOT guessed. Each row marks the date as occupied by MLB
+    and blocks the regular-season playout envelope; the app replaces it with the
+    authoritative per-game times fetched live from the Stats API.
+    """
+    src = "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029"
+    games = []
+    for iso in mlb_regular_season_days():
+        games.append({
+            "league": "MLB",
+            "label": "MLB regular season in progress",
+            "detail": "season frame verified; individual games fetched live from statsapi.mlb.com",
+            "venue": "",
+            "priority": "normal",
+            "source": src,
+            "network": "KNBR 680 AM / 104.5 FM carries the Giants",
+            "date_local": iso,
+            "start_utc": "",
+            "duration": DEFAULT_DURATIONS["MLB"],
+            "time_status": "season_in_progress",
+            "envelope_pt": list(MLB_REGULAR_ENVELOPE_PT),
+            "placeholder": True,
+        })
+    unresolved = [{
+        "league": "MLB", "date_local": f"{games[0]['date_local']} .. {games[-1]['date_local']}",
+        "label": f"MLB regular season ({len(games)} dates)",
+        "reason": ("Individual games and first pitch times are not stored in the offline bundle. "
+                   "Each date is blocked for the whole regular-season playout envelope "
+                   "(10:00-23:59 PT) so no regular-season date can read as free; the app "
+                   "supersedes this with live per-game times from the Stats API."),
+        "source": src,
+    }]
+    return games, unresolved
+
+
 def _envelope_minutes(league: str) -> int:
     start, end = TBD_ENVELOPE[league]
     a = datetime.strptime(start, "%H:%M")
@@ -309,7 +352,8 @@ def build(use_cache: bool = True) -> dict:
 def _build() -> dict:
     games: list[dict] = []
     unresolved: list[dict] = []
-    for loader in (from_westwood_one, from_49ers, from_ncaaf, from_mls, from_mlb_postseason):
+    for loader in (from_westwood_one, from_49ers, from_ncaaf, from_mls,
+                   from_mlb_postseason, from_mlb_regular_season):
         g, u = loader()
         games.extend(g)
         unresolved.extend(u)

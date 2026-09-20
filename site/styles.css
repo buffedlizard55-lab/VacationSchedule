@@ -175,3 +175,12 @@ code { background: var(--panel2); padding: 1px 5px; border-radius: 4px; font-siz
   .game { grid-template-columns: 78px 1fr; }
   .game .meta { grid-column: 1 / -1; text-align: left; }
 }
+
+/* Third verdict state: the dataset has nothing to say about this date.
+   Visually distinct from both FREE (green) and BUSY (red) so "we have not
+   looked" can never be mistaken for "nothing is on". */
+.verdict.unknown {
+  background: #3a3524;
+  border-left-color: #c9a227;
+  color: #e8d9a0;
+}

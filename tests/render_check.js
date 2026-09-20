@@ -73,16 +73,36 @@ setTimeout(() => {
     window.document.querySelectorAll("#scoreboard .pill.tbd").length > 0);
 
   // ---- a genuinely free day still reads free ----
-  $("dateInput").value = "2026-03-08";
+  $("dateInput").value = "2026-11-03";
   $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
-  check("2026-03-08 (offseason) IS free", /FULLY FREE/.test(text("verdict")), text("verdict"));
+  check("2026-11-03 (in-coverage, no games) IS free", /FULLY FREE/.test(text("verdict")), text("verdict"));
 
-  // ---- navigation buttons move the date ----
+  // ---- dates outside coverage must read NO DATA, never FREE ----
+  $("dateInput").value = "2027-06-15";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  const nd = text("verdict");
+  check("out-of-coverage date says NO DATA", /NO DATA/.test(nd), nd);
+  check("out-of-coverage date does not say FREE", !/FULLY FREE/.test(nd), nd);
+
+  // ---- navigation moves the date and clamps to coverage ----
+  $("dateInput").value = "2026-11-03";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
   const before = $("dateInput").value;
   $("nextDay").dispatchEvent(new window.Event("click", { bubbles: true }));
-  check("next-day button advances the date", $("dateInput").value === "2026-03-09", `${before} -> ${$("dateInput").value}`);
+  check("next-day button advances the date", $("dateInput").value === "2026-11-04", `${before} -> ${$("dateInput").value}`);
   $("prevDay").dispatchEvent(new window.Event("click", { bubbles: true }));
-  check("prev-day button rewinds the date", $("dateInput").value === "2026-03-08", $("dateInput").value);
+  check("prev-day button rewinds the date", $("dateInput").value === "2026-11-03", $("dateInput").value);
+  // Walking off either edge of the dataset must surface NO DATA, not FREE.
+  const sorted = window.SCHEDULE_DATA.games.map(g => g.date_local).filter(Boolean).sort();
+  const first = sorted[0], last = sorted[sorted.length - 1];
+  $("dateInput").value = first;
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  $("prevDay").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("prev past the coverage start shows NO DATA", /NO DATA/.test(text("verdict")), $("dateInput").value + " :: " + text("verdict"));
+  $("dateInput").value = last;
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  $("nextDay").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("next past the coverage end shows NO DATA", /NO DATA/.test(text("verdict")), $("dateInput").value + " :: " + text("verdict"));
 
   // ---- vacation tab ----
   tab("vacation").dispatchEvent(new window.Event("click", { bubbles: true }));
@@ -103,7 +123,7 @@ setTimeout(() => {
 
   // ---- review + sources tabs ----
   tab("review").dispatchEvent(new window.Event("click", { bubbles: true }));
-  check("review count is 50", text("reviewCount") === "50", text("reviewCount"));
+  check("review count matches the bundle", text("reviewCount") === String(window.SCHEDULE_DATA.unresolved.length), text("reviewCount"));
   check("review list populated", window.document.querySelectorAll("#reviewList .reviewitem").length > 0);
   tab("sources").dispatchEvent(new window.Event("click", { bubbles: true }));
   check("sources populated", window.document.querySelectorAll("#sourcesList .srccard").length > 15);

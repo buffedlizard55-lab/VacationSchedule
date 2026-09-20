@@ -28,6 +28,7 @@ dates.forEach((d) => {
   const rep = engine.dayReport(d);
   out[d] = {
     date: rep.date,
+    data_coverage: rep.dataCoverage,
     day_minutes: rep.dayMinutes,
     busy_minutes: rep.busyMinutes,
     free_minutes: rep.freeMinutes,

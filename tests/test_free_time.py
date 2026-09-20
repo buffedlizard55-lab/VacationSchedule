@@ -24,6 +24,7 @@ from lib_windows import (  # noqa: E402
     USER_TZ,
     Interval,
     ValidationError,
+    coverage_span,
     day_report,
     find_gaps,
     free_windows,
@@ -82,12 +83,17 @@ class TestTimeHelpers(unittest.TestCase):
         same tzinfo object, which silently made DST days read as 24 hours and
         under-counted free time on a Sunday carrying a full NFL slate.
         """
-        report = day_report([], "2026-11-01")
+        cover = ("2026-01-01", "2026-12-31")
+        report = day_report([], "2026-11-01", coverage=cover)
         self.assertEqual(report["day_length_minutes"], 1500.0)
         self.assertEqual(report["free_minutes"], 1500.0)
         self.assertTrue(report["is_free_day"])
-        spring = day_report([], "2026-03-08")
+        spring = day_report([], "2026-03-08", coverage=cover)
         self.assertEqual(spring["day_length_minutes"], 1380.0)
+
+        # With no data at all there is no coverage, so the day is "unknown", not free.
+        self.assertEqual(day_report([], "2026-11-01")["data_coverage"], "none")
+        self.assertFalse(day_report([], "2026-11-01")["is_free_day"])
 
 
 class TestMergeAndComplement(unittest.TestCase):
@@ -266,6 +272,73 @@ class TestDayLevelRegression(unittest.TestCase):
         self.assertEqual(checked, len(bundle["games"]))
         self.assertGreater(checked, 100, "expected to check most of the bundle")
 
+    def test_mlb_regular_season_dates_are_never_free_offline(self):
+        """The bundle alone must not call an in-season MLB date free.
+
+        The app fetches real per-game times live, but offline the bundle is the only
+        input. Before this was fixed the bundle held postseason rows only, so all 187
+        regular-season dates -- including Opening Day 2026-03-25 -- read as completely
+        free. Same bug class as the 2026-09-29 Wild Card regression.
+        """
+        bundle = build()
+        games = bundle["games"]
+        frame = bundle["_meta"]["mlb_regular_season_days_2026"]
+
+        markers = [g for g in games if g.get("time_status") == "season_in_progress"]
+        self.assertEqual(len(markers), frame["count"],
+                         "every regular-season date needs a blocking marker")
+
+        # Spot-check across the whole season, including the boundaries.
+        for date in (frame["start"], "2026-05-01", "2026-06-14", "2026-07-04",
+                     "2026-08-15", frame["end"]):
+            report = day_report(games, date)
+            self.assertFalse(report["is_free_day"], f"{date} is in-season but reads free")
+            self.assertTrue(report["has_unconfirmed_times"], f"{date} should be flagged unconfirmed")
+            # 10:00-23:59 PT envelope.
+            self.assertEqual(report["busy_minutes"], 839.0, f"{date} envelope wrong")
+
+    def test_dates_outside_coverage_are_never_reported_free(self):
+        """"We have not looked" must never be reported as "nothing is on".
+
+        The bundle ends 2027-01-10. Before this was fixed, navigating to any later
+        date -- or any earlier one -- showed a green FULLY FREE banner, because an
+        empty game list and an out-of-scope date look identical to the engine.
+        """
+        games = build()["games"]
+        span = coverage_span(games)
+        self.assertEqual(span[0], "2026-03-25")
+        self.assertEqual(span[1], "2027-01-10")
+
+        for date, expected in (
+            ("2026-01-15", "before"),
+            ("2026-02-14", "before"),
+            ("2027-06-15", "after"),
+            ("2028-05-01", "after"),
+            ("2029-02-14", "after"),
+        ):
+            report = day_report(games, date)
+            self.assertEqual(report["data_coverage"], expected, date)
+            self.assertFalse(report["is_free_day"], f"{date} has no data but reads free")
+
+        # A genuinely empty date *inside* coverage is still correctly free.
+        inner = day_report(games, "2026-11-03")
+        self.assertEqual(inner["data_coverage"], "within")
+        self.assertTrue(inner["is_free_day"])
+        # ...and a date inside coverage that does have a game is correctly busy.
+        busy = day_report(games, "2026-11-02")
+        self.assertEqual(busy["data_coverage"], "within")
+        self.assertFalse(busy["is_free_day"])
+
+    def test_mlb_regular_envelope_covers_day_games(self):
+        """The regular-season envelope must not leave afternoons looking free.
+
+        Earliest MLB first pitches are ~10:05 PT; a 15:00-23:59 postseason window
+        would wrongly report every morning and midday as clear.
+        """
+        markers = [g for g in build()["games"] if g.get("time_status") == "season_in_progress"]
+        for game in markers[:5]:
+            self.assertEqual(game["envelope_pt"], ["10:00", "23:59"])
+
     def test_postseason_dates_are_never_free(self):
         """Every official 2026 postseason date must read as occupied."""
         bundle = build()
@@ -326,19 +399,48 @@ class TestBuiltBundle(unittest.TestCase):
         for game in self.bundle["games"]:
             self.assertTrue(game.get("source"), f"missing source: {game.get('label')}")
             self.assertIn(game["league"], DEFAULT_DURATIONS)
-            self.assertTrue(game.get("start_utc"))
+            self.assertTrue(game.get("date_local"), f"missing date: {game.get('label')}")
+
+    def test_every_game_is_placeable(self):
+        """Stronger than 'has a start time': every row must be able to block a day.
+
+        A row is placeable if it has a real start_utc, or it is explicitly flagged
+        unconfirmed with a date and an envelope it can fall back to. This is the
+        invariant whose absence let 187 in-season MLB dates read as free.
+        """
+        for game in self.bundle["games"]:
+            has_time = bool(game.get("start_utc"))
+            can_envelope = (
+                game["time_status"] in ("TBD_official_date", "TBD_envelope", "season_in_progress")
+                and bool(game.get("date_local"))
+            )
+            self.assertTrue(
+                has_time or can_envelope,
+                f"unplaceable row: {game.get('label')} on {game.get('date_local')} "
+                f"(status={game.get('time_status')!r}) would silently vanish",
+            )
 
     def test_no_fabricated_postseason_times(self):
         placeholders = 0
+        markers = 0
         for game in self.bundle["games"]:
-            if game["league"] == "MLB" and game.get("placeholder"):
-                placeholders += 1
-                self.assertTrue(
-                    game["start_utc"].endswith("T07:33:00Z"),
-                    f"postseason row must keep the MLB sentinel, got {game['start_utc']}",
-                )
-                self.assertEqual(game["time_status"], "TBD_official_date")
+            if game["league"] != "MLB" or not game.get("placeholder"):
+                continue
+            if game["time_status"] == "season_in_progress":
+                # Regular-season markers carry NO time at all, which is the point:
+                # an empty start_utc cannot be mistaken for a real first pitch.
+                markers += 1
+                self.assertEqual(game["start_utc"], "",
+                                 "season marker must not invent a start time")
+                continue
+            placeholders += 1
+            self.assertTrue(
+                game["start_utc"].endswith("T07:33:00Z"),
+                f"postseason row must keep the MLB sentinel, got {game['start_utc']}",
+            )
+            self.assertEqual(game["time_status"], "TBD_official_date")
         self.assertEqual(placeholders, 30, "expected one placeholder per postseason date")
+        self.assertEqual(markers, 187, "expected one marker per regular-season date")
 
     def test_high_priority_teams_are_flagged(self):
         labels = " ".join(g["label"] for g in self.bundle["games"] if g["priority"] == "high")
