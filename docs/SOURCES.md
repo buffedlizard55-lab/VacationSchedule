@@ -15,21 +15,28 @@ Trust levels:
 ## Primary — MLB
 
 ### MLB Stats API — season frames
-`https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029`
+`https://statsapi.mlb.com/api/v1/seasons?sportId=1&season=YYYY`
 
-**PRIMARY.** Returns a season record for **2026 only**:
+**PRIMARY.** Returns a season record for **2026 and 2027 only**:
 
-| Field | 2026 value |
-|---|---|
-| `springStartDate` | 2026-02-20 |
-| `regularStartDate` | 2026-03-25 |
-| `regularSeasonEndDate` | 2026-09-27 |
-| `postSeasonStartDate` | 2026-09-28 |
-| `seasonEndDate` | 2026-11-01 |
+| Field | 2026 value | 2027 value |
+|---|---|---|
+| `springStartDate` | 2026-02-20 | **2027-02-19** |
+| `regularStartDate` | 2026-03-25 | **2027-03-25** |
+| `allStarDate` | 2026-07-14 | **2027-07-13** |
+| `regularSeasonEndDate` | 2026-09-27 | **2027-09-26** |
+| `postSeasonEndDate` | 2026-10-31 | **2027-10-31** |
 
-**2027, 2028 and 2029 return no records.** This is the authoritative machine-readable
-signal that those schedules are unreleased, and it is why every 2027–29 figure in
-this project is labelled ESTIMATED.
+**2028 and 2029 return an empty `seasons` list.** That is MLB's own machine-readable
+statement that those schedules are unreleased, and why every 2028–29 figure in this
+project is labelled ESTIMATED.
+
+**2027 change-of-record:** when this project was first built, the API returned only
+2026. MLB released the 2027 schedule on **2026-07-16** (`mlb.com/press-release/
+press-release-mlb-announces-2027-spring-training-schedule`): Opening Night (matchup
+TBD, Netflix) Wed 2027-03-24, Opening Day Thu 2027-03-25 (14 games), All-Star Game
+Tue 2027-07-13 at Wrigley Field. The 2027 API records are **VERIFIED but provisional**:
+the CBA expires 2026-12-01 and a lockout could delay or cancel games (IR-19).
 
 ### MLB Stats API — schedule
 `https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&gameType=R&fields=dates,date,games,gameDate,teams,away,home,team,id`
@@ -72,13 +79,21 @@ Also carries one NCAA row: `9/19 7:00p LSU@OleMiss`.
 ### Westwood One Sports — station finder
 `https://www.westwoodonesports.com/station-finder`
 
-**BROADCASTER.** Used to identify Bay Area affiliates.
+**BROADCASTER.** Confirms the San Francisco NFL/NCAA radio affiliates are
+**KNBR-AM, KNBR-FM and KTCT-AM** (this closes IR-10). The whole station table was
+retrieved 2026-09-20.
 
 ### San Francisco 49ers — official schedule
 `https://www.49ers.com/schedule/`
 
-**PRIMARY.** 49ers fixtures. **Gaps:** Weeks 1, 2 and 8 and all preseason games were
-not captured. See [`IRREGULARITIES.md`](IRREGULARITIES.md) IR-01.
+**PRIMARY.** Full 2026 preseason + regular-season schedule re-retrieved 2026-09-20.
+Preseason: 08-13 vs TEN (6:00 PM PT, L 13-19), 08-20 @LAC (7:00 PM PT, W 41-17),
+08-27 @LV (5:00 PM PT, W 18-12). Regular season: Week 1 @LAR in Melbourne 09-10
+(5:35 PM PT, W 27-7 — the NFL's first game in Australia), Week 2 vs MIA 09-20,
+Week 3 vs ARI 09-27, Week 4 vs DEN 10-04, Week 5 @SEA 10-11, Week 6 vs WAS 10-19
+(MNF), Week 7 @ATL 10-25, **Week 8 BYE**, Weeks 9–17 per `bay_area_2026.json`.
+Week 18 @ARI is date-TBD (league sets it late season). Radio: KSAN 107.7 FM /
+KNBR 680 AM & 104.5 FM / KSFO 810 AM.
 
 ### ESPN NFL league calendar
 `http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=20260920`
@@ -194,10 +209,24 @@ Working ESPN alternatives: `.../scoreboard?dates=` and `.../weeks/N/events`.
 
 ## Unverified — flagged for review
 
-These could **not** be confirmed and are treated as unknown, never assumed:
+These could **not** be confirmed and are treated as unknown, never assumed (the list
+has shortened since the original build — IR-10 and IR-11 were resolved during the
+2026-09-20 review):
 
-- **Westwood One's San Francisco affiliate.** Presumed to be KNBR, but not confirmed
-  from a primary source.
-- **The Athletics' Bay Area radio flagship.** Not identified.
+- **The Athletics' Bay Area radio flagship.** Resolved: **KSTE 650 AM (Sacramento)**
+  flagship + **KNEW 960 AM (Bay Area)**, per ESPN/MLB/A's announcements (Feb 2025).
 - **KZSU 90.1 FM** (Stanford) and **KGO 810 AM** (Cal) as additional outlets — plausible
   but not confirmed for 2026.
+- **2027–2029 NFL playoff round dates.** The 2026–27 cycle is verified; later cycles
+  use a day-of-week template anchored to each verified Super Bowl. Marked ESTIMATED.
+
+---
+
+## Pro Bowl Games (NFL all-star)
+
+- `https://www.espn.com/nfl/story/_/id/46684395/nfl-pro-bowl-festivities-moving-tuesday-super-bowl-week`
+
+**PRIMARY.** The NFL moved the Pro Bowl Games to the **Tuesday of Super Bowl week**
+beginning with the 2025-26 cycle (announced 2025-10-22). 2026: **Tue 2026-02-03**,
+Moscone Center, San Francisco (verified). 2027+ follow the same Tuesday-of-Super-
+Bowl-week pattern and are marked ESTIMATED until the NFL publishes them.

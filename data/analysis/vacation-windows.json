@@ -6,20 +6,56 @@
       "strict": "Spring Training exhibitions count as MLB games.",
       "regular": "Only MLB regular season and postseason count."
     },
-    "method": "For each calendar year we union three blocking spans - the tail of the previous NFL season up to its Super Bowl, that year's MLB season, and that year's NFL season from the Hall of Fame Game to Dec 31 - then report the contiguous unblocked runs."
+    "method": "For each calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates, (b) that year's MLB season as a continuous span, and (c) that year's NFL season from the Hall of Fame Game to Dec 31, then report the contiguous unblocked runs. NFL Pro Bowl Games are not blocked (no verified date) and are flagged in docs/IRREGULARITIES.md."
   },
   "results": [
     {
       "year": 2026,
       "interpretation": "strict",
-      "blocked_day_count": 354,
-      "free_day_count": 11,
+      "blocked_day_count": 325,
+      "free_day_count": 40,
       "gaps": [
         {
           "start": "2026-02-09",
           "end": "2026-02-19",
           "days": 11,
           "weeks": 1.57
+        },
+        {
+          "start": "2026-01-26",
+          "end": "2026-02-02",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2026-01-19",
+          "end": "2026-01-24",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2026-01-05",
+          "end": "2026-01-09",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2026-01-13",
+          "end": "2026-01-16",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-02-04",
+          "end": "2026-02-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-01-01",
+          "end": "2026-01-02",
+          "days": 2,
+          "weeks": 0.29
         }
       ],
       "best": {
@@ -30,9 +66,25 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2026-02-08",
+          "super_bowl": "2026-02-08",
           "status": "VERIFIED",
-          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA"
+          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA",
+          "playoff_dates_in_year": [
+            "2026-01-03",
+            "2026-01-04",
+            "2026-01-10",
+            "2026-01-11",
+            "2026-01-12",
+            "2026-01-17",
+            "2026-01-18",
+            "2026-01-25",
+            "2026-02-08"
+          ],
+          "pro_bowl_games": {
+            "date": "2026-02-03",
+            "status": "VERIFIED",
+            "note": "2026 Pro Bowl Games, Moscone Center, San Francisco (NFL announcement 2025-10-22)"
+          }
         },
         "mlb_block": {
           "start": "2026-02-20",
@@ -43,39 +95,100 @@
         "nfl_current_season_start": {
           "date": "2026-08-06",
           "status": "VERIFIED",
-          "note": "Hall of Fame Game, per the ESPN league calendar"
+          "note": "Hall of Fame Game, per the NFL/ESPN league calendar"
         }
       }
     },
     {
       "year": 2027,
       "interpretation": "strict",
-      "blocked_day_count": 361,
-      "free_day_count": 4,
+      "blocked_day_count": 329,
+      "free_day_count": 36,
       "gaps": [
+        {
+          "start": "2027-02-01",
+          "end": "2027-02-08",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2027-01-25",
+          "end": "2027-01-30",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2027-01-11",
+          "end": "2027-01-15",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2027-01-05",
+          "end": "2027-01-08",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-01-19",
+          "end": "2027-01-22",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-02-10",
+          "end": "2027-02-13",
+          "days": 4,
+          "weeks": 0.57
+        },
         {
           "start": "2027-02-15",
           "end": "2027-02-18",
           "days": 4,
           "weeks": 0.57
+        },
+        {
+          "start": "2027-01-01",
+          "end": "2027-01-01",
+          "days": 1,
+          "weeks": 0.14
         }
       ],
       "best": {
-        "start": "2027-02-15",
-        "end": "2027-02-18",
-        "days": 4,
-        "weeks": 0.57
+        "start": "2027-02-01",
+        "end": "2027-02-08",
+        "days": 8,
+        "weeks": 1.14
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2027-02-14",
+          "super_bowl": "2027-02-14",
           "status": "VERIFIED",
-          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA"
+          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA",
+          "playoff_dates_in_year": [
+            "2027-01-02",
+            "2027-01-03",
+            "2027-01-04",
+            "2027-01-09",
+            "2027-01-10",
+            "2027-01-16",
+            "2027-01-17",
+            "2027-01-18",
+            "2027-01-23",
+            "2027-01-24",
+            "2027-01-31",
+            "2027-02-14"
+          ],
+          "pro_bowl_games": {
+            "date": "2027-02-09",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXI week at SoFi Stadium (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2027-02-19",
           "end": "2027-10-31",
-          "status": "ESTIMATED",
+          "status": "VERIFIED",
           "includes_spring_training": true
         },
         "nfl_current_season_start": {
@@ -88,27 +201,82 @@
     {
       "year": 2028,
       "interpretation": "strict",
-      "blocked_day_count": 361,
-      "free_day_count": 5,
+      "blocked_day_count": 330,
+      "free_day_count": 36,
       "gaps": [
+        {
+          "start": "2028-01-31",
+          "end": "2028-02-07",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2028-01-24",
+          "end": "2028-01-29",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2028-01-10",
+          "end": "2028-01-14",
+          "days": 5,
+          "weeks": 0.71
+        },
         {
           "start": "2028-02-14",
           "end": "2028-02-18",
           "days": 5,
           "weeks": 0.71
+        },
+        {
+          "start": "2028-01-04",
+          "end": "2028-01-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-01-18",
+          "end": "2028-01-21",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-02-09",
+          "end": "2028-02-12",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
-        "start": "2028-02-14",
-        "end": "2028-02-18",
-        "days": 5,
-        "weeks": 0.71
+        "start": "2028-01-31",
+        "end": "2028-02-07",
+        "days": 8,
+        "weeks": 1.14
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2028-02-13",
+          "super_bowl": "2028-02-13",
           "status": "VERIFIED",
-          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA"
+          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA",
+          "playoff_dates_in_year": [
+            "2028-01-01",
+            "2028-01-02",
+            "2028-01-03",
+            "2028-01-08",
+            "2028-01-09",
+            "2028-01-15",
+            "2028-01-16",
+            "2028-01-17",
+            "2028-01-22",
+            "2028-01-23",
+            "2028-01-30",
+            "2028-02-13"
+          ],
+          "pro_bowl_games": {
+            "date": "2028-02-08",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2028-02-19",
@@ -126,27 +294,80 @@
     {
       "year": 2029,
       "interpretation": "strict",
-      "blocked_day_count": 358,
-      "free_day_count": 7,
+      "blocked_day_count": 327,
+      "free_day_count": 38,
       "gaps": [
+        {
+          "start": "2029-01-29",
+          "end": "2029-02-05",
+          "days": 8,
+          "weeks": 1.14
+        },
         {
           "start": "2029-02-12",
           "end": "2029-02-18",
           "days": 7,
           "weeks": 1.0
+        },
+        {
+          "start": "2029-01-22",
+          "end": "2029-01-27",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2029-01-08",
+          "end": "2029-01-12",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2029-01-02",
+          "end": "2029-01-05",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-01-16",
+          "end": "2029-01-19",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-02-07",
+          "end": "2029-02-10",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
-        "start": "2029-02-12",
-        "end": "2029-02-18",
-        "days": 7,
-        "weeks": 1.0
+        "start": "2029-01-29",
+        "end": "2029-02-05",
+        "days": 8,
+        "weeks": 1.14
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2029-02-11",
+          "super_bowl": "2029-02-11",
           "status": "ESTIMATED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)"
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)",
+          "playoff_dates_in_year": [
+            "2029-01-01",
+            "2029-01-06",
+            "2029-01-07",
+            "2029-01-13",
+            "2029-01-14",
+            "2029-01-15",
+            "2029-01-20",
+            "2029-01-21",
+            "2029-01-28",
+            "2029-02-11"
+          ],
+          "pro_bowl_games": {
+            "date": "2029-02-06",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXIII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2029-02-19",
@@ -164,14 +385,50 @@
     {
       "year": 2026,
       "interpretation": "regular",
-      "blocked_day_count": 321,
-      "free_day_count": 44,
+      "blocked_day_count": 292,
+      "free_day_count": 73,
       "gaps": [
         {
           "start": "2026-02-09",
           "end": "2026-03-24",
           "days": 44,
           "weeks": 6.29
+        },
+        {
+          "start": "2026-01-26",
+          "end": "2026-02-02",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2026-01-19",
+          "end": "2026-01-24",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2026-01-05",
+          "end": "2026-01-09",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2026-01-13",
+          "end": "2026-01-16",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-02-04",
+          "end": "2026-02-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-01-01",
+          "end": "2026-01-02",
+          "days": 2,
+          "weeks": 0.29
         }
       ],
       "best": {
@@ -182,9 +439,25 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2026-02-08",
+          "super_bowl": "2026-02-08",
           "status": "VERIFIED",
-          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA"
+          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA",
+          "playoff_dates_in_year": [
+            "2026-01-03",
+            "2026-01-04",
+            "2026-01-10",
+            "2026-01-11",
+            "2026-01-12",
+            "2026-01-17",
+            "2026-01-18",
+            "2026-01-25",
+            "2026-02-08"
+          ],
+          "pro_bowl_games": {
+            "date": "2026-02-03",
+            "status": "VERIFIED",
+            "note": "2026 Pro Bowl Games, Moscone Center, San Francisco (NFL announcement 2025-10-22)"
+          }
         },
         "mlb_block": {
           "start": "2026-03-25",
@@ -195,21 +468,63 @@
         "nfl_current_season_start": {
           "date": "2026-08-06",
           "status": "VERIFIED",
-          "note": "Hall of Fame Game, per the ESPN league calendar"
+          "note": "Hall of Fame Game, per the NFL/ESPN league calendar"
         }
       }
     },
     {
       "year": 2027,
       "interpretation": "regular",
-      "blocked_day_count": 327,
-      "free_day_count": 38,
+      "blocked_day_count": 295,
+      "free_day_count": 70,
       "gaps": [
         {
           "start": "2027-02-15",
           "end": "2027-03-24",
           "days": 38,
           "weeks": 5.43
+        },
+        {
+          "start": "2027-02-01",
+          "end": "2027-02-08",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2027-01-25",
+          "end": "2027-01-30",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2027-01-11",
+          "end": "2027-01-15",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2027-01-05",
+          "end": "2027-01-08",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-01-19",
+          "end": "2027-01-22",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-02-10",
+          "end": "2027-02-13",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-01-01",
+          "end": "2027-01-01",
+          "days": 1,
+          "weeks": 0.14
         }
       ],
       "best": {
@@ -220,14 +535,33 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2027-02-14",
+          "super_bowl": "2027-02-14",
           "status": "VERIFIED",
-          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA"
+          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA",
+          "playoff_dates_in_year": [
+            "2027-01-02",
+            "2027-01-03",
+            "2027-01-04",
+            "2027-01-09",
+            "2027-01-10",
+            "2027-01-16",
+            "2027-01-17",
+            "2027-01-18",
+            "2027-01-23",
+            "2027-01-24",
+            "2027-01-31",
+            "2027-02-14"
+          ],
+          "pro_bowl_games": {
+            "date": "2027-02-09",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXI week at SoFi Stadium (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2027-03-25",
           "end": "2027-10-31",
-          "status": "ESTIMATED",
+          "status": "VERIFIED",
           "includes_spring_training": false
         },
         "nfl_current_season_start": {
@@ -240,14 +574,50 @@
     {
       "year": 2028,
       "interpretation": "regular",
-      "blocked_day_count": 326,
-      "free_day_count": 40,
+      "blocked_day_count": 295,
+      "free_day_count": 71,
       "gaps": [
         {
           "start": "2028-02-14",
           "end": "2028-03-24",
           "days": 40,
           "weeks": 5.71
+        },
+        {
+          "start": "2028-01-31",
+          "end": "2028-02-07",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2028-01-24",
+          "end": "2028-01-29",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2028-01-10",
+          "end": "2028-01-14",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2028-01-04",
+          "end": "2028-01-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-01-18",
+          "end": "2028-01-21",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-02-09",
+          "end": "2028-02-12",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
@@ -258,9 +628,28 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2028-02-13",
+          "super_bowl": "2028-02-13",
           "status": "VERIFIED",
-          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA"
+          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA",
+          "playoff_dates_in_year": [
+            "2028-01-01",
+            "2028-01-02",
+            "2028-01-03",
+            "2028-01-08",
+            "2028-01-09",
+            "2028-01-15",
+            "2028-01-16",
+            "2028-01-17",
+            "2028-01-22",
+            "2028-01-23",
+            "2028-01-30",
+            "2028-02-13"
+          ],
+          "pro_bowl_games": {
+            "date": "2028-02-08",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2028-03-25",
@@ -278,14 +667,50 @@
     {
       "year": 2029,
       "interpretation": "regular",
-      "blocked_day_count": 324,
-      "free_day_count": 41,
+      "blocked_day_count": 293,
+      "free_day_count": 72,
       "gaps": [
         {
           "start": "2029-02-12",
           "end": "2029-03-24",
           "days": 41,
           "weeks": 5.86
+        },
+        {
+          "start": "2029-01-29",
+          "end": "2029-02-05",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2029-01-22",
+          "end": "2029-01-27",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2029-01-08",
+          "end": "2029-01-12",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2029-01-02",
+          "end": "2029-01-05",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-01-16",
+          "end": "2029-01-19",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-02-07",
+          "end": "2029-02-10",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
@@ -296,9 +721,26 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2029-02-11",
+          "super_bowl": "2029-02-11",
           "status": "ESTIMATED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)"
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)",
+          "playoff_dates_in_year": [
+            "2029-01-01",
+            "2029-01-06",
+            "2029-01-07",
+            "2029-01-13",
+            "2029-01-14",
+            "2029-01-15",
+            "2029-01-20",
+            "2029-01-21",
+            "2029-01-28",
+            "2029-02-11"
+          ],
+          "pro_bowl_games": {
+            "date": "2029-02-06",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXIII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2029-03-25",

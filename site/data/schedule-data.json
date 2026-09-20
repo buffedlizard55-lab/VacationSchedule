@@ -1,7 +1,7 @@
 {
   "_meta": {
     "generated_by": "scripts/build_data.py",
-    "generated_utc": "2026-09-20T01:31:30Z",
+    "generated_utc": "2026-09-20T02:53:07Z",
     "timezone": "America/Los_Angeles",
     "durations_minutes": {
       "MLB": 164,
@@ -34,15 +34,17 @@
       "status": "VERIFIED from statsapi.mlb.com/api/v1/seasons. Per-game times are fetched live by the app."
     },
     "counts": {
-      "games": 155,
-      "unresolved": 50,
+      "games": 173,
+      "unresolved": 53,
       "by_league": {
         "MLB": 30,
-        "NFL": 83,
-        "NCAAF": 25,
+        "NFL": 89,
+        "NCAAF": 37,
         "MLS": 17
       },
-      "high_priority": 58
+      "high_priority": 64,
+      "westwood_one_ncaaf": 13,
+      "athletics_note": "Athletics (A's) games are carried on KSTE 650 AM (Sacramento) + KNEW 960 AM (Bay Area), NOT KNBR; see docs/SOURCES.md. A's per-game MLB times are fetched live via statsapi.mlb.com like all MLB clubs."
     }
   },
   "games": [
@@ -57,6 +59,19 @@
       "date_local": "2026-08-01",
       "start_utc": "2026-08-02T02:30:00Z",
       "duration": 120,
+      "time_status": "official"
+    },
+    {
+      "league": "NFL",
+      "label": "San Francisco 49ers vs Tennessee Titans",
+      "detail": "Preseason W1 - KPIX 5 - Preseason. FINAL: L 13-19.",
+      "venue": "Levi's Stadium",
+      "priority": "high",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+      "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+      "date_local": "2026-08-13",
+      "start_utc": "2026-08-14T01:00:00Z",
+      "duration": 192,
       "time_status": "official"
     },
     {
@@ -86,6 +101,19 @@
       "time_status": "official"
     },
     {
+      "league": "NFL",
+      "label": "San Francisco 49ers at Los Angeles Chargers",
+      "detail": "Preseason W2 - KPIX 5 - Preseason. FINAL: W 41-17.",
+      "venue": "SoFi Stadium",
+      "priority": "high",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+      "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+      "date_local": "2026-08-20",
+      "start_utc": "2026-08-21T02:00:00Z",
+      "duration": 192,
+      "time_status": "official"
+    },
+    {
       "league": "MLS",
       "label": "San Jose Earthquakes vs Minnesota United FC",
       "detail": "PayPal Park",
@@ -96,6 +124,19 @@
       "date_local": "2026-08-22",
       "start_utc": "2026-08-23T02:30:00Z",
       "duration": 120,
+      "time_status": "official"
+    },
+    {
+      "league": "NFL",
+      "label": "San Francisco 49ers at Las Vegas Raiders",
+      "detail": "Preseason W3 - KPIX 5 - Preseason. FINAL: W 18-12.",
+      "venue": "Allegiant Stadium",
+      "priority": "high",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+      "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+      "date_local": "2026-08-27",
+      "start_utc": "2026-08-28T00:00:00Z",
+      "duration": 192,
       "time_status": "official"
     },
     {
@@ -177,6 +218,19 @@
       "time_status": "official"
     },
     {
+      "league": "NFL",
+      "label": "San Francisco 49ers at Los Angeles Rams",
+      "detail": "Week 1 - Netflix - NFL's first regular-season game in Australia. FINAL: W 27-7.",
+      "venue": "Melbourne Cricket Ground, Melbourne, Australia",
+      "priority": "high",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+      "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+      "date_local": "2026-09-10",
+      "start_utc": "2026-09-11T00:35:00Z",
+      "duration": 192,
+      "time_status": "official"
+    },
+    {
       "league": "NCAAF",
       "label": "California at Syracuse",
       "detail": "ACC Network",
@@ -231,13 +285,12 @@
     {
       "league": "NCAAF",
       "label": "LSU at Ole Miss",
-      "detail": "Westwood One NCAA Football",
+      "detail": "Westwood One national radio",
       "venue": "Vaught Hemingway Stadium, Oxford, MS",
       "priority": "normal",
       "source": "https://www.westwoodonesports.com/events/557127",
-      "network": "Westwood One Sports (national radio)",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
       "date_local": "2026-09-19",
-      "radio_air_utc": "2026-09-19T23:00:00Z",
       "start_utc": "2026-09-19T23:00:00Z",
       "duration": 204,
       "time_status": "published_air_time"
@@ -253,6 +306,19 @@
       "date_local": "2026-09-19",
       "start_utc": "2026-09-19T23:30:00Z",
       "duration": 120,
+      "time_status": "official"
+    },
+    {
+      "league": "NFL",
+      "label": "San Francisco 49ers vs Miami Dolphins",
+      "detail": "Week 2 - FOX",
+      "venue": "Levi's Stadium",
+      "priority": "high",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+      "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+      "date_local": "2026-09-20",
+      "start_utc": "2026-09-20T20:25:00Z",
+      "duration": 192,
       "time_status": "official"
     },
     {
@@ -311,6 +377,19 @@
       "time_status": "official"
     },
     {
+      "league": "NCAAF",
+      "label": "Oklahoma at Georgia",
+      "detail": "Westwood One national radio",
+      "venue": "Sanford Stadium, Athens, GA",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557136",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-09-26",
+      "start_utc": "2026-09-26T19:00:00Z",
+      "duration": 204,
+      "time_status": "published_air_time"
+    },
+    {
       "league": "MLS",
       "label": "San Jose Earthquakes vs Portland Timbers",
       "detail": "PayPal Park",
@@ -342,7 +421,7 @@
       "detail": "Week 3 - FOX",
       "venue": "Levi's Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-09-27",
       "start_utc": "2026-09-27T20:05:00Z",
@@ -449,6 +528,19 @@
     },
     {
       "league": "NCAAF",
+      "label": "Notre Dame at North Carolina",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Kenan Stadium, Chapel Hill, NC",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557137",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-10-03",
+      "start_utc": "2026-10-03T18:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
+      "league": "NCAAF",
       "label": "Stanford at Wake Forest",
       "detail": "kickoff time not announced",
       "venue": "",
@@ -507,7 +599,7 @@
       "detail": "Week 4 - CBS",
       "venue": "Levi's Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-10-04",
       "start_utc": "2026-10-04T20:25:00Z",
@@ -655,6 +747,19 @@
     },
     {
       "league": "NCAAF",
+      "label": "Indiana at Nebraska",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Memorial Stadium, Lincoln, NE",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557139",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-10-10",
+      "start_utc": "2026-10-10T18:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
+      "league": "NCAAF",
       "label": "Stanford at Notre Dame",
       "detail": "NBC (per 247Sports)",
       "venue": "",
@@ -713,7 +818,7 @@
       "detail": "Week 5 - FOX",
       "venue": "Lumen Field",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-10-11",
       "start_utc": "2026-10-11T20:25:00Z",
@@ -874,6 +979,19 @@
     },
     {
       "league": "NCAAF",
+      "label": "Penn State at Michigan",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Michigan Stadium, Ann Arbor, MI",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557140",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-10-17",
+      "start_utc": "2026-10-17T18:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
+      "league": "NCAAF",
       "label": "Stanford vs Elon",
       "detail": "kickoff time not announced",
       "venue": "Stanford Stadium",
@@ -969,6 +1087,19 @@
       "time_status": "published_air_time"
     },
     {
+      "league": "NFL",
+      "label": "San Francisco 49ers vs Washington Commanders",
+      "detail": "Week 6 - ESPN & ABC - Monday Night Football.",
+      "venue": "Levi's Stadium",
+      "priority": "high",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+      "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+      "date_local": "2026-10-19",
+      "start_utc": "2026-10-20T00:15:00Z",
+      "duration": 192,
+      "time_status": "official"
+    },
+    {
       "league": "MLB",
       "label": "MLB League Championship Series (participants TBD)",
       "detail": "official date, first pitch not yet announced (API sentinel 07:33:00Z)",
@@ -1051,6 +1182,19 @@
       "time_status": "TBD_envelope"
     },
     {
+      "league": "NCAAF",
+      "label": "Ole Miss at Texas",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Darrell K Royal\u2013Texas Memorial Stadium, Austin, TX",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557141",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-10-24",
+      "start_utc": "2026-10-24T18:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
       "league": "MLS",
       "label": "San Jose Earthquakes at FC Dallas",
       "detail": "Toyota Stadium",
@@ -1094,10 +1238,10 @@
     {
       "league": "NFL",
       "label": "San Francisco 49ers at Atlanta Falcons",
-      "detail": "Week 7",
+      "detail": "Week 7 - FOX",
       "venue": "Mercedes-Benz Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-10-25",
       "start_utc": "2026-10-25T17:00:00Z",
@@ -1270,6 +1414,19 @@
       "time_status": "TBD_envelope"
     },
     {
+      "league": "NCAAF",
+      "label": "Florida at Georgia",
+      "detail": "Westwood One national radio",
+      "venue": "Mercedes-Benz Stadium, Atlanta, GA",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557129",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-10-31",
+      "start_utc": "2026-10-31T19:00:00Z",
+      "duration": 204,
+      "time_status": "published_air_time"
+    },
+    {
       "league": "MLS",
       "label": "San Jose Earthquakes vs Real Salt Lake",
       "detail": "PayPal Park",
@@ -1325,6 +1482,19 @@
       "time_status": "published_air_time"
     },
     {
+      "league": "NCAAF",
+      "label": "Oregon at Ohio State",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Ohio Stadium, Columbus, OH",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557143",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-11-07",
+      "start_utc": "2026-11-07T19:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
       "league": "MLS",
       "label": "San Jose Earthquakes at Minnesota United FC",
       "detail": "Allianz Field",
@@ -1357,7 +1527,7 @@
       "detail": "Week 9 - CBS",
       "venue": "Levi's Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-11-08",
       "start_utc": "2026-11-08T21:05:00Z",
@@ -1421,6 +1591,19 @@
     },
     {
       "league": "NCAAF",
+      "label": "Michigan at Oregon",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Autzen Stadium, Eugene, OR",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557144",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-11-14",
+      "start_utc": "2026-11-14T19:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
+      "league": "NCAAF",
       "label": "Stanford at Virginia Tech",
       "detail": "kickoff time not announced",
       "venue": "",
@@ -1449,10 +1632,10 @@
     {
       "league": "NFL",
       "label": "San Francisco 49ers at Dallas Cowboys",
-      "detail": "Week 10",
+      "detail": "Week 10 - FOX",
       "venue": "AT&T Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-11-15",
       "start_utc": "2026-11-15T21:25:00Z",
@@ -1503,6 +1686,19 @@
     },
     {
       "league": "NCAAF",
+      "label": "LSU at Tennessee",
+      "detail": "Westwood One national radio (air time TBD)",
+      "venue": "Neyland Stadium, Knoxville, TN",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557145",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-11-21",
+      "start_utc": "2026-11-21T19:00:00Z",
+      "duration": 779,
+      "time_status": "TBD_envelope"
+    },
+    {
+      "league": "NCAAF",
       "label": "Stanford at California",
       "detail": "kickoff time not announced",
       "venue": "California Memorial Stadium",
@@ -1532,10 +1728,10 @@
     {
       "league": "NFL",
       "label": "San Francisco 49ers vs Minnesota Vikings",
-      "detail": "Week 11 - NBC",
+      "detail": "Week 11 - NBC - 2026 NFL Mexico City Game. Kickoff 17:20 PT = 20:20 ET; Westwood One air time 19:30 ET.",
       "venue": "Estadio Banorte, Mexico City",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-11-22",
       "start_utc": "2026-11-23T01:20:00Z",
@@ -1628,6 +1824,19 @@
     },
     {
       "league": "NCAAF",
+      "label": "Michigan at Ohio State",
+      "detail": "Westwood One national radio",
+      "venue": "Ohio Stadium, Columbus, OH",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557131",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-11-28",
+      "start_utc": "2026-11-28T16:30:00Z",
+      "duration": 204,
+      "time_status": "published_air_time"
+    },
+    {
+      "league": "NCAAF",
       "label": "California vs Pittsburgh",
       "detail": "kickoff time not announced",
       "venue": "California Memorial Stadium",
@@ -1658,7 +1867,7 @@
       "detail": "Week 12 - FOX",
       "venue": "Levi's Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-11-29",
       "start_utc": "2026-11-29T21:25:00Z",
@@ -1721,12 +1930,25 @@
       "time_status": "official"
     },
     {
+      "league": "NCAAF",
+      "label": "SEC Championship Game",
+      "detail": "Westwood One national radio",
+      "venue": "Mercedes-Benz Stadium, Atlanta, GA",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557146",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-12-05",
+      "start_utc": "2026-12-05T20:30:00Z",
+      "duration": 204,
+      "time_status": "published_air_time"
+    },
+    {
       "league": "NFL",
       "label": "San Francisco 49ers at New York Giants",
       "detail": "Week 13 - FOX",
       "venue": "MetLife Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-12-06",
       "start_utc": "2026-12-06T18:00:00Z",
@@ -1776,12 +1998,25 @@
       "time_status": "published_air_time"
     },
     {
+      "league": "NCAAF",
+      "label": "Army-Navy Game",
+      "detail": "Westwood One national radio",
+      "venue": "MetLife Stadium, East Rutherford, NJ",
+      "priority": "normal",
+      "source": "https://www.westwoodonesports.com/events/557132",
+      "network": "Westwood One Sports (SF affiliate: KNBR 680 AM / 104.5 FM)",
+      "date_local": "2026-12-12",
+      "start_utc": "2026-12-12T19:00:00Z",
+      "duration": 204,
+      "time_status": "published_air_time"
+    },
+    {
       "league": "NFL",
       "label": "San Francisco 49ers vs Los Angeles Rams",
-      "detail": "Week 14",
+      "detail": "Week 14 - FOX",
       "venue": "Levi's Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-12-13",
       "start_utc": "2026-12-13T21:25:00Z",
@@ -1834,10 +2069,10 @@
     {
       "league": "NFL",
       "label": "San Francisco 49ers at Los Angeles Chargers",
-      "detail": "Week 15",
+      "detail": "Week 15 - Prime Video - Thursday Night Football. Kickoff 17:15 PT; Westwood One air time 19:30 ET.",
       "venue": "SoFi Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-12-17",
       "start_utc": "2026-12-18T01:15:00Z",
@@ -1990,7 +2225,7 @@
       "detail": "Week 16 - CBS",
       "venue": "Arrowhead Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2026-12-27",
       "start_utc": "2026-12-27T21:25:00Z",
@@ -2085,10 +2320,10 @@
     {
       "league": "NFL",
       "label": "San Francisco 49ers vs Philadelphia Eagles",
-      "detail": "Week 17 - NBC",
+      "detail": "Week 17 - NBC - Sunday Night Football.",
       "venue": "Levi's Stadium",
       "priority": "high",
-      "source": "https://www.49ers.com/schedule/",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
       "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
       "date_local": "2027-01-03",
       "start_utc": "2027-01-04T01:20:00Z",
@@ -2226,51 +2461,72 @@
     {
       "league": "NFL",
       "date_local": null,
-      "label": "San Francisco 49ers - 1",
-      "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed.",
-      "source": "https://www.49ers.com/schedule/"
+      "label": "San Francisco 49ers - week 8",
+      "reason": "BYE week - the 49ers have no game. This is not a missing fixture; 'free time' on 2026-10-28..2026-11-03 is correct for 49ers (other leagues checked separately).",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release"
     },
     {
       "league": "NFL",
       "date_local": null,
-      "label": "San Francisco 49ers - 2",
-      "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed.",
-      "source": "https://www.49ers.com/schedule/"
+      "label": "San Francisco 49ers - week 18",
+      "reason": "at Arizona Cardinals, State Farm Stadium. Date and time are 'TBD' on 49ers.com; the NFL sets Week 18 kickoffs near the end of the season, inside the Sat 2027-01-09 / Sun 2027-01-10 window.",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release"
     },
     {
       "league": "NFL",
       "date_local": null,
-      "label": "San Francisco 49ers - 6",
-      "reason": "Captured only as a Levi's Stadium game on ESPN/ABC with no opponent, date or time in the retrieval.",
-      "source": "https://www.49ers.com/schedule/"
+      "label": "San Francisco 49ers - week playoffs",
+      "reason": "Postseason participation is not yet determined. If the 49ers qualify, playoff games fall on the NFL-announced dates: Wild Card 2027-01-16..18, Divisional 2027-01-23..24, Championships 2027-01-31, Super Bowl LXI 2027-02-14 (SoFi Stadium, Inglewood).",
+      "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release"
     },
     {
-      "league": "NFL",
-      "date_local": null,
-      "label": "San Francisco 49ers - 8",
-      "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed.",
-      "source": "https://www.49ers.com/schedule/"
+      "league": "NCAAF",
+      "date_local": "2026-10-03",
+      "label": "Notre Dame at North Carolina",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557137"
     },
     {
-      "league": "NFL",
-      "date_local": null,
-      "label": "San Francisco 49ers - 18",
-      "reason": "49ers.com lists 'TBD' for date and time. Opponent is the Arizona Cardinals at State Farm Stadium. Falls inside the 2027-01-06 to 2027-01-12 Week 18 window per the ESPN league calendar.",
-      "source": "https://www.49ers.com/schedule/"
+      "league": "NCAAF",
+      "date_local": "2026-10-10",
+      "label": "Indiana at Nebraska",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557139"
     },
     {
-      "league": "NFL",
-      "date_local": null,
-      "label": "San Francisco 49ers - preseason",
-      "reason": "The user explicitly asked for preseason games. No 49ers preseason fixture list was retrieved. The NFL league calendar confirms preseason ran 2026-08-06 to 2026-09-05, so 49ers preseason games exist inside that window but the specific dates are UNVERIFIED here.",
-      "source": "https://www.49ers.com/schedule/"
+      "league": "NCAAF",
+      "date_local": "2026-10-17",
+      "label": "Penn State at Michigan",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557140"
     },
     {
-      "league": "NFL",
-      "date_local": null,
-      "label": "San Francisco 49ers - playoffs",
-      "reason": "Postseason participation is not yet determined.",
-      "source": "https://www.49ers.com/schedule/"
+      "league": "NCAAF",
+      "date_local": "2026-10-24",
+      "label": "Ole Miss at Texas",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557141"
+    },
+    {
+      "league": "NCAAF",
+      "date_local": "2026-11-07",
+      "label": "Oregon at Ohio State",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557143"
+    },
+    {
+      "league": "NCAAF",
+      "date_local": "2026-11-14",
+      "label": "Michigan at Oregon",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557144"
+    },
+    {
+      "league": "NCAAF",
+      "date_local": "2026-11-21",
+      "label": "LSU at Tennessee",
+      "reason": "Westwood One has confirmed the game date but not its air time; blocked via the NCAAF TBD envelope.",
+      "source": "https://www.westwoodonesports.com/events/557145"
     },
     {
       "league": "NCAAF",
@@ -2522,14 +2778,50 @@
     {
       "year": 2026,
       "interpretation": "strict",
-      "blocked_day_count": 354,
-      "free_day_count": 11,
+      "blocked_day_count": 325,
+      "free_day_count": 40,
       "gaps": [
         {
           "start": "2026-02-09",
           "end": "2026-02-19",
           "days": 11,
           "weeks": 1.57
+        },
+        {
+          "start": "2026-01-26",
+          "end": "2026-02-02",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2026-01-19",
+          "end": "2026-01-24",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2026-01-05",
+          "end": "2026-01-09",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2026-01-13",
+          "end": "2026-01-16",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-02-04",
+          "end": "2026-02-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-01-01",
+          "end": "2026-01-02",
+          "days": 2,
+          "weeks": 0.29
         }
       ],
       "best": {
@@ -2540,9 +2832,25 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2026-02-08",
+          "super_bowl": "2026-02-08",
           "status": "VERIFIED",
-          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA"
+          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA",
+          "playoff_dates_in_year": [
+            "2026-01-03",
+            "2026-01-04",
+            "2026-01-10",
+            "2026-01-11",
+            "2026-01-12",
+            "2026-01-17",
+            "2026-01-18",
+            "2026-01-25",
+            "2026-02-08"
+          ],
+          "pro_bowl_games": {
+            "date": "2026-02-03",
+            "status": "VERIFIED",
+            "note": "2026 Pro Bowl Games, Moscone Center, San Francisco (NFL announcement 2025-10-22)"
+          }
         },
         "mlb_block": {
           "start": "2026-02-20",
@@ -2553,39 +2861,100 @@
         "nfl_current_season_start": {
           "date": "2026-08-06",
           "status": "VERIFIED",
-          "note": "Hall of Fame Game, per the ESPN league calendar"
+          "note": "Hall of Fame Game, per the NFL/ESPN league calendar"
         }
       }
     },
     {
       "year": 2027,
       "interpretation": "strict",
-      "blocked_day_count": 361,
-      "free_day_count": 4,
+      "blocked_day_count": 329,
+      "free_day_count": 36,
       "gaps": [
+        {
+          "start": "2027-02-01",
+          "end": "2027-02-08",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2027-01-25",
+          "end": "2027-01-30",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2027-01-11",
+          "end": "2027-01-15",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2027-01-05",
+          "end": "2027-01-08",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-01-19",
+          "end": "2027-01-22",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-02-10",
+          "end": "2027-02-13",
+          "days": 4,
+          "weeks": 0.57
+        },
         {
           "start": "2027-02-15",
           "end": "2027-02-18",
           "days": 4,
           "weeks": 0.57
+        },
+        {
+          "start": "2027-01-01",
+          "end": "2027-01-01",
+          "days": 1,
+          "weeks": 0.14
         }
       ],
       "best": {
-        "start": "2027-02-15",
-        "end": "2027-02-18",
-        "days": 4,
-        "weeks": 0.57
+        "start": "2027-02-01",
+        "end": "2027-02-08",
+        "days": 8,
+        "weeks": 1.14
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2027-02-14",
+          "super_bowl": "2027-02-14",
           "status": "VERIFIED",
-          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA"
+          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA",
+          "playoff_dates_in_year": [
+            "2027-01-02",
+            "2027-01-03",
+            "2027-01-04",
+            "2027-01-09",
+            "2027-01-10",
+            "2027-01-16",
+            "2027-01-17",
+            "2027-01-18",
+            "2027-01-23",
+            "2027-01-24",
+            "2027-01-31",
+            "2027-02-14"
+          ],
+          "pro_bowl_games": {
+            "date": "2027-02-09",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXI week at SoFi Stadium (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2027-02-19",
           "end": "2027-10-31",
-          "status": "ESTIMATED",
+          "status": "VERIFIED",
           "includes_spring_training": true
         },
         "nfl_current_season_start": {
@@ -2598,27 +2967,82 @@
     {
       "year": 2028,
       "interpretation": "strict",
-      "blocked_day_count": 361,
-      "free_day_count": 5,
+      "blocked_day_count": 330,
+      "free_day_count": 36,
       "gaps": [
+        {
+          "start": "2028-01-31",
+          "end": "2028-02-07",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2028-01-24",
+          "end": "2028-01-29",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2028-01-10",
+          "end": "2028-01-14",
+          "days": 5,
+          "weeks": 0.71
+        },
         {
           "start": "2028-02-14",
           "end": "2028-02-18",
           "days": 5,
           "weeks": 0.71
+        },
+        {
+          "start": "2028-01-04",
+          "end": "2028-01-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-01-18",
+          "end": "2028-01-21",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-02-09",
+          "end": "2028-02-12",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
-        "start": "2028-02-14",
-        "end": "2028-02-18",
-        "days": 5,
-        "weeks": 0.71
+        "start": "2028-01-31",
+        "end": "2028-02-07",
+        "days": 8,
+        "weeks": 1.14
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2028-02-13",
+          "super_bowl": "2028-02-13",
           "status": "VERIFIED",
-          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA"
+          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA",
+          "playoff_dates_in_year": [
+            "2028-01-01",
+            "2028-01-02",
+            "2028-01-03",
+            "2028-01-08",
+            "2028-01-09",
+            "2028-01-15",
+            "2028-01-16",
+            "2028-01-17",
+            "2028-01-22",
+            "2028-01-23",
+            "2028-01-30",
+            "2028-02-13"
+          ],
+          "pro_bowl_games": {
+            "date": "2028-02-08",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2028-02-19",
@@ -2636,27 +3060,80 @@
     {
       "year": 2029,
       "interpretation": "strict",
-      "blocked_day_count": 358,
-      "free_day_count": 7,
+      "blocked_day_count": 327,
+      "free_day_count": 38,
       "gaps": [
+        {
+          "start": "2029-01-29",
+          "end": "2029-02-05",
+          "days": 8,
+          "weeks": 1.14
+        },
         {
           "start": "2029-02-12",
           "end": "2029-02-18",
           "days": 7,
           "weeks": 1.0
+        },
+        {
+          "start": "2029-01-22",
+          "end": "2029-01-27",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2029-01-08",
+          "end": "2029-01-12",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2029-01-02",
+          "end": "2029-01-05",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-01-16",
+          "end": "2029-01-19",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-02-07",
+          "end": "2029-02-10",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
-        "start": "2029-02-12",
-        "end": "2029-02-18",
-        "days": 7,
-        "weeks": 1.0
+        "start": "2029-01-29",
+        "end": "2029-02-05",
+        "days": 8,
+        "weeks": 1.14
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2029-02-11",
+          "super_bowl": "2029-02-11",
           "status": "ESTIMATED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)"
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)",
+          "playoff_dates_in_year": [
+            "2029-01-01",
+            "2029-01-06",
+            "2029-01-07",
+            "2029-01-13",
+            "2029-01-14",
+            "2029-01-15",
+            "2029-01-20",
+            "2029-01-21",
+            "2029-01-28",
+            "2029-02-11"
+          ],
+          "pro_bowl_games": {
+            "date": "2029-02-06",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXIII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2029-02-19",
@@ -2674,14 +3151,50 @@
     {
       "year": 2026,
       "interpretation": "regular",
-      "blocked_day_count": 321,
-      "free_day_count": 44,
+      "blocked_day_count": 292,
+      "free_day_count": 73,
       "gaps": [
         {
           "start": "2026-02-09",
           "end": "2026-03-24",
           "days": 44,
           "weeks": 6.29
+        },
+        {
+          "start": "2026-01-26",
+          "end": "2026-02-02",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2026-01-19",
+          "end": "2026-01-24",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2026-01-05",
+          "end": "2026-01-09",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2026-01-13",
+          "end": "2026-01-16",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-02-04",
+          "end": "2026-02-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2026-01-01",
+          "end": "2026-01-02",
+          "days": 2,
+          "weeks": 0.29
         }
       ],
       "best": {
@@ -2692,9 +3205,25 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2026-02-08",
+          "super_bowl": "2026-02-08",
           "status": "VERIFIED",
-          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA"
+          "note": "Super Bowl LX, Levi's Stadium, Santa Clara CA",
+          "playoff_dates_in_year": [
+            "2026-01-03",
+            "2026-01-04",
+            "2026-01-10",
+            "2026-01-11",
+            "2026-01-12",
+            "2026-01-17",
+            "2026-01-18",
+            "2026-01-25",
+            "2026-02-08"
+          ],
+          "pro_bowl_games": {
+            "date": "2026-02-03",
+            "status": "VERIFIED",
+            "note": "2026 Pro Bowl Games, Moscone Center, San Francisco (NFL announcement 2025-10-22)"
+          }
         },
         "mlb_block": {
           "start": "2026-03-25",
@@ -2705,21 +3234,63 @@
         "nfl_current_season_start": {
           "date": "2026-08-06",
           "status": "VERIFIED",
-          "note": "Hall of Fame Game, per the ESPN league calendar"
+          "note": "Hall of Fame Game, per the NFL/ESPN league calendar"
         }
       }
     },
     {
       "year": 2027,
       "interpretation": "regular",
-      "blocked_day_count": 327,
-      "free_day_count": 38,
+      "blocked_day_count": 295,
+      "free_day_count": 70,
       "gaps": [
         {
           "start": "2027-02-15",
           "end": "2027-03-24",
           "days": 38,
           "weeks": 5.43
+        },
+        {
+          "start": "2027-02-01",
+          "end": "2027-02-08",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2027-01-25",
+          "end": "2027-01-30",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2027-01-11",
+          "end": "2027-01-15",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2027-01-05",
+          "end": "2027-01-08",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-01-19",
+          "end": "2027-01-22",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-02-10",
+          "end": "2027-02-13",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2027-01-01",
+          "end": "2027-01-01",
+          "days": 1,
+          "weeks": 0.14
         }
       ],
       "best": {
@@ -2730,14 +3301,33 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2027-02-14",
+          "super_bowl": "2027-02-14",
           "status": "VERIFIED",
-          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA"
+          "note": "Super Bowl LXI, SoFi Stadium, Inglewood CA",
+          "playoff_dates_in_year": [
+            "2027-01-02",
+            "2027-01-03",
+            "2027-01-04",
+            "2027-01-09",
+            "2027-01-10",
+            "2027-01-16",
+            "2027-01-17",
+            "2027-01-18",
+            "2027-01-23",
+            "2027-01-24",
+            "2027-01-31",
+            "2027-02-14"
+          ],
+          "pro_bowl_games": {
+            "date": "2027-02-09",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXI week at SoFi Stadium (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2027-03-25",
           "end": "2027-10-31",
-          "status": "ESTIMATED",
+          "status": "VERIFIED",
           "includes_spring_training": false
         },
         "nfl_current_season_start": {
@@ -2750,14 +3340,50 @@
     {
       "year": 2028,
       "interpretation": "regular",
-      "blocked_day_count": 326,
-      "free_day_count": 40,
+      "blocked_day_count": 295,
+      "free_day_count": 71,
       "gaps": [
         {
           "start": "2028-02-14",
           "end": "2028-03-24",
           "days": 40,
           "weeks": 5.71
+        },
+        {
+          "start": "2028-01-31",
+          "end": "2028-02-07",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2028-01-24",
+          "end": "2028-01-29",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2028-01-10",
+          "end": "2028-01-14",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2028-01-04",
+          "end": "2028-01-07",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-01-18",
+          "end": "2028-01-21",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2028-02-09",
+          "end": "2028-02-12",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
@@ -2768,9 +3394,28 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2028-02-13",
+          "super_bowl": "2028-02-13",
           "status": "VERIFIED",
-          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA"
+          "note": "Super Bowl LXII, Mercedes-Benz Stadium, Atlanta GA",
+          "playoff_dates_in_year": [
+            "2028-01-01",
+            "2028-01-02",
+            "2028-01-03",
+            "2028-01-08",
+            "2028-01-09",
+            "2028-01-15",
+            "2028-01-16",
+            "2028-01-17",
+            "2028-01-22",
+            "2028-01-23",
+            "2028-01-30",
+            "2028-02-13"
+          ],
+          "pro_bowl_games": {
+            "date": "2028-02-08",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2028-03-25",
@@ -2788,14 +3433,50 @@
     {
       "year": 2029,
       "interpretation": "regular",
-      "blocked_day_count": 324,
-      "free_day_count": 41,
+      "blocked_day_count": 293,
+      "free_day_count": 72,
       "gaps": [
         {
           "start": "2029-02-12",
           "end": "2029-03-24",
           "days": 41,
           "weeks": 5.86
+        },
+        {
+          "start": "2029-01-29",
+          "end": "2029-02-05",
+          "days": 8,
+          "weeks": 1.14
+        },
+        {
+          "start": "2029-01-22",
+          "end": "2029-01-27",
+          "days": 6,
+          "weeks": 0.86
+        },
+        {
+          "start": "2029-01-08",
+          "end": "2029-01-12",
+          "days": 5,
+          "weeks": 0.71
+        },
+        {
+          "start": "2029-01-02",
+          "end": "2029-01-05",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-01-16",
+          "end": "2029-01-19",
+          "days": 4,
+          "weeks": 0.57
+        },
+        {
+          "start": "2029-02-07",
+          "end": "2029-02-10",
+          "days": 4,
+          "weeks": 0.57
         }
       ],
       "best": {
@@ -2806,9 +3487,26 @@
       },
       "provenance": {
         "nfl_previous_season_end": {
-          "date": "2029-02-11",
+          "super_bowl": "2029-02-11",
           "status": "ESTIMATED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)"
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - month official, day estimated (2nd Sunday of Feb 2029)",
+          "playoff_dates_in_year": [
+            "2029-01-01",
+            "2029-01-06",
+            "2029-01-07",
+            "2029-01-13",
+            "2029-01-14",
+            "2029-01-15",
+            "2029-01-20",
+            "2029-01-21",
+            "2029-01-28",
+            "2029-02-11"
+          ],
+          "pro_bowl_games": {
+            "date": "2029-02-06",
+            "status": "ESTIMATED",
+            "note": "Tuesday of Super Bowl LXIII week (pattern, not officially confirmed)"
+          }
         },
         "mlb_block": {
           "start": "2029-03-25",
@@ -2850,15 +3548,20 @@
         "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
       },
       "2027": {
-        "status": "ESTIMATED",
-        "source": "NOT RELEASED. statsapi.mlb.com/api/v1/seasons returns no 2027 record.",
+        "status": "VERIFIED",
+        "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&season=2027 (retrieved 2026-09-20); MLB press release 2026-07-16 (https://www.mlb.com/press-release/press-release-mlb-announces-2027-spring-training-schedule)",
         "spring_training_start": "2027-02-19",
+        "spring_training_end": "2027-03-24",
+        "opening_night": "2027-03-24",
         "regular_season_start": "2027-03-25",
+        "first_regular_season_game": "2027-03-24",
         "all_star_game": "2027-07-13",
+        "all_star_site": "Wrigley Field, Chicago IL",
         "regular_season_end": "2027-09-26",
-        "postseason_start": "2027-09-28",
+        "postseason_start": "2027-09-27",
         "postseason_end": "2027-10-31",
-        "basis": "MLB has opened its regular season between Mar 20 and Mar 31 in every recent season; 2026 opened Wed 2026-03-25. Spring Training pitchers-and-catchers reporting and first exhibition games have landed in the Feb 19-22 band. Postseason runs to Oct 31 because the World Series is anchored to a Game 7 no later than Halloween."
+        "offseason_start": "2027-11-01",
+        "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
       },
       "2028": {
         "status": "ESTIMATED",
@@ -2894,15 +3597,16 @@
         "hall_of_fame_game": "2026-08-06",
         "preseason_start": "2026-08-06",
         "preseason_end": "2026-09-05",
-        "regular_season_week1_start": "2026-09-06",
-        "regular_season_week18_end": "2027-01-12",
-        "wild_card_start": "2027-01-13",
-        "divisional_start": "2027-01-20",
-        "conference_championship_start": "2027-01-27",
+        "regular_season_week1_start": "2026-09-09",
+        "regular_season_week18_end": "2027-01-10",
+        "wild_card_start": "2027-01-16",
+        "divisional_start": "2027-01-23",
+        "conference_championship_start": "2027-01-31",
         "pro_bowl_window": "2027-02-03/2027-02-09",
         "super_bowl": "2027-02-14",
         "offseason_start": "2027-02-16",
-        "super_bowl_status": "VERIFIED - NFL confirmed Super Bowl LXI at SoFi Stadium, Inglewood CA on Sunday 2027-02-14; host handoff held 2026-02-09.",
+        "super_bowl_status": "VERIFIED - NFL confirmed Super Bowl LXI at SoFi Stadium, Inglewood CA on Sunday 2027-02-14.",
+        "note": "2026 regular season opened Wed 2026-09-09 (Seahawks vs Patriots, NFL Kickoff) with the 49ers-Rams Melbourne game Thu 2026-09-10. Playoff round dates are from the NFL's official key-dates release (seahawks.com/news/nfl-announces-important-dates-for-2026-2027, 2026-07-07): Wild Card 2027-01-16..18, Divisional 2027-01-23..24, Championships 2027-01-31, Super Bowl LXI 2027-02-14.",
         "week_boundaries": [
           {
             "week": "HOF",
@@ -2926,7 +3630,7 @@
           },
           {
             "week": "1",
-            "start": "2026-09-06",
+            "start": "2026-09-09",
             "end": "2026-09-15"
           },
           {
@@ -3012,22 +3716,22 @@
           {
             "week": "18",
             "start": "2027-01-06",
-            "end": "2027-01-12"
+            "end": "2027-01-10"
           },
           {
             "week": "WC",
-            "start": "2027-01-13",
-            "end": "2027-01-19"
+            "start": "2027-01-16",
+            "end": "2027-01-18"
           },
           {
             "week": "DIV",
-            "start": "2027-01-20",
-            "end": "2027-01-26"
+            "start": "2027-01-23",
+            "end": "2027-01-24"
           },
           {
             "week": "CC",
-            "start": "2027-01-27",
-            "end": "2027-02-02"
+            "start": "2027-01-31",
+            "end": "2027-01-31"
           },
           {
             "week": "PRO",
@@ -3036,8 +3740,8 @@
           },
           {
             "week": "SB",
-            "start": "2027-02-10",
-            "end": "2027-02-15"
+            "start": "2027-02-14",
+            "end": "2027-02-14"
           }
         ]
       },

@@ -381,7 +381,9 @@
     });
 
     rows.forEach((r) => {
-      const verified = r.year === 2026;
+      const mlb = (DATA.seasons && DATA.seasons.mlb && DATA.seasons.mlb[String(r.year)]) || {};
+      const mlbVerified = mlb.status === "VERIFIED";
+      const fullVerified = r.year === 2026;
       const tr = document.createElement("tr");
       if (r.year === bestYear) tr.className = "best";
       tr.innerHTML =
@@ -390,7 +392,8 @@
         `<td class="num">${r.best ? esc(r.best.start) + " &rarr; " + esc(r.best.end) : "&mdash;"}</td>` +
         `<td class="num">${r.best ? r.best.weeks : 0}</td>` +
         `<td class="num">${r.free_day_count}</td>` +
-        `<td class="${verified ? "statusV" : "statusE"}">${verified ? "VERIFIED" : "ESTIMATED"}</td>`;
+        `<td class="${fullVerified ? "statusV" : (mlbVerified ? "statusP" : "statusE")}">` +
+        `${fullVerified ? "VERIFIED" : (mlbVerified ? "MLB VERIFIED, NFL EST" : "ESTIMATED")}</td>`;
       body.appendChild(tr);
     });
 
@@ -398,12 +401,13 @@
     detail.innerHTML = rows.map((r) => {
       const p = r.provenance;
       return `<div class="reviewgroup"><h3>${r.year} &mdash; how this was derived</h3>` +
-        `<div class="reviewitem">Previous NFL season closes on <strong>${esc(p.nfl_previous_season_end.date)}</strong> &mdash; ${esc(p.nfl_previous_season_end.status)}: ${esc(p.nfl_previous_season_end.note)}` +
-        `<span class="r">Source: NFL / league announcement</span></div>` +
+        `<div class="reviewitem">Previous NFL season: Super Bowl on <strong>${esc(p.nfl_previous_season_end.date)}</strong> &mdash; ${esc(p.nfl_previous_season_end.status)}: ${esc(p.nfl_previous_season_end.note)}` +
+        `<span class="r">Playoff dates blocked this year: ${esc((p.nfl_previous_season_end.playoff_dates_in_year || []).join(", "))}</span></div>` +
+        `<div class="reviewitem">Pro Bowl Games (NFL all-star): <strong>${esc(p.nfl_previous_season_end.pro_bowl_games.date)}</strong> &mdash; ${esc(p.nfl_previous_season_end.pro_bowl_games.status)}: ${esc(p.nfl_previous_season_end.pro_bowl_games.note)}</div>` +
         `<div class="reviewitem">MLB blocks <strong>${esc(p.mlb_block.start)} &rarr; ${esc(p.mlb_block.end)}</strong> &mdash; ${esc(p.mlb_block.status)}${p.mlb_block.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}` +
         `<span class="r">Source: statsapi.mlb.com/api/v1/seasons</span></div>` +
         `<div class="reviewitem">Current NFL season opens <strong>${esc(p.nfl_current_season_start.date)}</strong> &mdash; ${esc(p.nfl_current_season_start.status)}: ${esc(p.nfl_current_season_start.note)}` +
-        `<span class="r">Source: ESPN league calendar / NFL</span></div>` +
+        `<span class="r">Source: NFL league calendar</span></div>` +
         `<div class="reviewitem">All clean runs found: ` +
         r.gaps.map((g) => `${esc(g.start)} &rarr; ${esc(g.end)} (${g.days}d)`).join("; ") +
         `</div></div>`;

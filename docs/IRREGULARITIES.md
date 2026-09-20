@@ -15,11 +15,13 @@ it, and what remains uncertain.
 exactly the class of bug the user reported on a previous site.
 
 **Done:** each gap is emitted into the `unresolved` array with its reason, and the UI
-shows all 50 unresolved items on the **Needs Review** tab. **The gaps are labelled, not
+shows all unresolved items on the **Needs Review** tab. **The gaps are labelled, not
 papered over** — but the affected days are *not* conservatively blocked, because no
 date is known to block.
 
-**Still open:** fill from a live NFL feed (see `LIMITATIONS-NEXT.md`).
+**RESOLVED 2026-09-20:** see **IR-17**. The "missing" weeks were re-retrieved live;
+Week 8 is a BYE, Week 1 was the Melbourne game (2026-09-10), Week 2 (09-20) and
+Week 6 (10-19) are now included, and the preseason is three verified games.
 
 ---
 
@@ -172,11 +174,15 @@ Stadium. It is **Allegiant Stadium, Las Vegas.**
 ## IR-13 — 2027–2029 MLB and NFL seasons are unreleased (HIGH, by design)
 
 **Found:** `statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029`
-returns **2026 only.** No 2027, 2028 or 2029 records exist.
+originally returned **2026 only.**
 
-**Done:** those years are computed from the 2026 verified frame plus each league's
-published scheduling rules, and every row carries `status: ESTIMATED` with a `basis`
-field explaining the reasoning and a `source` field reading **"NOT RELEASED"** rather
+**UPDATE 2026-09-20 (see IR-19):** MLB released the 2027 schedule on 2026-07-16, so
+2027 MLB is now **VERIFIED** (provisional pending the CBA). 2028 and 2029 still return
+nothing from the API and remain ESTIMATED.
+
+**Done:** those years are computed from the 2026/2027 verified frames plus each
+league's published scheduling rules, and every estimated row carries `status:
+ESTIMATED` with a `basis` field and a `source` field reading **"NOT RELEASED"** rather
 than a fabricated URL.
 
 This is the user's explicit requirement: estimates must be clearly marked as
@@ -240,3 +246,70 @@ day — precisely the bug the user reported.
 `test_tbd_mlb_game_blocks_conservatively`, `test_postseason_dates_are_never_free`,
 `test_no_game_day_is_reported_free` (asserts **no** date carrying a game reads free,
 across all 155 bundle rows).
+
+---
+
+## Items added in the 2026-09-20 review pass
+
+### IR-17 — 49ers "missing weeks" were a mix of BYE, already-played, and future games (HIGH, resolved)
+
+**Found:** IR-01 listed Weeks 1, 2, 6, 8 and all preseason as unretrieved.
+
+**Resolution (re-retrieved live 2026-09-20):**
+- Preseason is three games, now included: 08-13 vs TEN, 08-20 @LAC, 08-27 @LV.
+- Week 1 = **@Rams in Melbourne 2026-09-10** (5:35 PM PT, the NFL's first game in
+  Australia; final W 27-7).
+- Week 2 = vs Dolphins 2026-09-20; Week 6 = vs Commanders 2026-10-19 (MNF).
+- **Week 8 is a BYE week, not a missing game.** The original tool was wrong to flag it.
+- Week 18 @Cardinals remains date-TBD by the league (Jan 9 or 10, 2027).
+
+**Still open:** Week 18's exact date/time.
+
+### IR-18 — The NFL 2026 season opener date was wrong in the snapshot (HIGH, fixed)
+
+**Found:** `seasons.json` had `regular_season_week1_start = 2026-09-06`, but the 2026
+season actually opened **Wed 2026-09-09** (Seahawks vs Patriots, NFL Kickoff), with the
+Melbourne game 2026-09-10. The whole Week 1 boundary (and downstream round dates) were
+a week early.
+
+**Fixed:** Week boundaries now start 2026-09-09 and follow the NFL's official key-dates
+release (seahawks.com 2026-07-07): Week 1 opens 09-09; playoffs: Wild Card 2027-01-16..18,
+Divisional 01-23..24, Championships 01-31, Super Bowl LXI 02-14.
+
+### IR-19 — The 2027 MLB season is RELEASED now (MEDIUM, blocks a change-of-record)
+
+**Found:** the original build said the Stats API returned 2026 only. As of 2026-09-20 the
+API returns a **2027** season record too (spring 2027-02-19, Opening Day 2027-03-25,
+All-Star 2027-07-13 at Wrigley, regular season ends 2027-09-26). MLB released the schedule
+on 2026-07-16.
+
+**Done:** 2027 MLB is now marked **VERIFIED** (but provisional — see below).
+
+**Still open / flag:** the current CBA expires 2026-12-01. MLB's own release notes the
+calendar is contingent on a new agreement; a lockout could delay or cancel games. The 2027
+MLB frame must be re-checked after a new CBA is signed before relying on it for a vacation.
+
+### IR-20 — The vacation model over-blocked the NFL offseason (MEDIUM, fixed)
+
+**Found:** the analyzer treated "Jan 1 → Super Bowl" as one continuous NFL block, which
+implicitly marked every January day busy. But the NFL's January/February calendar is sparse
+(Week 17/18, then 4 single-weekend playoff rounds, Pro Bowl Games, Super Bowl). This
+**hid real clean windows** (e.g. Conference-Championship-Sunday → Pro-Bowl week = 8–11
+days), which the user asked for.
+
+**Fixed:** the analyzer now blocks the *actual* NFL dates (round dates via a day-of-week
+template anchored to each cycle's Super Bowl, using the verified 2026-27 layout) instead of
+a continuous span. This surfaced 8-day windows in 2027/2028/2029 under the strict reading —
+still short of a full two weeks, but real and previously invisible.
+
+### IR-21 — Pro Bowl Games (NFL all-star) now inside the window (HIGH, fixed)
+
+**Found:** the user listed "NFL all-star games" as busy, but the model did not block the
+Pro Bowl Games. The NFL moved them to the **Tuesday of Super Bowl week** (announced
+2025-10-22); 2026 = Tue 2026-02-03 (Moscone Center, SF), 2027+ follow the same pattern.
+Without this block the 2027+ windows were over-optimistic by one day.
+
+**Fixed:** the Pro Bowl Games date is blocked per year (2026 VERIFIED, later years
+ESTIMATED-pattern).
+
+**Still open:** exact 2027+ Pro Bowl dates/venues are not yet published by the NFL.

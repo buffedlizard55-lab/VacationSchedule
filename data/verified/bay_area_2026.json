@@ -1,35 +1,38 @@
 {
   "_meta": {
     "description": "Bay Area high-priority teams the user flagged: San Francisco 49ers, San Jose Earthquakes, Stanford Cardinal football, California Golden Bears football. MLB Giants and Athletics are handled separately because they come from the MLB Stats API.",
-    "retrieved_utc": "2026-09-20T00:00:00Z",
-    "coverage_warning": "The 49ers list below is INCOMPLETE. The 49ers.com schedule page returned Weeks 3-18 in the retrieval; Weeks 1, 2, 6 and 8 were not captured, and Week 18 has no official date or time. Those gaps are listed in `unresolved` and MUST NOT be assumed empty. The browser app live-fetches the full NFL slate from ESPN to cover them."
+    "coverage_warning": "CLOSED as of 2026-09-20: the full 49ers 2026 schedule (preseason + regular season) was re-retrieved live from 49ers.com. Week 8 is a BYE, not a gap. Week 18 remains date-TBD by the league. Week 6 (vs Washington 2026-10-19) and the Melbourne opener (2026-09-10) that were previously missing are now included.",
+    "retrieved_utc": "2026-09-20T19:00:00Z"
   },
   "nfl_49ers": {
-    "source": "https://www.49ers.com/schedule/",
-    "status": "PARTIAL - VERIFIED for the weeks listed",
+    "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
+    "status": "VERIFIED - full 2026 preseason + regular season schedule",
+    "coverage_note": "Week 8 is a BYE week (no game). Week 18 (at Arizona Cardinals) has no official date/time yet - the NFL will set it near the end of the season inside the Sat 2027-01-09 or Sun 2027-01-10 window.",
     "games": [
+      {"week": "PRE1", "date_local": "2026-08-13", "kickoff_pt": "18:00", "opponent": "Tennessee Titans", "site": "home", "venue": "Levi's Stadium", "tv": "KPIX 5", "note": "Preseason. FINAL: L 13-19."},
+      {"week": "PRE2", "date_local": "2026-08-20", "kickoff_pt": "19:00", "opponent": "Los Angeles Chargers", "site": "away", "venue": "SoFi Stadium", "tv": "KPIX 5", "note": "Preseason. FINAL: W 41-17."},
+      {"week": "PRE3", "date_local": "2026-08-27", "kickoff_pt": "17:00", "opponent": "Las Vegas Raiders", "site": "away", "venue": "Allegiant Stadium", "tv": "KPIX 5", "note": "Preseason. FINAL: W 18-12."},
+      {"week": 1, "date_local": "2026-09-10", "kickoff_pt": "17:35", "opponent": "Los Angeles Rams", "site": "away", "venue": "Melbourne Cricket Ground, Melbourne, Australia", "tv": "Netflix", "note": "NFL's first regular-season game in Australia. FINAL: W 27-7."},
+      {"week": 2, "date_local": "2026-09-20", "kickoff_pt": "13:25", "opponent": "Miami Dolphins", "site": "home", "venue": "Levi's Stadium", "tv": "FOX", "radio": "KSFO 810 AM / KSAN 107.7 FM"},
       {"week": 3, "date_local": "2026-09-27", "kickoff_pt": "13:05", "opponent": "Arizona Cardinals", "site": "home", "venue": "Levi's Stadium", "tv": "FOX", "radio": "KSFO 810 AM / KSAN 107.7 FM"},
       {"week": 4, "date_local": "2026-10-04", "kickoff_pt": "13:25", "opponent": "Denver Broncos", "site": "home", "venue": "Levi's Stadium", "tv": "CBS"},
       {"week": 5, "date_local": "2026-10-11", "kickoff_pt": "13:25", "opponent": "Seattle Seahawks", "site": "away", "venue": "Lumen Field", "tv": "FOX"},
-      {"week": 7, "date_local": "2026-10-25", "kickoff_pt": "10:00", "opponent": "Atlanta Falcons", "site": "away", "venue": "Mercedes-Benz Stadium"},
+      {"week": 6, "date_local": "2026-10-19", "kickoff_pt": "17:15", "opponent": "Washington Commanders", "site": "home", "venue": "Levi's Stadium", "tv": "ESPN & ABC", "note": "Monday Night Football."},
+      {"week": 7, "date_local": "2026-10-25", "kickoff_pt": "10:00", "opponent": "Atlanta Falcons", "site": "away", "venue": "Mercedes-Benz Stadium", "tv": "FOX"},
       {"week": 9, "date_local": "2026-11-08", "kickoff_pt": "13:05", "opponent": "Las Vegas Raiders", "site": "home", "venue": "Levi's Stadium", "tv": "CBS"},
-      {"week": 10, "date_local": "2026-11-15", "kickoff_pt": "13:25", "opponent": "Dallas Cowboys", "site": "away", "venue": "AT&T Stadium"},
-      {"week": 11, "date_local": "2026-11-22", "kickoff_pt": "17:20", "opponent": "Minnesota Vikings", "site": "neutral", "venue": "Estadio Banorte, Mexico City", "tv": "NBC", "note": "2026 NFL Mexico City Game. Westwood One publishes 19:30 ET for this game; 17:20 PT = 20:20 ET. Conflict logged as IR-01."},
+      {"week": 10, "date_local": "2026-11-15", "kickoff_pt": "13:25", "opponent": "Dallas Cowboys", "site": "away", "venue": "AT&T Stadium", "tv": "FOX"},
+      {"week": 11, "date_local": "2026-11-22", "kickoff_pt": "17:20", "opponent": "Minnesota Vikings", "site": "neutral", "venue": "Estadio Banorte, Mexico City", "tv": "NBC", "note": "2026 NFL Mexico City Game. Kickoff 17:20 PT = 20:20 ET; Westwood One air time 19:30 ET."},
       {"week": 12, "date_local": "2026-11-29", "kickoff_pt": "13:25", "opponent": "Seattle Seahawks", "site": "home", "venue": "Levi's Stadium", "tv": "FOX"},
       {"week": 13, "date_local": "2026-12-06", "kickoff_pt": "10:00", "opponent": "New York Giants", "site": "away", "venue": "MetLife Stadium", "tv": "FOX"},
-      {"week": 14, "date_local": "2026-12-13", "kickoff_pt": "13:25", "opponent": "Los Angeles Rams", "site": "home", "venue": "Levi's Stadium"},
-      {"week": 15, "date_local": "2026-12-17", "kickoff_pt": "17:15", "opponent": "Los Angeles Chargers", "site": "away", "venue": "SoFi Stadium", "note": "Thursday Night Football. Westwood One publishes 19:30 ET; 17:15 PT = 20:15 ET. Conflict logged as IR-01."},
+      {"week": 14, "date_local": "2026-12-13", "kickoff_pt": "13:25", "opponent": "Los Angeles Rams", "site": "home", "venue": "Levi's Stadium", "tv": "FOX"},
+      {"week": 15, "date_local": "2026-12-17", "kickoff_pt": "17:15", "opponent": "Los Angeles Chargers", "site": "away", "venue": "SoFi Stadium", "tv": "Prime Video", "note": "Thursday Night Football. Kickoff 17:15 PT; Westwood One air time 19:30 ET."},
       {"week": 16, "date_local": "2026-12-27", "kickoff_pt": "13:25", "opponent": "Kansas City Chiefs", "site": "away", "venue": "Arrowhead Stadium", "tv": "CBS"},
-      {"week": 17, "date_local": "2027-01-03", "kickoff_pt": "17:20", "opponent": "Philadelphia Eagles", "site": "home", "venue": "Levi's Stadium", "tv": "NBC"}
+      {"week": 17, "date_local": "2027-01-03", "kickoff_pt": "17:20", "opponent": "Philadelphia Eagles", "site": "home", "venue": "Levi's Stadium", "tv": "NBC", "note": "Sunday Night Football."}
     ],
     "unresolved": [
-      {"week": 1, "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed."},
-      {"week": 2, "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed."},
-      {"week": 6, "reason": "Captured only as a Levi's Stadium game on ESPN/ABC with no opponent, date or time in the retrieval."},
-      {"week": 8, "reason": "Not returned by the 49ers.com schedule retrieval. Must be filled from a live NFL feed."},
-      {"week": 18, "reason": "49ers.com lists 'TBD' for date and time. Opponent is the Arizona Cardinals at State Farm Stadium. Falls inside the 2027-01-06 to 2027-01-12 Week 18 window per the ESPN league calendar."},
-      {"week": "preseason", "reason": "The user explicitly asked for preseason games. No 49ers preseason fixture list was retrieved. The NFL league calendar confirms preseason ran 2026-08-06 to 2026-09-05, so 49ers preseason games exist inside that window but the specific dates are UNVERIFIED here."},
-      {"week": "playoffs", "reason": "Postseason participation is not yet determined."}
+      {"week": 8, "reason": "BYE week - the 49ers have no game. This is not a missing fixture; 'free time' on 2026-10-28..2026-11-03 is correct for 49ers (other leagues checked separately)."},
+      {"week": 18, "reason": "at Arizona Cardinals, State Farm Stadium. Date and time are 'TBD' on 49ers.com; the NFL sets Week 18 kickoffs near the end of the season, inside the Sat 2027-01-09 / Sun 2027-01-10 window."},
+      {"week": "playoffs", "reason": "Postseason participation is not yet determined. If the 49ers qualify, playoff games fall on the NFL-announced dates: Wild Card 2027-01-16..18, Divisional 2027-01-23..24, Championships 2027-01-31, Super Bowl LXI 2027-02-14 (SoFi Stadium, Inglewood)."}
     ]
   },
   "ncaaf": {

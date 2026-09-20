@@ -12,11 +12,16 @@ broadcast reachable on a standard AM/FM radio in the Outer Sunset (San Francisco
 
 | League | Source | Status |
 |---|---|---|
-| MLB | `statsapi.mlb.com/api/v1/schedule` (official) | Verified for 2026; **fetched live by the app** |
+| MLB | `statsapi.mlb.com/api/v1/schedule` (official) | Verified for 2026 and 2027; **fetched live by the app** |
 | NFL | `westwoodonesports.com/nfl-schedule/` (national radio) + `49ers.com/schedule/` | Verified for 2026 |
 | NCAAF (Stanford, Cal) | `gostanford.com`, `calbears.com` | Verified, partial kickoffs |
+| NCAAF (Westwood One national radio) | `westwoodonesports.com/ncaa-football` | Verified (station list); many air times TBD |
 | MLS (Earthquakes) | `sjearthquakes.com` | Verified, partial kickoffs |
-| Season frames 2026–2029 | `statsapi.mlb.com/api/v1/seasons`, NFL announcements | 2026 verified; 2027–29 **estimated** |
+| Season frames 2026–2029 | `statsapi.mlb.com/api/v1/seasons`, NFL announcements | 2026 verified; 2027 MLB verified; 2028–29 **estimated** (MLB + NFL) |
+
+**Athletics (A's) games** are included through the live MLB feed (all 30 clubs are
+retrieved). Their Bay Area radio home is **KSTE 650 AM (Sacramento) + KNEW 960 AM**
+— they are *not* on KNBR (see SOURCES.md and IR-11).
 
 Full list with retrieval dates: [`SOURCES.md`](SOURCES.md).
 
@@ -24,7 +29,7 @@ Full list with retrieval dates: [`SOURCES.md`](SOURCES.md).
 
 `scripts/lib_windows.py` (Python) and `site/app.js` (browser) implement the same
 algorithm. `tests/test_parity_js.py` runs the real `site/app.js` under Node and
-diffs it against the Python engine for **all 94 dates in the bundle plus the DST
+diffs it against the Python engine for **all 95 dates in the bundle plus the DST
 boundaries**; they agree to the minute.
 
 ### Step 1 — build an interval per game

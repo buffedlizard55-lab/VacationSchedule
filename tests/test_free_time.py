@@ -282,12 +282,29 @@ class TestVacationAnalysis(unittest.TestCase):
             (ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8")
         )["mlb"]
 
-    def test_2026_blocked_span_is_continuous_under_strict(self):
+    def test_2026_blocked_set_marks_nfl_and_mlb_boundaries(self):
         blocked, _ = blocked_days_for_year(2026, self.mlb, count_spring_training=True)
-        self.assertIn("2026-02-08", blocked)   # Super Bowl LX
-        self.assertNotIn("2026-02-09", blocked)
-        self.assertIn("2026-02-20", blocked)   # MLB Spring Training opens
-        self.assertIn("2026-12-25", blocked)   # Christmas Day NFL
+        self.assertIn("2026-02-08", blocked)     # Super Bowl LX
+        self.assertNotIn("2026-02-09", blocked)  # day after the Super Bowl
+        self.assertIn("2026-02-20", blocked)     # MLB Spring Training opens
+        self.assertIn("2026-12-25", blocked)     # Christmas Day NFL
+        self.assertIn("2026-02-03", blocked)     # 2026 Pro Bowl Games (NFL all-star)
+
+    def test_previous_season_playoff_dates_are_verified_against_2026_27(self):
+        """The day-of-week template must reproduce the NFL's official 2026-27
+        key dates (seahawks.com release, 2026-07-07)."""
+        from analyze_vacation import previous_season_nfl_dates
+        dates = previous_season_nfl_dates("2027-02-14")
+        self.assertEqual(dates["Week 18"], ["2027-01-09", "2027-01-10"])
+        self.assertEqual(dates["Wild Card"], ["2027-01-16", "2027-01-17", "2027-01-18"])
+        self.assertEqual(dates["Divisional"], ["2027-01-23", "2027-01-24"])
+        self.assertEqual(dates["Conference Championships"], ["2027-01-31"])
+        self.assertEqual(dates["Super Bowl"], ["2027-02-14"])
+
+    def test_pro_bowl_blocks_super_bowl_week(self):
+        blocked, _ = blocked_days_for_year(2027, self.mlb, count_spring_training=True)
+        self.assertIn("2027-02-09", blocked)  # Pro Bowl Games (Tuesday of SB week)
+        self.assertIn("2027-02-14", blocked)  # Super Bowl LXI
 
     def test_verified_2026_window_is_eleven_days(self):
         row = analyze(2026, self.mlb, count_spring_training=True)
@@ -296,21 +313,28 @@ class TestVacationAnalysis(unittest.TestCase):
         self.assertEqual(row["best"]["end"], "2026-02-19")
 
     def test_2027_2029_strict_windows(self):
-        expected = {2027: 4, 2028: 5, 2029: 7}
+        """With precise NFL dates (not the old continuous Jan->SB span) each
+        future year has an 8-day clean run between the conference championships
+        and the Pro Bowl Games. No year reaches a full two weeks under strict."""
+        expected = {2027: 8, 2028: 8, 2029: 8}
         for year, days in expected.items():
             row = analyze(year, self.mlb, count_spring_training=True)
             self.assertEqual(row["best"]["days"], days, f"year {year}")
+
+    def test_no_strict_year_reaches_two_full_weeks(self):
+        for year in (2026, 2027, 2028, 2029):
+            row = analyze(year, self.mlb, count_spring_training=True)
+            self.assertLess(row["best"]["days"], 14, f"year {year}")
 
     def test_regular_season_interpretation_gives_mult_week_windows(self):
         for year in (2026, 2027, 2028, 2029):
             row = analyze(year, self.mlb, count_spring_training=False)
             self.assertGreaterEqual(row["best"]["days"], 21, f"year {year}")
 
-    def test_2029_is_the_best_strict_future_year(self):
-        strict = {
-            y: analyze(y, self.mlb, True)["best"]["days"] for y in (2027, 2028, 2029)
-        }
-        self.assertEqual(max(strict, key=strict.get), 2029)
+    def test_2027_is_verified_and_2028_2029_estimated(self):
+        self.assertEqual(self.mlb["2027"]["status"], "VERIFIED")
+        self.assertNotEqual(self.mlb["2028"]["status"], "VERIFIED")
+        self.assertNotEqual(self.mlb["2029"]["status"], "VERIFIED")
 
 
 class TestBuiltBundle(unittest.TestCase):
@@ -350,9 +374,13 @@ class TestBuiltBundle(unittest.TestCase):
     def test_big_game_not_double_counted(self):
         big = [
             g for g in self.bundle["games"]
-            if g["date_local"] == "2026-11-21" and g["league"] == "NCAAF"
+            if g["date_local"] == "2026-11-21"
+            and g["league"] == "NCAAF"
+            and "Stanford" in g["label"] and "California" in g["label"]
         ]
         self.assertEqual(len(big), 1, "the 129th Big Game should appear once")
+        # Other NCAAF broadcasts (e.g. Westwood One LSU@Tennessee) may share the
+        # date legitimately and are not the Big Game.
 
     def test_bundle_js_is_loadable(self):
         js = (ROOT / "site" / "data" / "schedule-data.js").read_text(encoding="utf-8")

@@ -12,6 +12,7 @@
   --nfl: #e67e22;
   --ncaaf: #9b59b6;
   --mls: #1abc9c;
+  --accent: #5dade2;
   --tbd: #7f8c8d;
 }
 
@@ -150,6 +151,7 @@ th { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var
 tbody tr.best { background: rgba(46,204,113,.10); }
 td.num { font-variant-numeric: tabular-nums; }
 .statusV { color: var(--free); font-weight: 700; }
+.statusP { color: var(--accent); font-weight: 700; }
 .statusE { color: var(--high); font-weight: 700; }
 
 .reviewgroup { margin-bottom: 22px; }
