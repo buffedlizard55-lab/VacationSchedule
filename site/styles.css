@@ -177,3 +177,47 @@ code { background: var(--panel2); padding: 1px 5px; border-radius: 4px; font-siz
   .game { grid-template-columns: 78px 1fr; }
   .game .meta { grid-column: 1 / -1; text-align: left; }
 }
+
+/* ---------------------------------------------------------------------
+   Coverage sections, comparison table, radio cards (added 2026-09-20)
+   --------------------------------------------------------------------- */
+
+.scopebar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 18px; background: #0e1420; border-bottom: 1px solid #1d2635;
+}
+.scopelabel { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #7d8ba1; }
+.scopepicker { display: flex; gap: 6px; flex-wrap: wrap; }
+.scopebtn {
+  font: inherit; font-size: 13px; cursor: pointer; color: #c8d4e6;
+  background: #16202f; border: 1px solid #26374d; border-radius: 999px;
+  padding: 6px 13px; transition: background .12s ease, border-color .12s ease;
+}
+.scopebtn:hover { background: #1d2a3d; }
+.scopebtn.active { background: #1f6feb; border-color: #1f6feb; color: #fff; font-weight: 600; }
+.scopehint { font-size: 12px; color: #6f7d92; }
+
+.def { margin: 6px 0 0 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: #c3cede; }
+.def li { margin: 2px 0; }
+
+.vtable.compare td { vertical-align: top; }
+.vtable.compare .cmpcell { border-left: 2px solid transparent; }
+.vtable.compare .cmpcell.current { background: rgba(31,111,235,.10); border-left-color: #1f6feb; }
+.vtable.compare .big { font-size: 17px; font-weight: 700; color: #e8eefb; }
+.vtable.compare .small { font-size: 11.5px; color: #8494ab; }
+
+.pill.ok { background: #10391f; color: #7ee2a8; border: 1px solid #1d6b3c; }
+.pill.warn { background: #3a2f10; color: #f5cf72; border: 1px solid #7a6320; }
+.pill.bad { background: #3a1418; color: #f2a0a8; border: 1px solid #7a2a33; }
+.yes { color: #7ee2a8; font-weight: 700; }
+.no { color: #f2a0a8; font-weight: 700; }
+
+.notesbox { margin-top: 18px; }
+.notesbox .def { font-size: 13.5px; }
+.notesbox .def li { margin: 6px 0; }
+
+.game .onair { color: #7ee2a8; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.game.tbdgame .onair { color: #f5cf72; }
+.srccard.station { margin-bottom: 12px; }
+.srccard .small { font-size: 11.5px; color: #8494ab; display: block; margin: 2px 0 6px; }
+.blk.provisional { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.09) 0 6px, transparent 6px 12px); }

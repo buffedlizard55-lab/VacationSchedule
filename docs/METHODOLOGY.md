@@ -149,3 +149,100 @@ California, San Jose Earthquakes** (in the Bay Area coverage set).
 The engine only knows about the sources above. Warriors (NBA), Sharks (NHL), Stanford
 and Cal basketball, USF, and high school sports are **out of scope** and a day marked
 "free" may still carry their broadcasts. See [`LIMITATIONS-NEXT.md`](LIMITATIONS-NEXT.md).
+
+---
+
+# Revision 2026-09-20 (second pass) — sections, the season frame, and the schedule-frame records
+
+## Coverage sections
+
+The request defines three sets of games and asks to compare them. A **section** is a
+definition of "busy"; every report on the site is generated once per section.
+
+| Section | Busy when any of these is on air |
+|---|---|
+| 1 | MLB (all 30 clubs) · 49ers (preseason/regular/postseason) · Westwood One national NFL radio |
+| 2 | Section 1 + Stanford NCAAF + California NCAAF |
+| 3 | Section 2 + San Jose Earthquakes MLS |
+| all | Everything the project tracks (adds Westwood One national **NCAA** football) |
+
+Implementation: each game record carries a `tags` list at build time
+(`MLB`, `NFL:49ers`, `NFL:national`, `NCAAF:Stanford`, `NCAAF:California`,
+`NCAAF:national`, `MLS:Earthquakes`). `scripts/build_data.py` converts tags to a
+`sections` list using the `required_tags` in `data/verified/profiles.json`, and both
+engines filter with the same one-line membership test:
+
+```python
+def game_in_scope(game, scope):
+    return scope is None or scope == "all" or scope in (game.get("sections") or [])
+```
+
+`None` and `"all"` mean "no filtering", which keeps every pre-existing caller and test
+working unchanged.
+
+**Westwood One national NCAA football is deliberately in no section.** The request lists
+Westwood One for the NFL only, so those games are tracked, shown on the day board as
+"not counted in Section N", and included only under the `all` scope.
+
+## The MLB season frame (a second safety net)
+
+The 2026 postseason is carried per date. The rest of the MLB season is not: bundling
+2,430 games into the snapshot would be a large, stale duplicate of a live feed. That
+created a hole — a date inside the MLB season with no bundled game read as **free**.
+
+`lib_windows.mlb_frame_for()` closes it. Each year carries a frame
+(`data/verified/seasons.json` → bundle `mlb_frames`): Spring Training start through
+postseason end, with an `estimated` flag. If a date falls inside a frame, the selected
+scope includes MLB, and the bundle has no MLB game on that date, the engine blocks
+`TBD_ENVELOPE_PT["MLB"]` (15:00–23:59 PT) with `time_confirmed = False` and reports
+`mlb_frame_fallback = true` so the UI can say why.
+
+**Exception — `complete_ranges`.** For 2026 the bundle *does* hold the complete per-date
+list from 2026-09-28 to 2026-10-31 (the postseason, read game-by-game from the Stats
+API). Inside those ranges a date with no game is genuinely free, so the frame fallback
+is suppressed. That is what makes 2026-10-02, 10-21 and 10-22 real free days rather than
+false negatives.
+
+The live feed supersedes the frame: when the page successfully fetches a date from
+`statsapi.mlb.com`, the frame block is not applied for that date.
+
+## NFL round records (day-board completeness)
+
+The day board works from games, not spans. The 49ers feed lists only the 49ers, and the
+Westwood One feed is published as far as the Week 18 slate — so before this revision,
+**2027-01-17 (Wild Card Sunday) read as a free day** whenever the 49ers were not the
+listed participant, even though Westwood One carries every playoff round nationally.
+
+`scripts/nfl_calendar.py` now owns the NFL calendar and `build_data.from_nfl_calendar()`
+emits one date-level record per playoff round (participants TBA, kickoff TBA, envelope
+blocked) plus the Pro Bowl Games. Rounds for the 2026-27 season are VERIFIED against the
+NFL's key-dates release; later seasons are derived from the same verified template and
+labelled ESTIMATED in the record's `status` field.
+
+## The week-window proof
+
+The vacation analysis blocks September–December as one continuous NFL span, and the
+Stanford/Cal and MLS seasons as continuous spans. That is conservative. It is also
+provably unable to hide the thing being asked about:
+
+> a run of 7 consecutive days always contains a Sunday, the NFL plays every Sunday,
+> college football plays Saturdays and MLS plays weekends — so no 7-day window can exist
+> inside those seasons.
+
+`tests/test_free_time.py::TestWeekWindowInvariant::test_no_week_long_run_inside_the_nfl_season`
+asserts it directly: for every section and both interpretations, every run of 7+ days
+ends before that season's Hall of Fame Game. The spans therefore overstate *day*
+counts (a Tuesday in November is marked busy even though no NFL game is on) but never
+overstate the *answer*.
+
+## Durations — re-checked 2026-09-20
+
+| League | Used | Evidence |
+|---|---|---|
+| MLB | 164 min (2:44) | SBJ 2026-07-14: average nine-inning game through 2026-07-08 ≈ **2:42**, up for a second straight year but still 15 % shorter than pre-pitch-clock. 164 is the researched average rounded up for safety. |
+| NFL | 192 min (3:12) | Widely reported NFL average 3:12 including a 12-minute halftime. |
+| NCAAF | 204 min (3:24) | FBS average 3:24–3:26 with a 20-minute halftime. |
+| MLS | 120 min (2:00) | 90 minutes plus stoppage plus a 15-minute halftime. |
+
+A game whose start time is unannounced is *not* given an assumed duration: it is blocked
+with the league's TBD envelope instead, which already exceeds any plausible game length.

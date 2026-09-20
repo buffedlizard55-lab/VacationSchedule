@@ -283,6 +283,39 @@ def longest_free_window(windows: Sequence[Interval]) -> Interval | None:
 #: free window than to advertise one that turns out to have a game on the radio.
 TBD_ENVELOPE_PT = {"NCAAF": ("11:00", "23:59"), "MLS": ("16:00", "23:59"), "NFL": ("09:00", "23:59"), "MLB": ("15:00", "23:59")}
 
+#: The All scope: every game the project tracks, regardless of section.
+SCOPE_ALL = "all"
+
+
+# ---------------------------------------------------------------------------
+# Coverage sections
+# ---------------------------------------------------------------------------
+#
+# The user asked to compare three definitions of "busy":
+#   1  MLB (all 30 clubs) + 49ers (preseason/regular/postseason) + Westwood One national NFL
+#   2  Section 1 + Stanford and California college football
+#   3  Section 2 + San Jose Earthquakes MLS
+#
+# Every game record carries a `sections` list, computed at build time from the
+# tag vocabulary in data/verified/profiles.json. Filtering by section is then a
+# one-line membership test in both engines, which keeps them provably identical.
+
+
+def game_in_scope(game: dict, scope: str | None = None) -> bool:
+    """True when `game` counts as busy under `scope`.
+
+    `None` and `"all"` both mean "no filtering" -- every tracked game counts.
+    That is the backwards-compatible default: existing callers keep the old
+    behaviour unless they opt in.
+    """
+    if scope is None or scope == SCOPE_ALL:
+        return True
+    return scope in (game.get("sections") or [])
+
+
+def filter_scope(games: Iterable[dict], scope: str | None = None) -> list[dict]:
+    return [g for g in games if game_in_scope(g, scope)]
+
 
 def _envelope_interval(game: dict, date_iso: str, table: dict[str, int]) -> Interval:
     """Build the conservative all-day-ish block for an un-timed but dated game."""
@@ -355,17 +388,98 @@ def game_to_interval(
     return interval
 
 
+def record_is_on_date(game: dict, date_iso: str) -> bool:
+    """True when a record's broadcast is *scheduled* on the local date `date_iso`."""
+    if game.get("date_local") == date_iso:
+        return True
+    raw = game.get("start_utc")
+    if not raw:
+        return False
+    try:
+        return parse_utc(raw).astimezone(USER_TZ).date().isoformat() == date_iso
+    except ValidationError:
+        return False
+
+
+def mlb_frame_for(date_iso: str, frames: dict | None) -> dict | None:
+    """The MLB season frame covering `date_iso`, or None.
+
+    `frames` maps a label -> {start, end, status, source, label}. Dates inside a
+    frame have MLB games but the bundle does not carry the per-game times; the
+    engine therefore blocks the conservative envelope instead of reporting a free
+    day. This is deliberately the *safe* failure mode: MLB plays on essentially
+    every date inside its season, and the project's founding rule is that a game
+    the site covers is never reported as free.
+    """
+    if not frames:
+        return None
+    for key in sorted(frames):
+        frame = frames[key] or {}
+        start, end = frame.get("start"), frame.get("end")
+        if start and end and start <= date_iso <= end:
+            return dict(frame, key=key)
+    return None
+
+
+def mlb_covered_on_date(games: Iterable[dict], date_iso: str) -> bool:
+    """True when the bundle already carries MLB game data for `date_iso`.
+
+    Used to decide whether the season-frame fallback is needed. When the bundle
+    has the complete per-date list (the 2026 postseason), a date inside the frame
+    with no game is genuinely free and must NOT be envelope-blocked.
+    """
+    return any(
+        g.get("league") == "MLB" and record_is_on_date(g, date_iso) for g in games
+    )
+
+
+def mlb_frame_is_covered(date_iso: str, frame: dict) -> bool:
+    """True when `date_iso` sits inside a range whose MLB list is known-complete."""
+    for start, end in frame.get("complete_ranges") or []:
+        if start <= date_iso <= end:
+            return True
+    return False
+
+
+def frame_placeholder_interval(date_iso: str, frame: dict, durations: dict[str, int] | None = None) -> Interval:
+    """The conservative block used when only the season frame is known."""
+    label = frame.get("label") or "MLB"
+    start_hhmm, end_hhmm = TBD_ENVELOPE_PT["MLB"]
+    interval = Interval(
+        local_wall_clock(date_iso, start_hhmm),
+        local_wall_clock(date_iso, end_hhmm),
+        f"{label} - per-game time not in the bundled snapshot",
+        "normal",
+        "MLB",
+        frame.get("source", ""),
+    )
+    interval.time_confirmed = False
+    return interval
+
+
 def intervals_for_day(
     games: Iterable[dict],
     date_iso: str,
     durations: dict[str, int] | None = None,
     overrun_buffer_min: int = DEFAULT_OVERRUN_BUFFER_MIN,
+    scope: str | None = None,
+    mlb_frames: dict | None = None,
 ) -> tuple[list[Interval], list[dict]]:
-    """All blocking intervals overlapping `date_iso`, plus skipped TBD games."""
+    """All blocking intervals overlapping `date_iso`, plus skipped TBD games.
+
+    `scope` filters to one coverage section (see `game_in_scope`). `mlb_frames`
+    turns on the season-frame fallback described in `mlb_frame_for`.
+    """
+    games = list(games)
     day_start, day_end = local_day_bounds(date_iso)
     busy: list[Interval] = []
     skipped: list[dict] = []
+    mlb_covered = False
     for game in games:
+        if game.get("league") == "MLB" and record_is_on_date(game, date_iso):
+            mlb_covered = True
+        if not game_in_scope(game, scope):
+            continue
         interval = game_to_interval(game, durations, overrun_buffer_min)
         if interval is None:
             if game.get("date_local") == date_iso:
@@ -374,7 +488,16 @@ def intervals_for_day(
         clipped = clip(interval, day_start, day_end)
         if clipped is not None:
             busy.append(clipped)
-    return busy, skipped
+
+    frame = mlb_frame_for(date_iso, mlb_frames)
+    if (
+        frame is not None
+        and not mlb_covered
+        and not mlb_frame_is_covered(date_iso, frame)
+        and game_in_scope({"sections": ["1", "2", "3"]}, scope)
+    ):
+        busy.append(clip(frame_placeholder_interval(date_iso, frame, durations), day_start, day_end))
+    return [b for b in busy if b is not None], skipped
 
 
 def day_report(
@@ -382,11 +505,13 @@ def day_report(
     date_iso: str,
     durations: dict[str, int] | None = None,
     overrun_buffer_min: int = DEFAULT_OVERRUN_BUFFER_MIN,
+    scope: str | None = None,
+    mlb_frames: dict | None = None,
 ) -> dict:
     """Full free/busy report for one local day, in the user's timezone."""
     games = list(games)
     day_start, day_end = local_day_bounds(date_iso)
-    busy, skipped = intervals_for_day(games, date_iso, durations, overrun_buffer_min)
+    busy, skipped = intervals_for_day(games, date_iso, durations, overrun_buffer_min, scope, mlb_frames)
     merged = merge(busy)
     windows = free_windows(day_start, day_end, busy)
     busy_minutes = sum(iv.minutes for iv in merged)
@@ -394,6 +519,13 @@ def day_report(
     unconfirmed_minutes = sum(iv.minutes for iv in unconfirmed)
     total_minutes = span_minutes(day_start, day_end)
     longest = longest_free_window(windows)
+    frame = mlb_frame_for(date_iso, mlb_frames)
+    frame_used = bool(
+        frame is not None
+        and not mlb_covered_on_date(games, date_iso)
+        and not mlb_frame_is_covered(date_iso, frame)
+        and game_in_scope({"sections": ["1", "2", "3"]}, scope)
+    )
 
     # A day counts as free only when nothing at all is scheduled on it.  A game
     # whose date is official but whose time is not announced still blocks the
@@ -401,6 +533,7 @@ def day_report(
     # reported such days as free, which is the bug being fixed.
     return {
         "date": date_iso,
+        "scope": scope or SCOPE_ALL,
         "day_length_minutes": total_minutes,
         "busy_minutes": round(busy_minutes, 1),
         "free_minutes": round(total_minutes - busy_minutes, 1),
@@ -408,6 +541,8 @@ def day_report(
         "has_high_priority": any(iv.priority == "high" for iv in merged),
         "has_unconfirmed_times": bool(unconfirmed),
         "unconfirmed_minutes": round(unconfirmed_minutes, 1),
+        "mlb_frame_fallback": frame_used,
+        "mlb_frame": frame,
         "longest_free_window": longest.as_dict() if longest else None,
         "free_windows": [iv.as_dict() for iv in windows],
         "busy_windows": [iv.as_dict() for iv in merged],
@@ -441,11 +576,14 @@ def day_report(
 def occupied_dates(
     games: Iterable[dict],
     durations: dict[str, int] | None = None,
+    scope: str | None = None,
 ) -> dict[str, set[str]]:
-    """Map each local date to the set of leagues that block it."""
+    """Map each local date to the set of leagues that block it, within `scope`."""
     table = durations or DEFAULT_DURATIONS
     occupied: dict[str, set[str]] = {}
     for game in games:
+        if not game_in_scope(game, scope):
+            continue
         interval = game_to_interval(game, table)
         if interval is None:
             continue

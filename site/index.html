@@ -18,18 +18,28 @@
   <nav class="tabs">
     <button class="tab active" data-tab="day" type="button">Day Board</button>
     <button class="tab" data-tab="vacation" type="button">Vacation Windows</button>
+    <button class="tab" data-tab="compare" type="button">Compare 3 Sections</button>
+    <button class="tab" data-tab="radio" type="button">Radio</button>
     <button class="tab" data-tab="review" type="button">Needs Review <span id="reviewCount" class="badge">0</span></button>
     <button class="tab" data-tab="sources" type="button">Sources</button>
   </nav>
 </header>
 
+<div class="scopebar">
+  <span class="scopelabel">Section:</span>
+  <div id="scopePicker" class="scopepicker"></div>
+  <span class="scopehint">Every number on this page is recomputed for the section you pick.</span>
+</div>
+
 <main>
   <!-- ===================== DAY BOARD ===================== -->
   <section id="tab-day" class="panel active">
+    <div id="scopeNote" class="note info"></div>
+
     <div class="datebar">
       <button id="prevDay" class="navbtn" type="button" title="Yesterday">&laquo; Yesterday</button>
       <div class="datepick">
-        <input type="date" id="dateInput" min="2026-08-01" max="2027-02-28">
+        <input type="date" id="dateInput" min="2026-08-01" max="2030-02-28">
         <button id="todayBtn" class="navbtn ghost" type="button">Today</button>
       </div>
       <button id="nextDay" class="navbtn" type="button" title="Tomorrow">Tomorrow &raquo;</button>
@@ -54,6 +64,7 @@
     <h3 class="sect">Games on the radio</h3>
     <div id="scoreboard" class="scoreboard"></div>
 
+    <div id="outsideScope" class="note hidden"></div>
     <div id="mlbNote" class="note hidden"></div>
   </section>
 
@@ -62,27 +73,66 @@
     <h2 class="dayheading">Best vacation windows, 2026&ndash;2029</h2>
     <div class="note warn">
       <strong>Read this first.</strong> 2026 is fully verified (MLB and NFL). MLB announced its
-      <strong>2027</strong> schedule on 2026-07-16, so 2027 MLB is VERIFIED — but the schedule was
+      <strong>2027</strong> schedule on 2026-07-16, so 2027 MLB is VERIFIED &mdash; but the schedule was
       released while the CBA is in renegotiation (current deal expires 2026-12-01), so it may change.
       2028 and 2029 MLB schedules are confirmed by the Stats API to be <strong>unreleased</strong>, so those
       years are estimates built from the 2026/2027 verified frames plus each league's scheduling rules.
-      Estimates are marked. Pro Bowl Games (NFL all-star) are blocked in Super Bowl week; earlier Pro
-      Bowl scheduling is uncertain and flagged for review.
+      Estimates are marked. Pro Bowl Games (NFL all-star) are blocked in Super Bowl week. The
+      2026-27 NFL playoff rounds are official; later rounds come from that verified template.
     </div>
 
     <div class="interp">
-      <label><input type="radio" name="interp" value="strict" checked> <strong>Strict</strong> &mdash; Spring Training exhibitions count as MLB games</label>
+      <label><input type="radio" name="interp" value="strict" checked> <strong>Strict</strong> &mdash; Spring Training exhibitions count as MLB games (Giants Spring Training is on KNBR, so this is the literal reading)</label>
       <label><input type="radio" name="interp" value="regular"> <strong>Regular season only</strong> &mdash; ignore Spring Training exhibitions</label>
     </div>
 
+    <p class="lede">
+      Showing the section selected at the top of the page. The table reports the longest clean run and
+      whether it satisfies a 1-, 2- or 3-week trip.
+    </p>
+
     <table class="vtable">
       <thead>
-        <tr><th>Year</th><th>Longest clean run</th><th>Dates</th><th>Weeks</th><th>Free days in year</th><th>Data status</th></tr>
+        <tr>
+          <th>Year</th><th>Longest clean run</th><th>Dates</th>
+          <th>1 week</th><th>2 weeks</th><th>3 weeks</th><th>Free days in year</th><th>Data status</th>
+        </tr>
       </thead>
       <tbody id="vacationBody"></tbody>
     </table>
 
+    <p class="lede">The same numbers for every section, so you can see what each team costs you:</p>
+    <table class="vtable compare" id="compareTable"></table>
+
     <div id="vacationDetail"></div>
+  </section>
+
+  <!-- ===================== COMPARE ===================== -->
+  <section id="tab-compare" class="panel">
+    <h2 class="dayheading">The three sections, side by side</h2>
+    <p class="lede">
+      Section 1 is three things: MLB (all 30 clubs), the 49ers (preseason, regular season and
+      postseason) and the Westwood One national NFL radio feed. Section 2 adds Stanford and Cal
+      football. Section 3 adds the San Jose Earthquakes. Each section is recomputed from scratch.
+    </p>
+
+    <table class="vtable compare" id="compareTable2"></table>
+
+    <div class="notesbox">
+      <h3 class="sect">What actually changes between the sections</h3>
+      <ul id="compareSummary" class="def"></ul>
+    </div>
+  </section>
+
+  <!-- ===================== RADIO ===================== -->
+  <section id="tab-radio" class="panel">
+    <h2 class="dayheading">Radio &mdash; what can you actually hear in 94122?</h2>
+    <p class="lede">
+      A game only counts as busy if it reaches a standard AM/FM radio in the Outer Sunset. These are
+      the stations that carry Section 1&ndash;3 games, with the facility facts and the source for each.
+      Reception notes are conservative and never claim a field-strength measurement.
+    </p>
+    <div id="radioList" class="srcgrid"></div>
   </section>
 
   <!-- ===================== REVIEW ===================== -->

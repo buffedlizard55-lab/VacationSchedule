@@ -160,3 +160,90 @@ If you change the engine, keep these true. All are covered by tests.
   CPython silently returns wall-clock time when both sides share a `tzinfo`. See IR-14.
 - An un-timed game must **block**, not vanish. Returning `None` is how a Wild Card day
   got reported as free. See IR-16.
+
+---
+
+# Revision 2026-09-20 (after the sections/PR pass)
+
+## Stale items corrected in this revision
+
+- **IR-12 is closed.** Super Bowl LXIII is **2029-02-11 at Allegiant Stadium, Las
+  Vegas**, announced by the NFL on 2026-03-30. It was previously carried as an
+  estimate. `data/verified/seasons.json` said otherwise for the 2028 season; that entry
+  was corrected and `scripts/nfl_calendar.py` is now the single source of truth for
+  Super Bowl, Pro Bowl and playoff-round dates. `data/verified/*.json` should not
+  restate them.
+- **The three sections did not exist** when this document was first written. The advice
+  below ("cover the whole NFL season", "add college basketball") still stands, but the
+  cost of a gap is now section-specific and the Compare tab shows which section is
+  binding.
+- **The NFL slate gap is now bounded but not fixed.** Every NFL game day carries a
+  date-level placeholder, so no NFL Sunday can read free. What is still missing is
+  *which* game is on the radio and *when* it kicks off.
+
+## What is genuinely still blocking a good product
+
+### High
+
+1. **2026 MLB postseason times (IR-24).** Every game is the `07:33:00Z` sentinel. The
+   recommendations are durations, not clock times, until MLB sets first pitch. Re-fetch
+   from 2026-09-27. This is the single largest source of `Time TBD` chips.
+2. **The whole NFL schedule is not bundled.** Sections 1–3 name the 49ers and the
+   Westwood One feed only. A day-level placeholder keeps Sundays busy, but a user who
+   asks "what is on 2026-11-15?" gets "NFL games scheduled (national radio window TBA)"
+   instead of a game. Bundling the full 272-game schedule (league-owned source, four
+   seasons) is the obvious next step and would let the frame placeholders be deleted.
+3. **Basketball and hockey are absent.** Warriors (KGMZ 95.7) and Sharks games land
+   squarely in October–February, inside every recommended window. Section 3's 12-day
+   answer is only 12 days because MLS is counted; if the user also listens to Warriors
+   games, the honest answer is much shorter. This is a **scope question for the user**,
+   not a data problem.
+4. **2028-2029 are estimates in the strictest sense.** The NFL has not released those
+   schedules, and MLB's 2028/2029 seasons return empty from the Stats API. The windows
+   shown for those years are derived from the league calendars and are labelled
+   ESTIMATED on every row. Do not quote them as schedules.
+
+### Medium
+
+5. **College basketball** (Stanford, Cal, USF on KNBR) runs November–March and would
+   bite the February corridors the same way MLS bites the regular-season one.
+6. **Bowl games and the CFP** are a single ESTIMATED span past 2027-01-01; the actual
+   matchups are only known in December.
+7. **MLS is bundled through 2026-11-07.** The 2027-2029 MLS schedules do not exist yet;
+   the analysis carries a season span instead, and Section 3's answer for those years
+   depends on that span being roughly right.
+8. **The Westwood One affiliate table is labelled 2025** (IR-23). One constant to
+   update, but it is the only evidence for the San Francisco affiliate list.
+9. **The A's Bay Area signal is unverified** (IR-28). KNEW 960 is the Bay Area affiliate;
+   whether KSTE 650 covers 94122 from Rancho Cordova is undocumented.
+10. **Baseball on the radio was assumed, not measured.** The project assumes a radio
+    listener in 94122; it does not model KNBR's night-time skywave, the 104.5 FM
+    contour over the Sunset, or whether an indoor radio picks up KTCT.
+
+### Larger
+
+11. **No automated freshness check.** Every source here was read by hand on 2026-09-20.
+    A scheduled re-fetch with a diff report would turn IR-24 and IR-23 into tickets
+    instead of surprises.
+12. **The bundle is now 440 records / ~616 KB** because of the NFL frame placeholders.
+    A per-date or per-month lazy load, or a smaller wire format, would help on mobile.
+13. **`tests/test_parity_js.py` takes ~4 minutes** — it spawns Node four times over ~360
+    dates, and each harness run is ~1 minute. It is the best test in the repo (it diffs
+    the two independent engines to the minute), but it is the reason the suite is slow.
+    Batching the four scope variants into one harness invocation is a cheap win.
+14. **No screenshot or visual test.** `tests/render_check.js` asserts the DOM, not the
+    layout, so a CSS regression that hides the scope picker would still pass.
+
+---
+
+# Part 5 (revision 2026-09-20) — invariants added in this pass
+
+| Invariant | Test |
+|---|---|
+| Section definitions are the ones the request asked for | `TestCoverageSections::test_section_definitions_match_the_request` |
+| Free minutes are monotonic across sections (1 ≥ 2 ≥ 3) | `TestCoverageSections::test_section_filter_is_monotonic` |
+| A date inside an MLB season frame is never read free | `TestMlbSeasonFrameFallback::test_in_season_date_without_per_game_data_is_blocked` |
+| The frame fallback fires on the days it is supposed to | `TestMlbSeasonFrameFallback::test_frame_fallback_actually_blocks_something` |
+| No 7-day run exists inside the NFL season | `TestWeekWindowInvariant::test_no_week_long_run_inside_the_nfl_season` |
+| JS and Python agree for every section, with and without frames | `TestJsPythonParity::test_scope_1_matches_exactly` etc. |
+| No date carrying a game in a section reads free in that section | `TestJsPythonParity::test_no_date_is_free_when_a_game_exists_in_its_section` |

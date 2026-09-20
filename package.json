@@ -1,0 +1,13 @@
+{
+  "name": "vacation-schedule",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Free-time and vacation-window analysis for live sports on the radio in San Francisco (Outer Sunset, 94122): MLB, NFL, Bay Area college football and MLS.",
+  "scripts": {
+    "test": "node tests/render_check.js",
+    "build": "python3 scripts/build_data.py && python3 scripts/analyze_vacation.py"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

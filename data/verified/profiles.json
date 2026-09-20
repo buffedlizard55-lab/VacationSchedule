@@ -1,0 +1,114 @@
+{
+  "_meta": {
+    "description": "The three coverage sections the user asked to compare, verbatim from the request, plus the widest scope the project tracks. A 'section' is a definition of what counts as busy. Everything the site computes - the day board, the free windows, and the vacation analysis - is computed once per section so the three can be compared side by side.",
+    "retrieved_utc": "2026-09-20T00:00:00Z",
+    "tag_vocabulary": {
+      "MLB": "Any MLB game, all 30 clubs, Spring Training through the World Series. Giants and Athletics flagged high priority.",
+      "NFL:49ers": "San Francisco 49ers, preseason + regular season + postseason. High priority.",
+      "NFL:national": "Westwood One Sports national NFL radio broadcast (one game per window; not the whole NFL slate).",
+      "NCAAF:Stanford": "Stanford Cardinal football. High priority.",
+      "NCAAF:California": "California Golden Bears football. High priority.",
+      "NCAAF:national": "Westwood One Sports national NCAA football radio broadcast. NOT part of Sections 1-3 (the request lists Westwood One only for the NFL).",
+      "MLS:Earthquakes": "San Jose Earthquakes MLS. High priority."
+    },
+    "section_ids": {
+      "1": "MLB (Giants + A's high priority, all 30 clubs) + NFL 49ers (preseason/regular/postseason, high priority) + Westwood One Sports national NFL radio.",
+      "2": "Section 1 + Stanford NCAAF and California NCAAF (high priority).",
+      "3": "Section 2 + San Jose Earthquakes MLS (high priority). This is the definition in the site's 'What free means' block.",
+      "all": "Every live over-the-air game this project tracks, including Westwood One national NCAA football. Shown for completeness; it is wider than any of the three sections."
+    },
+    "why_not_every_nfl_game": "The request lists only the San Francisco 49ers plus the Westwood One national feed for the NFL. Those two tags cover roughly five NFL dates a week (Sunday, plus the midweek national window), not all 272 games. The vacation analysis therefore ALSO blocks the NFL league calendar (Hall of Fame Game through the end of the season) as a conservative backstop - see scripts/analyze_vacation.py.",
+    "high_priority_teams": [
+      "San Francisco Giants",
+      "Athletics",
+      "San Francisco 49ers",
+      "Stanford",
+      "California",
+      "San Jose Earthquakes"
+    ]
+  },
+  "sections": [
+    {
+      "id": "1",
+      "order": 1,
+      "short": "1. MLB + NFL",
+      "name": "Section 1 - MLB + NFL radio",
+      "required_tags": [
+        "MLB",
+        "NFL:49ers",
+        "NFL:national"
+      ],
+      "definition": [
+        "MLB (Giants and A's flagged high priority; all 30 clubs shown)",
+        "NFL - San Francisco 49ers, preseason and regular season and postseason (high priority)",
+        "Westwood One Sports national NFL radio broadcasts"
+      ],
+      "radio": [
+        "Giants: KNBR 680 AM / 104.5 FM",
+        "49ers: KNBR 680 AM / 104.5 FM, KSAN 107.7 FM, KSFO 810 AM, KTCT 1050 AM",
+        "A's: KSTE 650 AM (Sacramento flagship) + KNEW 960 AM (Bay Area); see docs/IRREGULARITIES.md IR-11",
+        "Westwood One NFL national feed: verified affiliates in the San Francisco market are KNBR-AM, KNBR-FM, KNBR-F2 and KTCT-AM"
+      ]
+    },
+    {
+      "id": "2",
+      "order": 2,
+      "short": "2. + Stanford / Cal",
+      "name": "Section 2 - Section 1 + Bay Area college football",
+      "required_tags": [
+        "MLB",
+        "NFL:49ers",
+        "NFL:national",
+        "NCAAF:Stanford",
+        "NCAAF:California"
+      ],
+      "definition": [
+        "MLB (Giants and A's flagged high priority; all 30 clubs shown)",
+        "NFL - San Francisco 49ers, preseason and regular season and postseason (high priority)",
+        "Stanford NCAAF, California NCAAF (high priority)",
+        "Westwood One Sports national NFL radio broadcasts"
+      ],
+      "radio": [
+        "Stanford football: KNBR 680 AM / 104.5 FM (Cumulus; KNBR lists Stanford among its properties)",
+        "California football: KSFO 810 AM for every 2026 game except the Big Game, which is on KNBR 680 AM / 104.5 FM - calbears.com/sports/football/schedule, read 2026-09-20. See docs/IRREGULARITIES.md IR-22",
+        "Both are Cumulus stations on strong Bay Area signals (KSFO 810 is the former 50,000 W KGO facility); either way the game is audible in Outer Sunset 94122 and the day is blocked."
+      ]
+    },
+    {
+      "id": "3",
+      "order": 3,
+      "short": "3. + Earthquakes MLS",
+      "name": "Section 3 - full blackout (adds San Jose Earthquakes)",
+      "required_tags": [
+        "MLB",
+        "NFL:49ers",
+        "NFL:national",
+        "NCAAF:Stanford",
+        "NCAAF:California",
+        "MLS:Earthquakes"
+      ],
+      "definition": [
+        "MLB (Giants and A's flagged high priority; all 30 clubs shown)",
+        "NFL - San Francisco 49ers, preseason and regular season and postseason (high priority)",
+        "Stanford NCAAF, California NCAAF (high priority)",
+        "San Jose Earthquakes MLS (high priority)",
+        "Westwood One Sports national NFL radio broadcasts"
+      ],
+      "radio": [
+        "San Jose Earthquakes: KNBR 680 AM / 104.5 FM (Cumulus, 2026-04-15 press release)",
+        "MLS regular season is a monthly Apple TV subscription; the radio/audio simulcast is what matters here, and it is the reason Section 3 breaks the long windows."
+      ],
+      "note": "This is the definition used by the site's original 'What free means' block."
+    }
+  ],
+  "extra_scope": {
+    "id": "all",
+    "short": "Everything tracked",
+    "name": "Superset - everything this project tracks",
+    "definition": [
+      "All of Section 3",
+      "Westwood One Sports national NCAA football radio broadcasts (the request lists Westwood One for the NFL only, so these are NOT part of Sections 1-3)",
+      "Any future league added to data/verified/"
+    ]
+  }
+}

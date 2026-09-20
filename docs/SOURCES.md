@@ -230,3 +230,98 @@ has shortened since the original build — IR-10 and IR-11 were resolved during 
 beginning with the 2025-26 cycle (announced 2025-10-22). 2026: **Tue 2026-02-03**,
 Moscone Center, San Francisco (verified). 2027+ follow the same Tuesday-of-Super-
 Bowl-week pattern and are marked ESTIMATED until the NFL publishes them.
+
+---
+
+# Added 2026-09-20 (second pass)
+
+Every URL below was opened during this pass. Nothing here is cited from memory.
+
+## The three coverage sections
+
+- `data/verified/profiles.json` — the sections and their `required_tags`. The `definition`
+  arrays are verbatim from the request and are asserted in
+  `tests/test_free_time.py::TestCoverageSections::test_section_definitions_match_the_request`,
+  so the site cannot quietly redefine what it is measuring.
+
+## MLB — 2026 postseason, resolved per date
+
+- `https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W`
+  **PRIMARY.** Read on 2026-09-20. Returns 28 games across 28 dates:
+  Wild Card 09-29/09-30/10-01 (4 games each day), Division Series 10-03…10-10,
+  League Championship Series 10-11…10-20, World Series 10-23, 10-24, 10-26, 10-27,
+  10-28, 10-30, 10-31. **No game exists on 09-28, 10-02, 10-21, 10-22, 10-25 or 10-29**
+  — those are travel days, and the previous revision wrongly blocked five of them.
+  Every `gameDate` still carries the `07:33:00Z` sentinel, i.e. no first pitch is
+  published yet. Stored as `data/verified/mlb_postseason_2026.json`.
+- `https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026` **PRIMARY.**
+  Retrieved 2026-09-20 (page dated 2026-09-20): the Rays, Brewers, Dodgers, Yankees and
+  Braves have clinched a postseason berth; the Brewers clinched the NL Central on
+  2026-09-15 and the Dodgers the NL West. Matchups and first-pitch times are **not** set
+  until the field is final on 2026-09-27, so the site shows MLB's own placeholder
+  participants ("AL Wild Card #1") and never a guessed club.
+- `https://www.usatoday.com/story/sports/mlb/2026/09/18/mlb-playoff-schedule-2026-postseason-dates-world-series/91826300007/`
+  and `https://www.foxsports.com/stories/mlb/2026-mlb-playoff-schedule-dates-rounds-how-watch`
+  **SECONDARY cross-checks** that agree with the API on the round dates.
+
+## NFL — calendar, rounds and the Pro Bowl
+
+- `https://www.seahawks.com/news/nfl-announces-important-dates-for-2026-2027` **PRIMARY**
+  (club republication of the NFL's key-dates release, 2026-07-07): Wild Card weekend
+  **2027-01-16..18**, Divisional **2027-01-23..24**, Conference Championships
+  **2027-01-31**, Super Bowl LXI **2027-02-14** at SoFi Stadium. Week 18 ends
+  2027-01-09/10. Also confirms the Melbourne opener (2026-09-10) and Rio (2026-09-27).
+- `https://operations.nfl.com/updates/the-game/2026-pro-bowl-games-presented-by-verizon-moved-to-tuesday-of-super-bowl-lx-week-in-bay-area/`
+  **PRIMARY.** The Pro Bowl Games moved to the Tuesday of Super Bowl week: 2026-02-03,
+  8:00 pm ET, Moscone Center, San Francisco. Later years follow the same pattern and are
+  marked ESTIMATED.
+- `https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029` **PRIMARY** —
+  Super Bowl LXIII at Allegiant Stadium, Las Vegas, **2029-02-11**, announced
+  2026-03-30 at the NFL Annual Meeting. This closes IR-12 (previously ESTIMATED).
+- `https://sports.yahoo.com/articles/key-dates-2026-nfl-season-162324249.html`
+  **SECONDARY** corroboration of the same round dates and the 2026-11-10 trade deadline.
+
+## Radio — what is actually on the dial
+
+- `https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/`
+  **PRIMARY.** KNBR 104.5 FM / 680 AM is the 49ers flagship (since 2005) and is also the
+  radio home of the Giants, Stanford Cardinal, Cal Golden Bears, USF men's basketball and
+  the San Jose Earthquakes. 49ers programming also airs on **107.7 The Bone (KSAN-FM)**
+  and **810 AM KSFO**; KNBR programming is on the KTCT 1050 subchannel. KNBR's 50,000-watt
+  signal is licensed to San Francisco.
+- `https://www.westwoodonesports.com/station-finder/` **PRIMARY.** Its NFL affiliate table
+  lists **San Francisco, CA: KNBR-AM, KNBR-F2, KNBR-FM, KTCT-AM**. This resolves IR-10
+  (the Westwood One San Francisco affiliate was previously unconfirmed). Note the page's
+  own heading still reads "NFL Regular Season (2025)" — flagged as IR-23.
+- `https://calbears.com/sports/football/schedule` **PRIMARY.** Cal's own 2026 schedule
+  lists **Radio: KSFO 810 AM** for every game except the 129th Big Game (2026-11-21),
+  which is on **KNBR 104.5 FM / 680 AM**. This corrects the earlier assumption that Cal
+  football is carried on KNBR; both stations are Cumulus and both are strong in 94122, so
+  no Section 2 conclusion changes. Flagged as IR-22.
+- `https://www.mlb.com/athletics/schedule/watch` **PRIMARY.** A's radio affiliates:
+  **650 AM KSTE** (Sacramento flagship) and **960 AM KNEW** (Bay Area). Resolves IR-11
+  for the Bay Area; KSTE's reach into 94122 is unverified (21,000 W, Rancho Cordova).
+- `https://www.radioworld.com/news-and-business/cumulus-media-surrenders-license-of-san-franciscos-560-am`
+  **PRIMARY.** Cumulus moved the KSFO format and calls to the **50,000-watt 810 AM**
+  facility (formerly KGO) and surrendered the 560 AM licence in August 2026. This is why
+  Cal football's "KSFO 810 AM" is a strong 94122 signal rather than a weak local one.
+- `https://en.wikipedia.org/wiki/KSAN_(FM)` **SECONDARY.** KSAN 107.7: Class B, 8,900 W
+  ERP, 354 m HAAT, licensed to San Mateo — consistent with Bay-Area-wide coverage.
+- `https://publicfiles.fcc.gov/am-profile/knbr` **PRIMARY (regulator).** KNBR facility ID
+  35208, licensed to San Francisco, licence expires 2029-12-01.
+
+## Duration research
+
+- `https://www.sportsbusinessjournal.com/Articles/2026/07/14/mlb-game-duration-up-for-the-second-straight-year/`
+  **PRIMARY-adjacent.** Average nine-inning MLB game through 2026-07-08: **≈2:42**.
+- `https://www.profootballnetwork.com/how-long-is-a-football-game-breaking-down-the-time-between-the-first-and-last-whistle/`
+  **SECONDARY.** NFL 3:12 (12-minute halftime); NCAA 3:24 (20-minute halftime).
+- `https://www.academicjobs.com/en-us/higher-education-news/how-long-is-a-college-football-game-average-326-explained-or-academicjobs-12610`
+  **SECONDARY.** 2025 FBS average **3:26**.
+
+## Abandoned in this pass
+
+- The Westwood One station finder renders its affiliate tables as a single page with no
+  per-zip filtering in the fetched HTML; the San Francisco rows were read from the flat
+  NFL table instead of a 94122-specific query. The table is market-level, which is the
+  right granularity for this question anyway.

@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "description": "The 2026 MLB postseason, resolved as far as MLB has actually published it. DATES are official and machine-readable from the MLB Stats API. FIRST-PITCH TIMES are NOT published yet - every one of these games is currently served by the API with the 07:33:00Z sentinel (an impossible 03:33 ET start), which is MLB's own 'time not set' marker. Per MLB, game times are set once the matchups lock in the final weekend of the regular season. Nothing here invents or infers a time.",
+    "retrieved_utc": "2026-09-20T00:00:00Z",
+    "primary_source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W",
+    "supporting_sources": [
+      "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+      "https://www.usatoday.com/story/sports/mlb/2026/09/18/mlb-playoff-schedule-2026-postseason-dates-world-series/91826300007/",
+      "https://www.foxsports.com/stories/mlb/2026-mlb-playoff-schedule-dates-rounds-how-watch"
+    ],
+    "time_resolution_status": "UNRESOLVED - no official first-pitch time exists for any 2026 postseason game at retrieval time. The engine blocks each official date with the documented MLB TBD envelope (15:00-23:59 PT), which is conservative rather than precise. See docs/IRREGULARITIES.md IR-02.",
+    "date_resolution_status": "RESOLVED - the dates below are the exact dates the league schedule reserves for games, including 'if necessary' games. Note the gaps: 2026-10-02, 10-21, 10-22, 10-25 and 10-29 carry no game under any scenario (travel days). An earlier version of this project blocked 2026-09-29 through 2026-10-31 continuously, which over-blocked those five dates."
+  },
+  "clinch_status": {
+    "as_of": "2026-09-20",
+    "source": "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+    "clinched_postseason_berth": [
+      "Tampa Bay Rays",
+      "Milwaukee Brewers",
+      "Los Angeles Dodgers",
+      "New York Yankees",
+      "Atlanta Braves"
+    ],
+    "clinched_division": [
+      "Milwaukee Brewers (NL Central, clinched 2026-09-15)",
+      "Los Angeles Dodgers (NL West)",
+      "Tampa Bay Rays (AL East)"
+    ],
+    "still_unresolved": "Seeds 3-6 in each league, plus the remaining divisions. MLB has not published matchups, and it will not publish first-pitch times until the field is set on 2026-09-27. Any row on this site naming a specific club in a postseason game would be a guess, so the site shows the league's placeholder participants verbatim (e.g. 'AL Wild Card #1')."
+  },
+  "rounds": [
+    {"round": "Wild Card Series", "game_type": "F", "best_of": 3, "first_date": "2026-09-29", "last_date": "2026-10-01",
+     "dates": ["2026-09-29", "2026-09-30", "2026-10-01"], "games_per_round_day": 4},
+    {"round": "Division Series", "game_type": "D", "best_of": 5, "first_date": "2026-10-03", "last_date": "2026-10-10",
+     "dates": ["2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10"]},
+    {"round": "League Championship Series", "game_type": "L", "best_of": 7, "first_date": "2026-10-11", "last_date": "2026-10-20",
+     "dates": ["2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20"]},
+    {"round": "World Series", "game_type": "W", "best_of": 7, "first_date": "2026-10-23", "last_date": "2026-10-31",
+     "dates": ["2026-10-23", "2026-10-24", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-30", "2026-10-31"]}
+  ],
+  "dates_with_a_reserved_game": [
+    "2026-09-29", "2026-09-30", "2026-10-01",
+    "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10",
+    "2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20",
+    "2026-10-23", "2026-10-24", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-30", "2026-10-31"
+  ],
+  "off_days_with_no_possible_game": ["2026-09-28", "2026-10-02", "2026-10-21", "2026-10-22", "2026-10-25", "2026-10-29"]
+}
