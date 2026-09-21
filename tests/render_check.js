@@ -47,9 +47,12 @@ const text = (id) => ($(id) ? $(id).textContent : "<missing>").replace(/\s+/g, "
 setTimeout(() => {
   // ---- the page rendered at all ----
   check("day heading rendered", /\d{4}/.test(text("dayHeading")), text("dayHeading"));
-  check("verdict banner rendered", /FREE|BUSY/.test(text("verdict")), text("verdict"));
+  check("verdict banner rendered", /CONFLICT|BUSY/.test(text("verdict")), text("verdict"));
   check("generation stamp rendered", /Bundle generated/.test(text("genStamp")), text("genStamp"));
   check("no uncaught JS errors", errors.length === 0, errors.join(" | "));
+
+  $("dateInput").value = "2026-09-20";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
 
   // ---- scoreboard actually populated ----
   const games = window.document.querySelectorAll("#scoreboard .game");
@@ -72,7 +75,7 @@ setTimeout(() => {
 
   // ---- free windows rendered ----
   const wins = window.document.querySelectorAll("#freeList .freewin");
-  check("free windows rendered", wins.length > 0 || /No free time/.test(text("freeList")));
+  check("free windows rendered", wins.length > 0 || /No free window/.test(text("freeList")));
 
   // ---- timeline blocks rendered ----
   check("timeline blocks rendered", window.document.querySelectorAll("#timeline .blk").length > 0);
@@ -91,7 +94,7 @@ setTimeout(() => {
   // the Division Series: no game under any scenario, and no NFL/MLS/college game.
   $("dateInput").value = "2026-10-02";
   $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
-  check("2026-10-02 (postseason travel day) IS free", /FULLY FREE/.test(text("verdict")), text("verdict"));
+  check("2026-10-02 discloses no known conflict, not guaranteed free", /NO KNOWN CONFLICT/.test(text("verdict")), text("verdict"));
   check("2026-10-02 shows no game rows",
     window.document.querySelectorAll("#scoreboard .game").length === 0);
 
@@ -134,7 +137,7 @@ setTimeout(() => {
   check("vacation tab activates", $("tab-vacation").classList.contains("active"));
   const rows = window.document.querySelectorAll("#vacationBody tr");
   check("vacation table has 4 year rows", rows.length === 4, `found ${rows.length}`);
-  check("2026 row marked VERIFIED", /VERIFIED/.test($("vacationBody").textContent));
+  check("2026 row describes modeled gaps", /Official inputs · modeled gaps/.test(rows[0].textContent));
   check("2027 row marked MLB VERIFIED (partial)", /MLB VERIFIED/.test($("vacationBody").textContent));
   check("2028-29 rows marked ESTIMATED",
     ($("vacationBody").textContent.match(/ESTIMATED/g) || []).length === 2);

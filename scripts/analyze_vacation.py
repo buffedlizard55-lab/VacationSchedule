@@ -22,32 +22,12 @@ Both are reported.  Neither is presented as the only correct answer.
 
 Blocking model
 --------------
-* MLB blocks continuously from its first game (Spring Training, strict) or its
-  regular-season opener (regular) through the end of the postseason. MLB plays on
-  essentially every one of those dates, so a continuous span is the honest,
-  conservative choice.
-* NFL blocks on the *actual* days games are played, not a continuous span. The
-  January-February portion of the NFL calendar is sparse (Week 17/18, then four
-  single-weekend playoff rounds plus the Super Bowl), so treating it as one
-  continuous block wrongly hid real clean windows (e.g. the week between Week 18
-  and Wild Card Weekend, and the Pro Bowl week before the Super Bowl).
-  - The 2026-27 cycle (Super Bowl LXI, 2027-02-14, VERIFIED) is used as the
-    day-of-week template; see scripts/nfl_calendar.py. For every cycle each round
-    date is derived from that cycle's super-bowl date and labelled VERIFIED or
-    ESTIMATED.
-  - September-December IS blocked continuously. That is deliberate and harmless
-    for the question being asked: the NFL plays every Sunday, so no run of 7
-    consecutive days inside the NFL season can ever be free of NFL games. The
-    conservative span therefore cannot hide a week-long window; `test_no_week_long_run_inside_nfl_season`
-    asserts exactly that.
-* The NFL's Pro Bowl Games (NFL all-star, Tuesday of Super Bowl week) block.
-* Stanford/California football block their season span in sections 2 and 3, and
-  MLS blocks its season span in section 3. Same argument as the NFL: college
-  football and MLS both play on weekends, and every 7-day window contains a
-  weekend, so a season span is the right conservative unit for a *week* question.
-  Bowl games and the MLS Cup playoffs are conditional on qualifying and are
-  blocked anyway, because a vacation planned around "we might make the playoffs"
-  is not a plan.
+This is a conservative season-envelope planner, NOT a proof that a calendar has
+no possible vacation. MLB and current NFL seasons are reserved continuously;
+January/February NFL uses per-date official inputs or explicit templates.
+Conditional college bowls/CFP and MLS phase envelopes can hide real fixture gaps.
+The published MLS summer–spring format replaces the obsolete February–November
+assumption from 2027 onward. See docs/METHODOLOGY.md for the exact assumptions.
 """
 
 from __future__ import annotations
@@ -129,7 +109,7 @@ def _first_saturday(year: int, month: int) -> str:
 
 def mlb_span(year: int, mlb: dict, count_spring_training: bool) -> tuple[str, str, dict]:
     frame = mlb[str(year)]
-    start = frame["spring_training_start"] if count_spring_training else frame["regular_season_start"]
+    start = frame["spring_training_start"] if count_spring_training else frame.get("first_regular_season_game", frame["regular_season_start"])
     return start, frame["postseason_end"], {
         "start": start,
         "end": frame["postseason_end"],
@@ -138,6 +118,11 @@ def mlb_span(year: int, mlb: dict, count_spring_training: bool) -> tuple[str, st
         "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
         "note": frame.get("note", ""),
     }
+
+
+def _cfp_end_estimate(year: int) -> str:
+    first = date(year, 1, 1)
+    return (first + timedelta(days=(0 - first.weekday()) % 7 + 21)).isoformat()
 
 
 def ncaaf_spans(year: int, seasons: dict) -> list[dict]:  # noqa: C901
@@ -170,12 +155,13 @@ def ncaaf_spans(year: int, seasons: dict) -> list[dict]:  # noqa: C901
                 "source": "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx",
             },
             {
-                "start": "2026-12-19",
-                "end": "2027-01-11",
+                "start": "2026-12-01",
+                "end": "2027-01-25",
                 "status": "ESTIMATED",
-                "label": "Bowl season / CFP (conditional on qualifying)",
+                "label": "Bowl/CFP envelope; Jan 25 title date published (conditional on qualifying)",
                 "conditional": True,
-                "source": "NOT RELEASED as a fixture list - standard bowl calendar",
+                "source": "https://collegefootballplayoff.com/",
+                "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate.",
             },
         ]
     return [
@@ -196,12 +182,13 @@ def ncaaf_spans(year: int, seasons: dict) -> list[dict]:  # noqa: C901
             "source": "NOT RELEASED - first Saturday of December, ACC pattern",
         },
         {
-            "start": f"{year}-12-19",
-            "end": f"{year + 1}-01-11",
+            "start": f"{year}-12-01",
+            "end": _cfp_end_estimate(year + 1),
             "status": "ESTIMATED",
             "label": "Bowl season / CFP (conditional on qualifying, estimated)",
             "conditional": True,
-            "source": "NOT RELEASED as a fixture list - standard bowl calendar",
+            "source": "https://collegefootballplayoff.com/",
+                "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate.",
         },
     ]
 
@@ -235,24 +222,22 @@ def mls_spans(year: int, seasons: dict) -> list[dict]:
                 "source": "NOT RELEASED as a fixture list - MLS playoff window",
             },
         ]
+    if year < 2027:
+        return [{"start": f"{year}-02-01", "end": f"{year}-12-15",
+                 "status": "ESTIMATED", "label": "Historical MLS season envelope",
+                 "conditional": True, "source": "Historical calendar approximation"}]
+    # Official format, NOT official fixture dates. Whole boundary months are
+    # reserved conservatively; no assumption that every club plays every week.
+    source = "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world"
     return [
-        {
-            "start": _last_saturday(year, 2),
-            "end": _last_saturday(year, 11),
-            "status": "ESTIMATED",
-            "label": "Earthquakes MLS regular season (estimated)",
-            "conditional": False,
-            "source": "NOT RELEASED - last Saturday of February through the first weekend of November; "
-                      "the 2026 season is the template (opened 2026-02-21)",
-        },
-        {
-            "start": str(date(year, 12, 5)),
-            "end": str(date(year, 12, 12)),
-            "status": "ESTIMATED",
-            "label": "MLS Cup Playoffs (conditional on qualifying, estimated)",
-            "conditional": True,
-            "source": "NOT RELEASED - MLS Cup window",
-        },
+        {"start": f"{year}-02-01", "end": f"{year}-05-31",
+         "status": "ESTIMATED", "label": "MLS transition season" if year == 2027 else "MLS spring phase + conditional playoffs",
+         "conditional": True, "source": source,
+         "note": "Official February–May format; exact Earthquakes fixtures unresolved. Boundary months reserved in full."},
+        {"start": f"{year}-07-01", "end": f"{year}-12-15",
+         "status": "ESTIMATED", "label": "MLS summer–fall phase before winter break",
+         "conditional": False, "source": source,
+         "note": "Official mid/late-July start and mid-December break; July 1–December 15 is a conservative planning assumption."},
     ]
 
 
@@ -445,16 +430,16 @@ def build_notes(comparison: dict, results: list[dict]) -> list[str]:
             per_section.append((sid, best, one, two, three))
             notes.append(
                 f"[{reading}] {SECTION_NAMES[sid]}: longest run across the four years is {best} days; "
-                f"a 1-week trip is available in {len(one)}/4 years, 2 weeks in {len(two)}/4, 3 weeks in {len(three)}/4."
+                f"a 1-week candidate is found in {len(one)}/4 years, 2 weeks in {len(two)}/4, 3 weeks in {len(three)}/4."
                 + (f" 3-week years: {', '.join(three)}." if three else "")
             )
         bests = {sid: b for sid, b, _, _, _ in per_section}
-        if len(set(bests.values())) == 1:
+        if all(len({r[sid]["longest_days"] for sid in section_ids}) == 1 for r in rows.values()):
             notes.append(
                 f"[{reading}] All three sections give the same longest run ({bests['1']} days). "
-                "Section 1 already saturates the calendar: the MLB season frame plus the NFL season span "
-                "leave exactly one open corridor a year, so adding Stanford/Cal football or the Earthquakes "
-                "cannot shorten it further in this reading."
+                "The modeled MLB and NFL blocks "
+                "leave matching longest runs, so adding Stanford/Cal football or the Earthquakes "
+                "does not shorten the longest run in this reading."
             )
         else:
             worst = min(bests, key=lambda k: bests[k])
@@ -469,14 +454,14 @@ def build_notes(comparison: dict, results: list[dict]) -> list[str]:
         for year, r in rows.items():
             if "1" in r and "2" in r and r["1"]["longest_days"] == r["2"]["longest_days"]:
                 cf_diff.append(year)
-    if cf_diff:
+    if len(cf_diff) == 8:
         years_note = ", ".join(sorted(set(cf_diff)))
         notes.append(
-            "Sections 1 and 2 always have the same longest run ("
+            "Sections 1 and 2 have matching longest modeled runs in ("
             + years_note
-            + ", both readings). Bay Area college football changes only the early-January bowl window, "
+            + ", both readings). Bay Area college football adds a conditional December/January bowl and CFP envelope, "
               "which is conditional on Stanford or Cal qualifying and never creates or destroys a "
-              "1-, 2- or 3-week window. Practically: adding Stanford and Cal costs you nothing."
+              "1-, 2- or 3-week window. In this model the longest run is unchanged; daily free hours can still differ."
         )
 
     # The MLS effect.
@@ -492,9 +477,9 @@ def build_notes(comparison: dict, results: list[dict]) -> list[str]:
         notes.append(
             "Adding the San Jose Earthquakes is the only change that costs a whole trip - "
             + "; ".join(mls_rows)
-            + ". MLS plays on weekends from late February, and every 7-day window contains a weekend, "
-              "so no multi-week window can exist inside the MLS season. If you want 2-3 weeks away, "
-              "Section 3 cannot give it to you; Sections 1 and 2 can."
+            + ". MLS changes to a summer–spring calendar in 2027. Conservative phase envelopes are used, "
+              "which may hide actual fixture gaps. For 2–3 weeks away, "
+              "no Section 3 candidate is found in this model; Sections 1 and 2 have candidates."
         )
 
     # The single most useful comparison in the whole dataset.
@@ -531,7 +516,7 @@ def main(verbose: bool = True) -> dict:
                 "regular": "Only MLB regular season and postseason count.",
             },
             "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB season as a continuous frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, and (e) in section 3 the Earthquakes MLS span. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
-            "caveat": "September-December is blocked continuously for the NFL. The NFL plays every Sunday, so no 7-day run inside the NFL season could ever be free; the span is therefore conservative without being able to hide a week. See test_no_week_long_run_inside_nfl_season.",
+            "caveat": "Continuous season envelopes are conservative and can hide real fixture gaps. No candidate found is not proof a trip is impossible. Future schedule and radio coverage remain incomplete.",
         },
         "comparison": comparison,
         "comparison_notes": build_notes(comparison, results),

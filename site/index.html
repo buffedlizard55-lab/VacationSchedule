@@ -3,23 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>When Can I Take Vacation? &mdash; Bay Area Sports Radio Calendar</title>
+<title>Vacation windows · Bay Area sports planner</title>
+<meta name="description" content="Compare three sports schedules and find estimated 1, 2 and 3-week vacation windows in 2026–2029, with source links and uncertainty clearly shown.">
+<meta name="theme-color" content="#173f35">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to planner</a>
+<noscript><p class="note warn">JavaScript is required for the calculator. <a href="https://github.com/buffedlizard55-lab/VacationSchedule/blob/main/docs/VACATION-WINDOWS.md">Read the vacation report</a>.</p></noscript>
 <header class="topbar">
   <div class="brand">
-    <h1>When Can I Take Vacation?</h1>
+    <p class="eyebrow">THE BAY AREA · OFF THE AIR, OUT OF TOWN</p>
+    <h1>Make room for a getaway.</h1>
     <p class="tagline">
       Bay Area sports-radio blackout calendar &middot; Outer Sunset, San Francisco 94122 &middot; all times
-      <strong>Pacific (PT)</strong> &middot; every date below comes from the verified bundle, line by line
+      <strong>Pacific (PST / PDT)</strong> &middot; 2026–2029 planning, with sources and uncertainty
     </p>
   </div>
   <nav class="tabs" aria-label="Sections">
-    <button class="tab active" data-tab="decide" type="button">1&ndash;2&ndash;3 Decide</button>
-    <button class="tab" data-tab="vacation" type="button">Vacation Windows</button>
-    <button class="tab" data-tab="day" type="button">Day Checker</button>
-    <button class="tab" data-tab="compare" type="button">Compare 3 Situations</button>
+    <button class="tab active" data-tab="decide" type="button">Plan a trip</button>
+    <button class="tab" data-tab="vacation" type="button">All windows</button>
+    <button class="tab" data-tab="day" type="button">Day & calendar</button>
+    <button class="tab" data-tab="compare" type="button">Compare all three</button>
     <button class="tab" data-tab="nfl" type="button">NFL 2026 Slate</button>
     <button class="tab" data-tab="radio" type="button">Radio</button>
     <button class="tab" data-tab="review" type="button">Needs Review <span id="reviewCount" class="badge">0</span></button>
@@ -33,14 +38,21 @@
   <span class="scopehint">Every number on this page is recomputed for the situation you pick.</span>
 </div>
 
-<main>
+<main id="main">
+  <aside class="trust-banner" aria-label="Planning confidence">
+    <span class="trust-label">PLANNING ESTIMATES, NOT A BOOKING GUARANTEE</span>
+    <p>Official start dates + estimated game lengths + conservative holds for missing schedules.
+    <strong>No known conflict does not mean verified free.</strong> All 30 MLB clubs count, even when local radio carriage is unconfirmed.</p>
+    <span id="coverageStamp">Schedule snapshot: 2026-09-20. Future seasons contain estimates.</span>
+    <span id="refreshHealth"></span>
+  </aside>
   <!-- ===================== DECISION ENGINE ===================== -->
   <section id="tab-decide" class="panel active">
-    <h2 class="dayheading">Decision engine: three questions, one answer</h2>
+    <h2 class="dayheading">Find your next quiet week.</h2>
     <p class="lede">
       Pick your <strong>situation</strong>, your <strong>Spring Training rule</strong>, and your
-      <strong>trip length</strong>. The tables below then list the exact days available &mdash;
-      one row per year, then every qualifying window line by line. Nothing is estimated
+      <strong>trip length</strong>. The tables below then list candidate dates &mdash;
+      one row per year, then each modeled candidate. Nothing is estimated
       without being labelled: each row carries its data status.
     </p>
 
@@ -77,23 +89,23 @@
 
     <div id="decisionSummary" class="verdict">&mdash;</div>
 
-    <h3 class="sect">Answer by year &mdash; exact dates</h3>
+    <h3 class="sect">Your options by year</h3>
     <div class="tablewrap">
       <table class="vtable decision">
         <thead>
           <tr>
-            <th>Year</th><th>Can you go?</th><th>Best exact dates</th><th>Days</th>
-            <th>Free days in year</th><th>Data status</th>
+            <th>Year</th><th>Can you go?</th><th>Best modeled dates</th><th>Days</th>
+            <th>Modeled free days</th><th>Data status</th>
           </tr>
         </thead>
         <tbody id="decisionBody"></tbody>
       </table>
     </div>
 
-    <h3 class="sect">Every exact window that fits your trip, line by line</h3>
+    <h3 class="sect">Candidate windows that fit your trip</h3>
     <p class="lede">
       Each row is one unbroken run of free days that is at least as long as your trip.
-      If the table is empty, no such window exists under your three answers &mdash; try a
+      If the table is empty, no candidate was found by this conservative model &mdash; try a
       shorter trip, the other Spring Training rule, or a narrower situation.
     </p>
     <div class="tablewrap">
@@ -108,26 +120,25 @@
       </table>
     </div>
 
-    <h3 class="sect">Why these dates &mdash; worked line by line</h3>
+    <details class="audit-details"><summary>How these dates were calculated · inspect all inputs</summary>
     <p class="lede">
       The blocked days behind each answer, with the status of every input.
-      &ldquo;Verified&rdquo; means read from a league-owned source on 2026-09-20;
-      &ldquo;estimated&rdquo; means the league has not released that schedule.
+      &ldquo;Official&rdquo; describes a published input, not the completeness of a free-time prediction.
+      Season envelopes may hide genuine breaks; future dates are estimates until released.
     </p>
-    <div id="decisionWhy" class="whybox"></div>
+    <div id="decisionWhy" class="whybox"></div></details>
   </section>
 
   <!-- ===================== VACATION ===================== -->
   <section id="tab-vacation" class="panel">
     <h2 class="dayheading">Best vacation windows, 2026&ndash;2029</h2>
     <div class="note warn">
-      <strong>Read this first.</strong> 2026 is fully verified (MLB and NFL). MLB announced its
-      <strong>2027</strong> schedule on 2026-07-16, so 2027 MLB is VERIFIED &mdash; but the schedule was
-      released while the CBA is in renegotiation (current deal expires 2026-12-01), so it may change.
-      2028 and 2029 MLB schedules are confirmed by the Stats API to be <strong>unreleased</strong>, so those
-      years are estimates built from the 2026/2027 verified frames plus each league's scheduling rules.
-      Estimates are marked. Pro Bowl Games (NFL all-star) are blocked in Super Bowl week. The
-      2026-27 NFL playoff rounds are official; later rounds come from that verified template.
+      <strong>Before you book.</strong> These are modeled gaps, not certified sports-free dates.
+      2026 uses official schedule inputs but local radio assignments and some kickoffs remain unresolved.
+      The 2027 MLB season frame is published; NFL 2027 onward and MLB 2028–2029 use estimates.
+      MLS changes to a summer–spring calendar in 2027; exact Earthquakes fixtures are not assumed.
+      Pro Bowl Games and conditional playoffs are reserved conservatively.
+      Historical windows are shown for comparison, not as trips you can still book.
     </div>
 
     <div class="interp">
@@ -145,7 +156,7 @@
         <thead>
           <tr>
             <th>Year</th><th>Longest clean run</th><th>Dates</th>
-            <th>1 week</th><th>2 weeks</th><th>3 weeks</th><th>Free days in year</th><th>Data status</th>
+            <th>1 week</th><th>2 weeks</th><th>3 weeks</th><th>Modeled free days</th><th>Data status</th>
           </tr>
         </thead>
         <tbody id="vacationBody"></tbody>
@@ -182,21 +193,31 @@
   <section id="tab-day" class="panel">
     <h2 class="dayheading">Day checker</h2>
     <p class="lede">
-      Pick any day to see exactly what is on the radio and which hours are free.
+      Pick a day to see scheduled games, possible radio conflicts, and estimated free hours.
       Games with no announced start time block a conservative window and are labelled
       <strong>Time TBD</strong> &mdash; they are never silently dropped.
     </p>
+    <h3 class="sect">What “free” means</h3>
+    <p>A minute is free in the model when no game in your selected section overlaps it. Missing kickoff times reserve the whole date. Missing schedules remain unresolved.</p>
     <div id="scopeNote" class="note info"></div>
+    <details class="audit-details"><summary>All 30 MLB clubs · Giants and Athletics are high priority</summary><div id="mlbClubs" class="club-grid"></div></details>
 
     <div class="datebar">
       <button id="prevDay" class="navbtn" type="button" title="Yesterday">&laquo; Yesterday</button>
       <div class="datepick">
-        <input type="date" id="dateInput" min="2026-08-01" max="2030-02-28">
+        <input type="date" id="dateInput" min="2026-01-01" max="2029-12-31" aria-label="Choose a Pacific date">
         <button id="todayBtn" class="navbtn ghost" type="button">Today</button>
       </div>
       <button id="nextDay" class="navbtn" type="button" title="Tomorrow">Tomorrow &raquo;</button>
     </div>
 
+    <details class="calendar-box" open>
+      <summary>Month at a glance <span class="small">Filled dot = bundled game / hold · hollow dot = coverage unresolved</span></summary>
+      <div class="calendar-nav"><button id="prevMonth" class="navbtn" aria-label="Previous month">←</button><strong id="monthHeading"></strong><button id="nextMonth" class="navbtn" aria-label="Next month">→</button></div>
+      <div id="monthCalendar" class="month-calendar" aria-label="Choose a day"></div>
+    </details>
+    <p class="hint">Game end times are estimates and include halftime. Overtime, extra innings, weather delays,
+      and local pre/postgame programming can extend a broadcast. TBD times reserve the full date.</p>
     <h2 id="dayHeading" class="dayheading">&mdash;</h2>
 
     <div id="verdict" class="verdict">&mdash;</div>
@@ -210,10 +231,10 @@
       <div class="axis" id="axis"></div>
     </div>
 
-    <h3 class="sect">Your free windows (PT)</h3>
+    <h3 class="sect">Estimated free windows (PT)</h3>
     <div id="freeList" class="freelist"></div>
 
-    <h3 class="sect">Games on the radio</h3>
+    <h3 class="sect">Games &amp; possible radio conflicts</h3>
     <div id="scoreboard" class="scoreboard"></div>
 
     <div id="nflReference"></div>
@@ -228,7 +249,7 @@
       Situation 1 is three things: MLB (all 30 clubs), the 49ers (preseason, regular season and
       postseason) and the Westwood One national NFL radio feed. Situation 2 adds Stanford and Cal
       football. Situation 3 adds the San Jose Earthquakes. Each column is recomputed from scratch.
-      The Spring Training rule follows the Vacation Windows tab.
+      The Spring Training rule follows the All windows tab.
     </p>
 
     <div class="tablewrap">
@@ -281,7 +302,7 @@
     <h2 class="dayheading">Sources &amp; how to re-verify</h2>
     <p class="lede">
       Each row is a link you can open yourself. The retrieval date matters: schedules change.
-      Full citation list lives in <code>docs/SOURCES.md</code>.
+      <a href="https://github.com/buffedlizard55-lab/VacationSchedule/blob/main/docs/SOURCES.md">Full source register</a>. League schedules verify fixtures; station affiliations do not confirm every local broadcast.
     </p>
     <div id="sourcesList"></div>
   </section>
@@ -289,7 +310,8 @@
 
 <footer class="foot">
   <span id="genStamp">&mdash;</span>
-  &middot; Durations: MLB 2:44, NFL 3:12, NCAAF 3:24, MLS 2:00 (verified averages, see docs/METHODOLOGY.md)
+  &middot; Planning lengths: MLB 2:44 · NFL 3:12 · NCAAF 3:24 · MLS 2:00. Estimates, not verified current-season averages.
+  <a href="https://github.com/buffedlizard55-lab/VacationSchedule/blob/main/docs/METHODOLOGY.md">Method &amp; limitations</a>
   &middot; <button id="refreshMlb" class="linkbtn" type="button">Re-fetch MLB from statsapi.mlb.com</button>
 </footer>
 

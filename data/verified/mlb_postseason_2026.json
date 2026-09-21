@@ -19,30 +19,120 @@
       "Milwaukee Brewers",
       "Los Angeles Dodgers",
       "New York Yankees",
-      "Atlanta Braves"
+      "Atlanta Braves",
+      "Boston Red Sox"
     ],
     "clinched_division": [
       "Milwaukee Brewers (NL Central, clinched 2026-09-15)",
       "Los Angeles Dodgers (NL West)",
       "Tampa Bay Rays (AL East)"
     ],
-    "still_unresolved": "Seeds 3-6 in each league, plus the remaining divisions. MLB has not published matchups, and it will not publish first-pitch times until the field is set on 2026-09-27. Any row on this site naming a specific club in a postseason game would be a guess, so the site shows the league's placeholder participants verbatim (e.g. 'AL Wild Card #1')."
+    "still_unresolved": "Seeds 3-6 in each league, plus the remaining divisions. MLB has not published matchups, and it will not publish first-pitch times until the field is set on 2026-09-27. Any row on this site naming a specific club in a postseason game would be a guess, so the site shows the league's placeholder participants verbatim (e.g. 'AL Wild Card #1').",
+    "review_note": "MLB playoff picture re-read 2026-09-20: Red Sox also clinched. Berths do not establish opponents or first-pitch times. Link extraction redirected to a related article; extracted playoff-picture text was present."
   },
   "rounds": [
-    {"round": "Wild Card Series", "game_type": "F", "best_of": 3, "first_date": "2026-09-29", "last_date": "2026-10-01",
-     "dates": ["2026-09-29", "2026-09-30", "2026-10-01"], "games_per_round_day": 4},
-    {"round": "Division Series", "game_type": "D", "best_of": 5, "first_date": "2026-10-03", "last_date": "2026-10-10",
-     "dates": ["2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10"]},
-    {"round": "League Championship Series", "game_type": "L", "best_of": 7, "first_date": "2026-10-11", "last_date": "2026-10-20",
-     "dates": ["2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20"]},
-    {"round": "World Series", "game_type": "W", "best_of": 7, "first_date": "2026-10-23", "last_date": "2026-10-31",
-     "dates": ["2026-10-23", "2026-10-24", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-30", "2026-10-31"]}
+    {
+      "round": "Wild Card Series",
+      "game_type": "F",
+      "best_of": 3,
+      "first_date": "2026-09-29",
+      "last_date": "2026-10-01",
+      "dates": [
+        "2026-09-29",
+        "2026-09-30",
+        "2026-10-01"
+      ],
+      "games_per_round_day": 4
+    },
+    {
+      "round": "Division Series",
+      "game_type": "D",
+      "best_of": 5,
+      "first_date": "2026-10-03",
+      "last_date": "2026-10-10",
+      "dates": [
+        "2026-10-03",
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-09",
+        "2026-10-10"
+      ]
+    },
+    {
+      "round": "League Championship Series",
+      "game_type": "L",
+      "best_of": 7,
+      "first_date": "2026-10-11",
+      "last_date": "2026-10-20",
+      "dates": [
+        "2026-10-11",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-17",
+        "2026-10-18",
+        "2026-10-19",
+        "2026-10-20"
+      ]
+    },
+    {
+      "round": "World Series",
+      "game_type": "W",
+      "best_of": 7,
+      "first_date": "2026-10-23",
+      "last_date": "2026-10-31",
+      "dates": [
+        "2026-10-23",
+        "2026-10-24",
+        "2026-10-26",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-30",
+        "2026-10-31"
+      ]
+    }
   ],
   "dates_with_a_reserved_game": [
-    "2026-09-29", "2026-09-30", "2026-10-01",
-    "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10",
-    "2026-10-11", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19", "2026-10-20",
-    "2026-10-23", "2026-10-24", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-30", "2026-10-31"
+    "2026-09-29",
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-03",
+    "2026-10-04",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-10",
+    "2026-10-11",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-18",
+    "2026-10-19",
+    "2026-10-20",
+    "2026-10-23",
+    "2026-10-24",
+    "2026-10-26",
+    "2026-10-27",
+    "2026-10-28",
+    "2026-10-30",
+    "2026-10-31"
   ],
-  "off_days_with_no_possible_game": ["2026-09-28", "2026-10-02", "2026-10-21", "2026-10-22", "2026-10-25", "2026-10-29"]
+  "off_days_with_no_possible_game": [
+    "2026-09-28",
+    "2026-10-02",
+    "2026-10-21",
+    "2026-10-22",
+    "2026-10-25",
+    "2026-10-29"
+  ]
 }

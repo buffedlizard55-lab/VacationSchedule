@@ -147,13 +147,6 @@ def sections_for_tags(tags: list[str], profiles: dict) -> list[str]:
 
 
 
-def pt_to_utc(date_local: str, hhmm: str, dst_hint: bool | None = None) -> str:
-    """Convert a local-to-user (America/Los_Angeles) wall-clock time to UTC ISO."""
-    moment = datetime.strptime(f"{date_local}T{hhmm}:00", "%Y-%m-%dT%H:%M:%S")
-    aware = moment.replace(tzinfo=USER_TZ, fold=0)
-    return aware.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
 def et_to_utc(date_local: str, hhmm: str) -> str:
     """Convert an Eastern-time wall-clock time to UTC ISO (DST-aware)."""
     moment = datetime.strptime(f"{date_local}T{hhmm}:00", "%Y-%m-%dT%H:%M:%S")
@@ -183,6 +176,7 @@ def from_westwood_one() -> tuple[list[dict], list[dict]]:
     payload = load("nfl_westwoodone_2026.json")
     source = payload["_meta"]["source"]
     games, unresolved = [], []
+    official = {(g["date_local"], g["away"], g["home"]): g for g in load_nfl_regular_schedule()}
     for row in payload["games"]:
         league = row.get("league", "NFL")
         # Westwood One's NFL page also lists one NCAA football broadcast
@@ -198,9 +192,9 @@ def from_westwood_one() -> tuple[list[dict], list[dict]]:
             "label": label,
             "detail": row["feed"],
             "venue": row.get("venue", ""),
-            "priority": row.get("priority", "normal"),
+            "priority": "high",
             "source": row.get("url") or source,
-            "network": "Westwood One Sports (national radio)",
+            "network": "Westwood One national feed · local AM/FM assignment unconfirmed",
             "date_local": row["date_local"],
             "radio_air_utc": et_to_utc(row["date_local"], row["published_et"]),
             "start_utc": et_to_utc(row["date_local"], row["published_et"]),
@@ -214,6 +208,16 @@ def from_westwood_one() -> tuple[list[dict], list[dict]]:
             game["start_utc"] = pt_to_utc(row["date_local"], row["official_kickoff_pt"])
             game["time_status"] = "official_kickoff_plus_radio_air_time"
             game["time_conflict"] = True
+        fixture = official.get((row["date_local"], row["away"], row["home"]))
+        if fixture and fixture.get("kickoff_et"):
+            game["start_utc"] = et_to_utc(fixture["date_local"], fixture["kickoff_et"])
+            game["time_status"] = "official_kickoff_plus_radio_air_time"
+            game["kickoff_source"] = fixture["source"]
+        elif not row.get("official_kickoff_pt"):
+            # Air time is not kickoff. Reserve an explicit pregame allowance;
+            # never describe air time + average duration as an exact finish.
+            game["duration"] += 90
+            game["detail"] += " · kickoff unresolved; 90-minute planning allowance added"
         games.append(game)
         if row.get("tbd_teams"):
             unresolved.append({
@@ -659,7 +663,7 @@ def from_mlb_postseason() -> tuple[list[dict], list[dict]]:
             "venue": "",
             "priority": "normal",
             "source": src,
-            "network": "KNBR 680 AM / 104.5 FM carries Giants baseball; the national radio feed carries the postseason",
+            "network": "MLB league schedule; Bay Area AM/FM carriage unconfirmed",
             "date_local": date_iso,
             "start_utc": f"{date_iso}T{MLB_TBD_SENTINEL_UTC}Z",
             "duration": DEFAULT_DURATIONS["MLB"],
@@ -673,7 +677,7 @@ def from_mlb_postseason() -> tuple[list[dict], list[dict]]:
             "date_local": date_iso,
             "label": f"MLB {round_name} - first pitch time",
             "reason": "Date is official and machine-confirmed; first pitch time is not published. "
-                      "MLB sets postseason start times once the field is final on 2026-09-27.",
+                      "A clinched berth does not establish a matchup or first-pitch time.",
             "source": src,
         })
     return games, unresolved
@@ -682,9 +686,10 @@ def from_mlb_postseason() -> tuple[list[dict], list[dict]]:
 
 def _envelope_minutes(league: str) -> int:
     start, end = TBD_ENVELOPE[league]
-    a = datetime.strptime(start, "%H:%M")
-    b = datetime.strptime(end, "%H:%M")
-    return int((b - a).total_seconds() // 60)
+    def minutes(value):
+        h, m = map(int, value.split(":"))
+        return h * 60 + m
+    return minutes(end) - minutes(start)
 
 
 # ---------------------------------------------------------------------------
@@ -725,13 +730,25 @@ def build(use_cache: bool = True) -> dict:
 
 def _build() -> dict:
     games: list[dict] = []
-    unresolved: list[dict] = []
+    unresolved: list[dict] = load("review_flags.json")
     nfl_schedule_2026 = load_nfl_regular_schedule()
     for loader in (from_westwood_one, from_49ers, from_westwood_one_ncaaf, from_ncaaf, from_mls,
                    from_mlb_postseason, from_nfl_calendar):
         g, u = loader()
         games.extend(g)
         unresolved.extend(u)
+
+    snapshot_path = VERIFIED / "mlb_schedule_2026.json"
+    mlb_snapshot = json.loads(snapshot_path.read_text()) if snapshot_path.exists() else None
+    if mlb_snapshot:
+        # Replace aggregate postseason rows only on dates with API game records.
+        dates = {g["date_local"] for g in mlb_snapshot["games"]}
+        games = [g for g in games if not (g["league"] == "MLB" and g["date_local"] in dates)]
+        games.extend(mlb_snapshot["games"])
+        unresolved = [u for u in unresolved if not (u["league"] == "MLB" and u.get("date_local") in dates)]
+        unresolved.extend({"league": "MLB", "date_local": g["date_local"], "label": g["label"],
+                           "reason": "Official feed: first pitch TBD; full date reserved.", "source": g["source"]}
+                          for g in mlb_snapshot["games"] if g["time_status"] == "TBD_official_date")
 
     # The league schedule is a reference dataset; only the national-radio
     # backstop is fed into the busy engine.  This keeps a 272-game league slate
@@ -759,9 +776,11 @@ def _build() -> dict:
     covered = []
     if postseason["dates_with_a_reserved_game"]:
         covered = [[
-            min(postseason["_meta"].get("retrieved_utc", "2026-09-28")[:10], "2026-09-28"),
+            "2026-09-28",
             max(postseason["dates_with_a_reserved_game"]),
         ]]
+    if mlb_snapshot:
+        covered += [["2026-02-20", "2026-09-27"]]
     for year, frame in seasons["mlb"].items():
         mlb_frames[year] = {
             "start": frame["spring_training_start"],
@@ -809,6 +828,7 @@ def _build() -> dict:
                 "athletics_note": "Athletics (A's) games are carried on KSTE 650 AM (Sacramento) + KNEW 960 AM (Bay Area), NOT KNBR; see docs/SOURCES.md. A's per-game MLB times are fetched live via statsapi.mlb.com like all MLB clubs.",
             },
         },
+        "mlb_snapshot": mlb_snapshot["_meta"] if mlb_snapshot else None,
         "games": games,
         "unresolved": unresolved,
         "nfl_schedule_2026": {
@@ -828,6 +848,7 @@ def _build() -> dict:
         "sections": profiles,
         "mlb_frames": mlb_frames,
         "radio": load("radio_stations.json"),
+        "mlb_clubs": load("mlb_clubs.json"),
     }
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)

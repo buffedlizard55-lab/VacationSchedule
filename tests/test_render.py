@@ -34,7 +34,7 @@ class TestSiteRenders(unittest.TestCase):
     def test_render_check_covers_the_reported_regression(self):
         src = RENDER_CHECK.read_text(encoding="utf-8")
         self.assertIn("2026-09-29", src, "the Wild Card regression date must be covered")
-        self.assertIn("FULLY FREE", src, "a genuinely free day must be asserted too")
+        self.assertIn("NO KNOWN CONFLICT", src, "missing coverage must not be called guaranteed free")
 
 
 if __name__ == "__main__":

@@ -189,7 +189,7 @@ class TestDayReport(unittest.TestCase):
 
         A Wild Card game whose first pitch has not been announced must NOT make
         2026-09-29 read as a free day. It blocks the conservative MLB envelope
-        (15:00-23:59 PT = 539 minutes) and is flagged as unconfirmed.
+        (00:00–24:00 PT = 1440 minutes) and is flagged as unconfirmed.
         """
         games = [{
             "league": "MLB",
@@ -201,8 +201,8 @@ class TestDayReport(unittest.TestCase):
         report = day_report(games, "2026-09-29")
         self.assertFalse(report["is_free_day"], "a TBD game must not yield a free day")
         self.assertTrue(report["has_unconfirmed_times"])
-        self.assertEqual(report["busy_minutes"], 539.0)
-        self.assertEqual(report["unconfirmed_minutes"], 539.0)
+        self.assertEqual(report["busy_minutes"], 1440.0)
+        self.assertEqual(report["unconfirmed_minutes"], 1440.0)
         self.assertEqual(len(report["tbd_unresolved"]), 1)
         # The fabricated 03:33 PT sentinel instant must never surface as a time.
         for window in report["busy_windows"]:
@@ -545,7 +545,7 @@ class TestMlbSeasonFrameFallback(unittest.TestCase):
         self.assertTrue(with_frames["is_free_day"] is False)
         self.assertTrue(with_frames["mlb_frame_fallback"])
         self.assertTrue(without["is_free_day"], "the fallback is what prevents the free reading")
-        self.assertEqual(with_frames["busy_minutes"], 539.0)  # 15:00 -> 23:59 PT
+        self.assertEqual(with_frames["busy_minutes"], 1440.0)  # full local date, no unprotected morning
 
     def test_verified_postseason_off_day_stays_free(self):
         """2026-10-02 is inside the frame but the bundle's list is complete, and empty."""

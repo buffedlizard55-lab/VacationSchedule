@@ -1,0 +1,51 @@
+[
+  {
+    "league": "MLB",
+    "label": "Full all-club offline schedule",
+    "reason": "Checked-in fixture coverage is partial. Daily Pages refresh attempts a full 2026 snapshot; inspect refresh health.",
+    "source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026",
+    "date_local": null
+  },
+  {
+    "league": "NFL",
+    "label": "Local Westwood One carriage",
+    "reason": "National listings do not guarantee KNBR/KTCT broadcast: blackouts and programming conflicts apply. HD-only channels require an HD receiver.",
+    "source": "https://www.westwoodonesports.com/station-finder/",
+    "date_local": null
+  },
+  {
+    "league": "NFL",
+    "label": "2029 Super Bowl exact date",
+    "reason": "Host/year confirmed; February 11 exact date is an estimate, not specified by the reviewed NFL announcement.",
+    "source": "https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029",
+    "date_local": null
+  },
+  {
+    "league": "MLS",
+    "label": "New MLS calendar, incomplete Earthquakes fixtures",
+    "reason": "Summer\u2013spring calendar from 2027 is official; exact phase boundaries and team fixtures are unresolved. Conservative holds may hide real gaps.",
+    "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
+    "date_local": null
+  },
+  {
+    "league": "NCAAF",
+    "label": "Conditional bowl / CFP scope",
+    "reason": "Do not end college coverage January 11. 2027 title listed January 25; future dates are estimated and school qualification unknown.",
+    "source": "https://collegefootballplayoff.com/",
+    "date_local": null
+  },
+  {
+    "league": "NFL",
+    "label": "All-team preseason and additional local sports",
+    "reason": "NFL reference contains regular season, not every preseason game. Additional local basketball and other analog AM/FM programming is not comprehensively covered.",
+    "source": "https://www.nfl.com/schedules/",
+    "date_local": null
+  },
+  {
+    "league": "MLB",
+    "label": "Redirects during primary-source review",
+    "reason": "MLB spring release and playoff-picture extraction resolved to related article URLs while retaining relevant text. See source audit; no matchup inferred from clinches.",
+    "source": "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+    "date_local": null
+  }
+]
