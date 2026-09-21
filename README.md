@@ -168,10 +168,14 @@ docs/                    methodology, sources, irregularities, limitations
 ## Rebuild and test
 
 ```bash
-python3 scripts/build_data.py          # regenerate the bundle
-python3 scripts/analyze_vacation.py    # print both interpretations, all sections
-python3 -m unittest discover -s tests  # 65 tests
+npm ci                                # install the locked DOM test dependency
+npm test                              # render/browser smoke tests
+python3 scripts/build_data.py         # regenerate the bundle
+python3 scripts/analyze_vacation.py   # print both interpretations, all sections
+python3 -m unittest discover -s tests # Python engine, parity, and data tests
 ```
+
+The latest three-pass implementation review is in [`docs/REVIEW-2026-09-21.md`](docs/REVIEW-2026-09-21.md).
 
 The suite includes three unusual checks worth knowing about:
 
