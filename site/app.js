@@ -857,10 +857,10 @@
     box.innerHTML = "";
     SECTIONS.forEach((s) => {
       const cmp = (DATA.vacation_compare && DATA.vacation_compare[which]) || {};
-      let best = 0, bestYear = null, bestStart = null, bestEnd = null;
+      let best = 0, bestStart = null, bestEnd = null;
       Object.keys(cmp).sort().forEach((y) => {
         const r = cmp[y][s.id];
-        if (r && r.longest_days > best) { best = r.longest_days; bestYear = y; bestStart = r.longest_start; bestEnd = r.longest_end; }
+        if (r && r.longest_days > best) { best = r.longest_days; bestStart = r.longest_start; bestEnd = r.longest_end; }
       });
       const btn = document.createElement("button");
       btn.type = "button";
@@ -868,7 +868,7 @@
       let html = '<span class="sitename">' + esc(s.short) + "</span>" +
         "<ul>" + s.definition.map((d) => "<li>" + esc(d) + "</li>").join("") + "</ul>";
       if (best) {
-        html += '<div class="preview">Longest run (' + (which === "strict" ? "strict" : "regular only") + '): <strong>' + best + " days</strong> &mdash; " + esc(fmtRangeFriendly(bestStart, bestEnd)) + " (" + esc(bestYear) + ")</div>";
+        html += '<div class="preview">Longest run (' + (which === "strict" ? "strict" : "regular only") + '): <strong>' + best + " days</strong> &mdash; " + esc(fmtRangeFriendly(bestStart, bestEnd)) + "</div>";
       }
       btn.innerHTML = html;
       btn.setAttribute("aria-pressed", s.id === scope ? "true" : "false");
@@ -905,7 +905,7 @@
       summary.className = "verdict busy";
       summary.innerHTML = "NO CANDIDATE &mdash; no unbroken " + tripLength + "-day window in any year under these answers" +
         `<span class="sub">${esc(scopeShort(scope))} &middot; ${esc(reading)}` +
-        (overall ? ` &middot; the longest modeled run is <strong>${overall.days} days</strong> (${esc(fmtRangeFriendly(overall.start, overall.end))}, ${overall.year})` : "") +
+        (overall ? ` &middot; the longest modeled run is <strong>${overall.days} days</strong> (${esc(fmtRangeFriendly(overall.start, overall.end))})` : "") +
         " &middot; try a shorter trip, the other Spring Training rule, or a narrower situation</span>";
     }
 
