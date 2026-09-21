@@ -1,6 +1,6 @@
 # MLB 2027 schedule - all clubs, all game types
 # source: https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2027-01-01&endDate=2027-12-31&gameType=R,E,S,D,L,F,W,A
-# retrieved_utc: 2026-09-21T22:59:55Z
+# retrieved_utc: 2026-09-21T23:19:36Z
 # raw_sha256: 47400a178ff91701f9a79c369a6f757807a4b94eb128d470e0185c49e10806e6
 # games: 2900 (columns: date_local|start_utc|start_pt|start_et|time_tbd|game_type|away|home|away_id|home_id|venue|status|game_pk)
 # time_tbd=true means the league has not published a first pitch; date_local is still official.
