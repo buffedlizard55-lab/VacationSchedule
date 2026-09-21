@@ -266,6 +266,19 @@ def postseason_window(year: int) -> tuple[str, str]:
     return f"{year}-09-28", f"{year}-10-31"
 
 
+def window_dates(start: str, end: str) -> list[str]:
+    """Every calendar date in an inclusive window (the postseason window, not just
+    the span between the first and last game). A travel day *before* the first game
+    is a date on which no game is possible, and the window text has to include it."""
+    cursor = datetime.strptime(start, "%Y-%m-%d").date()
+    last = datetime.strptime(end, "%Y-%m-%d").date()
+    out: list[str] = []
+    while cursor <= last:
+        out.append(cursor.isoformat())
+        cursor += timedelta(days=1)
+    return out
+
+
 def export_postseason_state(year: int, out_dir: Path = OUT_DIR, raw_dir: Path = RAW_DIR) -> dict:
     """Machine-count the postseason: how many game records exist, how many have a
     published first pitch, which dates are reserved and which are impossible.
@@ -285,13 +298,7 @@ def export_postseason_state(year: int, out_dir: Path = OUT_DIR, raw_dir: Path = 
     payload = json.loads(raw.decode("utf-8"))
     rows = normalize(payload, year)
     dates = sorted({r["date_local"] for r in rows})
-    all_dates = []
-    cursor = datetime.strptime(dates[0], "%Y-%m-%d").date() if dates else None
-    if cursor:
-        last = datetime.strptime(dates[-1], "%Y-%m-%d").date()
-        while cursor <= last:
-            all_dates.append(cursor.isoformat())
-            cursor += timedelta(days=1)
+    all_dates = window_dates(start, end)
     placeholder = any(
         not r["away"].split()[0].isupper() or "Winner" in r["away"] or "Seed" in r["away"] or "#" in r["away"]
         for r in rows
