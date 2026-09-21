@@ -161,6 +161,19 @@ setTimeout(() => {
   scopeBtns()[2].dispatchEvent(new window.Event("click", { bubbles: true }));
   check("section 3 regular reading shows the 12-day window", /12 d/.test($("vacationBody").textContent), $("vacationBody").textContent.slice(0, 120));
 
+  // ---- Spring Training included vs excluded, both visible at once ----
+  const stRows = window.document.querySelectorAll("#stCompareBody tr");
+  check("spring training comparison has 4 year rows", stRows.length === 4, `found ${stRows.length}`);
+  check("spring training comparison headers present",
+    /With Spring Training \(strict\)/.test(window.document.querySelector("#tab-vacation").textContent) &&
+    /Without Spring Training \(regular\)/.test(window.document.querySelector("#tab-vacation").textContent));
+  // Section 3, 2026: strict 11 days (Feb 9-19) vs regular 12 days (Feb 9-20) -> +1
+  check("spring training comparison quantifies the strict cost (2026, section 3)",
+    /\+1 free day/.test(stRows[0].textContent), stRows[0].textContent);
+  // 2027-2029 section 3: both readings collapse to the same 5-day run
+  check("spring training comparison shows no difference where readings agree (2027)",
+    /no difference/.test(stRows[1].textContent), stRows[1].textContent);
+
   // ---- compare + radio tabs ----
   tab("compare").dispatchEvent(new window.Event("click", { bubbles: true }));
   check("compare tab activates", $("tab-compare").classList.contains("active"));

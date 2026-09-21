@@ -58,7 +58,12 @@ a proof that a trip is impossible. See [the complete generated report](docs/VACA
   snapshots. The 2026-09-21 line-by-line pass re-verified the Westwood One rows,
   MLB clinch facts, Super Bowl dates, the MLB API year frames, and the new
   Warriors/Valkyries/Sharks findings; college and MLS fixtures are still
-  inherited snapshots. See [the source audit](docs/SOURCES.md).
+  inherited snapshots. A session-2 pass the same day re-verified the 49ers
+  schedule including per-game radio stations (Weeks 2-3 KSFO 810 AM / KSAN
+  107.7 FM; Week 4 onward KSAN / KNBR), the Athletics home venue (Sutter Health
+  Park, Sacramento), and the live Stats API state (2026/2027 frames; 53
+  postseason records still without published times; six clinched berths). See
+  [the source audit](docs/SOURCES.md).
 - MLB all-club **per-day online fetching** is available. The checked-in offline
   bundle has postseason date holds, not every 2026 regular-season game.
 - A daily Pages workflow attempts an **all-club 2026 MLB snapshot**. It validates

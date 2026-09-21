@@ -146,9 +146,27 @@
       <label><input type="radio" name="interp" value="regular"> <strong>Regular season only</strong> &mdash; ignore Spring Training exhibitions</label>
     </div>
 
+    <h3 class="sect">Spring Training: included vs excluded &mdash; this situation, side by side</h3>
     <p class="lede">
-      Showing the situation selected at the top of the page. The table reports the longest clean run and
-      whether it satisfies a 1-, 2- or 3-week trip.
+      Both readings of the same situation at once, so the cost of the strict rule is visible without
+      toggling. &ldquo;Included&rdquo; counts Spring Training exhibitions as MLB games (Giants Spring
+      Training is on KNBR, so that is the literal reading); &ldquo;excluded&rdquo; ignores them and
+      only regular season + postseason block the trip.
+    </p>
+    <div class="tablewrap">
+      <table class="vtable">
+        <thead>
+          <tr>
+            <th>Year</th><th>With Spring Training (strict)</th><th>Without Spring Training (regular)</th><th>What the strict rule costs</th>
+          </tr>
+        </thead>
+        <tbody id="stCompareBody"></tbody>
+      </table>
+    </div>
+
+    <p class="lede">
+      Showing the situation selected at the top of the page under the interpretation you pick above.
+      The table reports the longest clean run and whether it satisfies a 1-, 2- or 3-week trip.
     </p>
 
     <div class="tablewrap">

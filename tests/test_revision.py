@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from lib_windows import game_to_interval, day_report, local_day_bounds, span_minutes
 from analyze_vacation import analyze, mls_spans
-from build_data import build, from_westwood_one
+from build_data import build, from_49ers, from_westwood_one
 from nfl_calendar import SUPER_BOWL_BY_YEAR
 from refresh_mlb import normalize, refresh
 
@@ -77,6 +77,25 @@ class TestPublicationRevision(unittest.TestCase):
         self.assertEqual(game["radio_air_utc"], "2026-09-21T23:00:00Z")
         self.assertEqual(game["priority"], "high")
         self.assertTrue(game.get("kickoff_source") or game["duration"] >= 282)
+
+    def test_49ers_per_game_radio_matches_club_listing(self):
+        # Session 2 (2026-09-21): every 49ers game's radio field was re-read
+        # off 49ers.com. Weeks 2-3 ran on KSFO 810 AM / KSAN 107.7 FM; from
+        # Week 4 the club lists KSAN 107.7 FM / KNBR 104.5 FM / 680 AM; the
+        # Melbourne opener lists no per-game station. The builder must not
+        # flatten all of these into one blanket claim.
+        games, _ = from_49ers()
+        by_date = {g["date_local"]: g for g in games}
+        self.assertEqual(len(games), 19, "3 preseason + 16 regular season")
+        for date in ("2026-09-20", "2026-09-27"):
+            self.assertIn("KSFO 810 AM", by_date[date]["network"], date)
+            self.assertNotIn("KNBR", by_date[date]["network"], date)
+        for date in ("2026-10-04", "2026-10-19", "2026-11-22", "2026-12-17", "2027-01-03"):
+            self.assertIn("KNBR 104.5 FM", by_date[date]["network"], date)
+            self.assertNotIn("KSFO", by_date[date]["network"], date)
+        self.assertIn("no per-game station listed", by_date["2026-09-10"]["network"])
+        for pre in ("2026-08-13", "2026-08-20", "2026-08-27"):
+            self.assertIn("no per-game station listed", by_date[pre]["network"])
 
     def test_mlb_athletics_not_assigned_knbr(self):
         game = normalize(fixture(), "https://statsapi.mlb.com/")[0]
