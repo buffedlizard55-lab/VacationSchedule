@@ -95,8 +95,12 @@ npm run build
 `.github/workflows/pages.yml` tests pull requests and publishes **`site/`**, not the
 repository root, on pushes to `main`. It also attempts a daily MLB refresh and can
 be run with **Actions → Test and publish vacation planner → Run workflow**.
-Pages must use **GitHub Actions** as its build source. All site assets and health
-requests are relative so the `/VacationSchedule/` project path works.
+For artifact deployment, Pages should use **GitHub Actions** as its build source.
+The existing legacy `main`/root setting also works: root `index.html` forwards to
+`site/`, with `.nojekyll` disabling Jekyll processing. This fallback does not need
+an administrator settings change but uses the checked-in partial data rather than
+the workflow’s refreshed artifact. Assets and health requests are relative, so
+both `/VacationSchedule/` and `/VacationSchedule/site/` work.
 
 ## Review and next work
 

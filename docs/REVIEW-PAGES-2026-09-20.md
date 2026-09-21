@@ -67,6 +67,14 @@ boundaries and retrieval failures are in [SOURCES.md](SOURCES.md).
 - `git diff --check`: passes.
 - Preview HTTP smoke check: passes.
 
+## Deployment permissions
+
+Changing the repository Pages build-source setting through the connected integration
+returned HTTP 403 (resource not accessible by integration). Added a root entry page
+and `.nojekyll` so the existing legacy `main`/root Pages configuration can still serve
+the app at `site/`. The Actions artifact deployment remains configured; its remote
+result must be checked separately. No credentials requested.
+
 ## Environmental and requirement limits
 
 - Full MLB download failed TLS setup in this sandbox. The Pages job attempts the

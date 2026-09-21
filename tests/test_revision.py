@@ -115,6 +115,8 @@ class TestPublicationRevision(unittest.TestCase):
         self.assertIn("actions/deploy-pages@v4", text)
         self.assertIn("npm test", text)
         self.assertTrue((ROOT / "site/.nojekyll").exists())
+        self.assertTrue((ROOT / ".nojekyll").exists())
+        self.assertIn('href="site/"', (ROOT / "index.html").read_text())
 
 
 if __name__ == "__main__":
