@@ -7,7 +7,7 @@ on:
   schedule:
     - cron: '27 13 * * *'
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
@@ -27,24 +27,33 @@ jobs:
       - run: npm run build
       - run: npm test
       - run: python3 -m unittest discover -s tests
-      # Published artifact gets a fresh all-club schedule. Offline PR checks do
-      # not depend on a third-party server. A failure leaves a visible warning.
+      # The runner is the only place with outbound access to the league APIs, so
+      # both refreshes happen here. A failed refresh is visible on the site and in
+      # refresh-status.json; it never turns an empty future feed into free time.
       - name: Refresh official MLB schedule
         if: github.event_name != 'pull_request'
         id: mlb
         continue-on-error: true
         run: python3 scripts/refresh_mlb.py
+      - name: Refresh complete MLB season snapshots (all clubs, 2026 + 2027)
+        if: github.event_name != 'pull_request'
+        id: seasons
+        continue-on-error: true
+        run: python3 scripts/export_mlb_schedule.py --years 2026 2027
       - name: Record refresh health
         if: github.event_name != 'pull_request'
         env:
           OUTCOME: ${{ steps.mlb.outcome }}
+          SEASONS: ${{ steps.seasons.outcome }}
         run: |
           python3 - <<'PY'
           import json, os
           from datetime import datetime, timezone
           from pathlib import Path
           Path('site/data/refresh-status.json').write_text(json.dumps({
-            'mlb': os.environ['OUTCOME'], 'attempted_utc': datetime.now(timezone.utc).isoformat()
+            'mlb': os.environ['OUTCOME'],
+            'mlb_seasons': os.environ['SEASONS'],
+            'attempted_utc': datetime.now(timezone.utc).isoformat()
           }))
           PY
       - run: npm run build
@@ -52,6 +61,31 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           path: site
+      # Keep the committed audit trail in step with what was published. The
+      # compact CSV + summary are small; the raw payload stays an artifact.
+      - name: Commit refreshed schedule snapshots
+        if: github.event_name != 'pull_request' && steps.seasons.outcome == 'success'
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/verified/mlb_schedule_*.csv data/verified/mlb_schedule_*_summary.json
+          if git diff --cached --quiet; then
+            echo "No schedule changes to commit."
+            exit 0
+          fi
+          git commit -m "Refresh official MLB season snapshots"
+          git push origin "HEAD:${BRANCH}"
+      - name: Upload raw league responses (audit trail, not committed)
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlb-raw-${{ github.run_id }}
+          path: data/raw/mlb_schedule_*.json
+          retention-days: 14
+          if-no-files-found: warn
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: build
