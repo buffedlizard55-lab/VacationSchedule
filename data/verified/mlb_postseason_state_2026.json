@@ -7,7 +7,7 @@
       "2026-10-31"
     ],
     "source_url": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W",
-    "retrieved_utc": "2026-09-21T23:19:36Z",
+    "retrieved_utc": "2026-09-21T23:27:22Z",
     "raw_sha256": "4148625de056c93d48cced06e5d55e7fa23e6e6a35bb2ac2f76207b8ff77bb15",
     "generated_by": "scripts/export_mlb_schedule.py"
   },
@@ -55,6 +55,7 @@
     "2026-10-31"
   ],
   "dates_in_window_with_no_game": [
+    "2026-09-28",
     "2026-10-02",
     "2026-10-21",
     "2026-10-22",

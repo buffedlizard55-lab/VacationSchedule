@@ -1,7 +1,7 @@
 # MLB 2026 schedule - all clubs, all game types
 # source: https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-01-01&endDate=2026-12-31&gameType=R,E,S,D,L,F,W,A
-# retrieved_utc: 2026-09-21T23:19:36Z
-# raw_sha256: 5549e82f9610e42c91cb45db9db1b5b88347c0666561bbd526705e3af23c4b4a
+# retrieved_utc: 2026-09-21T23:27:21Z
+# raw_sha256: 1128547fb102b1fb8113dc1f650098bda548e75f55787ba7e5e0d13e38b32191
 # games: 2973 (columns: date_local|start_utc|start_pt|start_et|time_tbd|game_type|away|home|away_id|home_id|venue|status|game_pk)
 # time_tbd=true means the league has not published a first pitch; date_local is still official.
 2026-02-20|2026-02-20T18:05:00Z|10:05|13:05|false|S|New York Yankees|Baltimore Orioles|147|110|Ed Smith Stadium|Final|832034
@@ -2834,7 +2834,7 @@
 2026-09-20|2026-09-20T20:10:00Z|13:10|16:10|false|R|New York Yankees|Arizona Diamondbacks|147|109|Chase Field|Final|825028
 2026-09-20|2026-09-20T20:10:00Z|13:10|16:10|false|R|San Francisco Giants|Los Angeles Dodgers|137|119|UNIQLO Field at Dodger Stadium|Final|823896
 2026-09-20|2026-09-20T23:20:00Z|16:20|19:20|false|R|Milwaukee Brewers|Baltimore Orioles|158|110|Oriole Park at Camden Yards|Final|824789
-2026-09-21|2026-09-21T22:35:00Z|15:35|18:35|false|R|Toronto Blue Jays|Baltimore Orioles|141|110|Oriole Park at Camden Yards|Warmup|824787
+2026-09-21|2026-09-21T22:35:00Z|15:35|18:35|false|R|Toronto Blue Jays|Baltimore Orioles|141|110|Oriole Park at Camden Yards|In Progress|824787
 2026-09-21|2026-09-21T22:40:00Z|15:40|18:40|false|R|Washington Nationals|Detroit Tigers|120|116|Comerica Park|In Progress|824221
 2026-09-21|2026-09-22T01:45:00Z|18:45|21:45|false|R|Minnesota Twins|San Francisco Giants|142|137|Oracle Park|Pre-Game|823169
 2026-09-22|2026-09-22T22:35:00Z|15:35|18:35|false|R|Toronto Blue Jays|Baltimore Orioles|141|110|Oriole Park at Camden Yards|Scheduled|824785
