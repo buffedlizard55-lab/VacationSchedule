@@ -148,8 +148,8 @@ Details in [`docs/IRREGULARITIES.md`](docs/IRREGULARITIES.md).
 ## Layout
 
 ```
-site/index.html          scoreboard + calendar UI (7 tabs, including full NFL slate)
-site/styles.css          dark scoreboard theme
+site/index.html          decision engine + calendar UI (8 tabs: 1-2-3 Decide, vacation windows, day checker, compare, NFL slate, radio, review, sources)
+site/styles.css          light, table-first theme
 site/app.js              browser engine + rendering
 site/data/               generated bundle - do not hand-edit
 

@@ -329,6 +329,7 @@
   // day" wiped the warning that you are looking at bundled rather than live data.
   let mlbFeedState = { mode: "pending", message: "" };
   let scope = "3";      // the site's original definition; switchable in the header
+  let tripLength = 14;  // decision engine: consecutive free days the trip needs
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -357,14 +358,7 @@
       `title="${esc(s.name)}">${esc(s.short)}</button>`
     ).join("");
     box.querySelectorAll(".scopebtn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        scope = btn.dataset.scope;
-        renderScopePicker();
-        renderScopeNote();
-        renderDay(currentDate);
-        renderVacation();
-        renderCompare();
-      });
+      btn.addEventListener("click", () => setScope(btn.dataset.scope));
     });
   }
 
@@ -681,6 +675,7 @@
         `<div class="reviewitem">All clean runs found: ${r.gaps.slice(0, 12).map((g) => `${esc(g.start)} &rarr; ${esc(g.end)} (${g.days}d)`).join("; ")}${r.gaps.length > 12 ? " &hellip; " + (r.gaps.length - 12) + " more" : ""}</div>` +
         `</div>`;
     }).join("");
+    renderAllGaps();
   }
 
   // ---------------------------------------------------------------------
@@ -702,6 +697,9 @@
         else if (row.requirements.weeks_2) labels.push('<span class="pill ok">2 weeks</span>');
         else if (row.requirements.week_1) labels.push('<span class="pill warn">1 week</span>');
         else labels.push('<span class="pill bad">none</span>');
+   if (row.requirements.weeks_2) labels.push('<span class="pill ok">2 weeks</span>');
+        else if (row.requirements.week_1) labels.push('<span class="pill warn">1 week</span>');
+        else labels.push('<span class="pill bad">none</span>');
         html += `<td class="cmpcell${id === scope ? " current" : ""}">` +
           `<div class="big">${row.longest_days} d</div>` +
           `<div class="small">${row.longest_start ? esc(row.longest_start) + " &rarr; " + esc(row.longest_end) : "&mdash;"}</div>` +
@@ -718,6 +716,232 @@
 
     const summary = $("compareSummary");
     if (summary) summary.innerHTML = (DATA.vacation_compare_notes || []).map((n) => `<li>${esc(n.text || n)}</li>`).join("");
+  }
+
+  // ---------------------------------------------------------------------
+  // Decision engine (1-2-3 Decide tab + line-by-line tables)
+  //
+  // Every number here is read from the generated bundle (DATA.vacation),
+  // which is produced by scripts/analyze_vacation.py. Nothing is estimated
+  // in the browser: friendly dates are derived from the ISO dates, and the
+  // status of each year mirrors renderVacation exactly.
+  // ---------------------------------------------------------------------
+
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function fmtDateISO(iso) {
+    const p = String(iso).split("-");
+    return MONTHS[parseInt(p[1], 10) - 1] + " " + parseInt(p[2], 10) + ", " + p[0];
+  }
+
+  function fmtRangeFriendly(start, end) {
+    const a = String(start).split("-"), b = String(end).split("-");
+    if (a[0] === b[0] && a[1] === b[1]) return MONTHS[+a[1] - 1] + " " + (+a[2]) + " \u2013 " + (+b[2]) + ", " + a[0];
+    if (a[0] === b[0]) return MONTHS[+a[1] - 1] + " " + (+a[2]) + " \u2013 " + MONTHS[+b[1] - 1] + " " + (+b[2]) + ", " + a[0];
+    return fmtDateISO(start) + " \u2013 " + fmtDateISO(end);
+  }
+
+  function statusForYear(year) {
+    const mlb = (DATA.seasons && DATA.seasons.mlb && DATA.seasons.mlb[String(year)]) || {};
+    if (year === 2026) return { label: "VERIFIED", cls: "statusV" };
+    if (mlb.status === "VERIFIED") return { label: "MLB VERIFIED, rest EST", cls: "statusP" };
+    return { label: "ESTIMATED", cls: "statusE" };
+  }
+
+  function vacationRows() {
+    const which = interp();
+    return DATA.vacation
+      .filter((r) => r.interpretation === which && r.section === scope)
+      .sort((a, b) => a.year - b.year);
+  }
+
+  function bestMeeting(row, minDays) {
+    const gaps = row.gaps || [];
+    for (let i = 0; i < gaps.length; i++) {
+      if (gaps[i].days >= minDays) return gaps[i];
+    }
+    return null;
+  }
+
+  function setScope(s) {
+    scope = s;
+    renderScopePicker();
+    renderScopeNote();
+    renderDay(currentDate);
+    renderVacation();
+    renderCompare();
+    renderDecScopeCards();
+    renderDecision();
+  }
+
+  function setInterp(v) {
+    document.querySelectorAll('input[name="interp"]').forEach((r) => { r.checked = (r.value === v); });
+    const dec = document.querySelectorAll('input[name="interpDecide"]');
+    if (dec.length) dec.forEach((r) => { r.checked = (r.value === v); });
+    renderVacation();
+    renderCompare();
+    renderDecScopeCards();
+    renderDecision();
+  }
+
+  function renderDecScopeCards() {
+    const box = $("decScopeCards");
+    if (!box) return;
+    const which = interp();
+    box.innerHTML = "";
+    SECTIONS.forEach((s) => {
+      const cmp = (DATA.vacation_compare && DATA.vacation_compare[which]) || {};
+      let best = 0, bestYear = null, bestStart = null, bestEnd = null;
+      Object.keys(cmp).sort().forEach((y) => {
+        const r = cmp[y][s.id];
+        if (r && r.longest_days > best) { best = r.longest_days; bestYear = y; bestStart = r.longest_start; bestEnd = r.longest_end; }
+      });
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sitecard" + (s.id === scope ? " active" : "");
+      let html = '<span class="sitename">' + esc(s.short) + "</span>" +
+        "<ul>" + s.definition.map((d) => "<li>" + esc(d) + "</li>").join("") + "</ul>";
+      if (best) {
+        html += '<div class="preview">Longest run (' + (which === "strict" ? "strict" : "regular only") + '): <strong>' + best + " days</strong> &mdash; " + esc(fmtRangeFriendly(bestStart, bestEnd)) + " (" + esc(bestYear) + ")</div>";
+      }
+      btn.innerHTML = html;
+      btn.setAttribute("aria-pressed", s.id === scope ? "true" : "false");
+      const id = s.id;
+      btn.addEventListener("click", () => setScope(id));
+      box.appendChild(btn);
+    });
+  }
+
+  function renderDecision() {
+    const summary = $("decisionSummary"), body = $("decisionBody"),
+      opts = $("decisionOptionsBody"), why = $("decisionWhy");
+    if (!summary || !body || !opts) return;
+    const rows = vacationRows();
+    const reading = interp() === "strict"
+      ? "Strict (Spring Training counts)"
+      : "Regular season only (Spring Training ignored)";
+
+    const ok = rows.filter((r) => !!bestMeeting(r, tripLength));
+    let overall = null;
+    rows.forEach((r) => {
+      (r.gaps || []).forEach((g) => {
+        if (!overall || g.days > overall.days) overall = { days: g.days, start: g.start, end: g.end, year: r.year };
+      });
+    });
+
+    if (ok.length) {
+      summary.className = "verdict free";
+      summary.innerHTML = "YES &mdash; a " + tripLength + "-day trip fits in " + ok.length + " of " + rows.length + " years" +
+        `<span class="sub">${esc(scopeShort(scope))} &middot; ${esc(reading)}` +
+        ` &middot; years that work: <strong>${ok.map((r) => r.year).join(", ")}</strong>` +
+        (overall ? ` &middot; longest exact window overall: <strong>${overall.days} days</strong> (${esc(fmtRangeFriendly(overall.start, overall.end))})` : "") + "</span>";
+    } else {
+      summary.className = "verdict busy";
+      summary.innerHTML = "NO &mdash; no unbroken " + tripLength + "-day window in any year under these answers" +
+        `<span class="sub">${esc(scopeShort(scope))} &middot; ${esc(reading)}` +
+        (overall ? ` &middot; the longest exact run anywhere is <strong>${overall.days} days</strong> (${esc(fmtRangeFriendly(overall.start, overall.end))}, ${overall.year})` : "") +
+        " &middot; try a shorter trip, the other Spring Training rule, or a narrower situation</span>";
+    }
+
+    body.innerHTML = "";
+    rows.forEach((r) => {
+      const st = statusForYear(r.year);
+      const fit = bestMeeting(r, tripLength);
+      const show = fit || r.best;
+      const tr = document.createElement("tr");
+      const verdictCell = fit ? '<span class="pill ok">Yes</span>' : '<span class="pill bad">No</span>';
+      const datesCell = show
+        ? esc(fmtRangeFriendly(show.start, show.end)) + `<div class="small">${esc(show.start)} &rarr; ${esc(show.end)}</div>` +
+          (fit ? "" : '<div class="small">longest available &mdash; too short for this trip</div>')
+        : "&mdash;";
+      tr.innerHTML =
+        `<td class="num"><strong>${r.year}</strong></td>` +
+        `<td>${verdictCell}</td>` +
+        `<td>${datesCell}</td>` +
+        `<td class="num">${show ? show.days + " d" : "&mdash;"}</td>` +
+        `<td class="num">${r.free_day_count}</td>` +
+        `<td class="${st.cls}">${st.label}</td>`;
+      body.appendChild(tr);
+    });
+
+    const lines = [];
+    rows.forEach((r) => {
+      (r.gaps || []).forEach((g) => {
+        if (g.days >= tripLength) lines.push({ year: r.year, g: g });
+      });
+    });
+    lines.sort((a, b) => a.year - b.year || b.g.days - a.g.days);
+    opts.innerHTML = "";
+    if (!lines.length) {
+      const tr0 = document.createElement("tr");
+      tr0.innerHTML = `<td colspan="8" class="empty">No unbroken run of ${tripLength} days exists in 2026&ndash;2029 under these answers. Every gap is shorter &mdash; see the &ldquo;Every clean run, line by line&rdquo; table on the Vacation Windows tab for the full list.</td>`;
+      opts.appendChild(tr0);
+    } else {
+      lines.forEach((ln) => {
+        const st = statusForYear(ln.year);
+        const tr = document.createElement("tr");
+        tr.innerHTML =
+          `<td class="num"><strong>${ln.year}</strong></td>` +
+          `<td>${esc(fmtDateISO(ln.g.start))}<div class="small">${esc(ln.g.start)}</div></td>` +
+          `<td>${esc(fmtDateISO(ln.g.end))}<div class="small">${esc(ln.g.end)}</div></td>` +
+          `<td class="num">${ln.g.days} d</td>` +
+          `<td>${rq(ln.g.days >= 7)}</td>` +
+          `<td>${rq(ln.g.days >= 14)}</td>` +
+          `<td>${rq(ln.g.days >= 21)}</td>` +
+          `<td class="${st.cls}">${st.label}</td>`;
+        opts.appendChild(tr);
+      });
+    }
+
+    if (why) {
+      why.innerHTML = rows.map((r) => {
+        const st = statusForYear(r.year);
+        const p = r.provenance || {};
+        const prev = p.nfl_previous_season_end || {};
+        const pb = prev.pro_bowl_games || {};
+        const mlb = p.mlb_block || {};
+        const cur = p.nfl_current_season_start || {};
+        let out = `<div class="whyyear"><h4>${r.year} &mdash; <span class="${st.cls}">${st.label}</span></h4>`;
+        out += "<table><tbody>";
+        const line = (k, v) => { out += `<tr><td>${esc(k)}</td><td>${v}</td></tr>`; };
+        if (prev.super_bowl) line("Super Bowl", `<strong>${esc(prev.super_bowl)}</strong> &mdash; ${esc(prev.status || "")}: ${esc(prev.note || "")}`);
+        if ((prev.playoff_dates_in_year || []).length) line("Playoff dates blocked", esc(prev.playoff_dates_in_year.join(", ")));
+        if (pb.date) line("Pro Bowl Games", `<strong>${esc(pb.date)}</strong> &mdash; ${esc(pb.status || "")}: ${esc(pb.note || "")}`);
+        if (mlb.start) line("MLB blocks", `<strong>${esc(mlb.start)} &rarr; ${esc(mlb.end)}</strong> &mdash; ${esc(mlb.status || "")}${mlb.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}`);
+        if (cur.date) line("NFL season starts", `<strong>${esc(cur.date)}</strong> &mdash; ${esc(cur.status || "")}: ${esc(cur.note || "")}`);
+        (p.ncaaf_blocks || []).forEach((s) => {
+          line("College football", `<strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label || "")}) &mdash; ${esc(s.status || "")}${s.conditional ? " &middot; conditional" : ""}`);
+        });
+        (p.mls_blocks || []).forEach((s) => {
+          line("MLS", `<strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label || "")}) &mdash; ${esc(s.status || "")}${s.conditional ? " &middot; conditional" : ""}`);
+        });
+        line("Result", r.free_day_count + " free days; longest run " + (r.best ? `<strong>${r.best.days} days</strong> (${esc(r.best.start)} &rarr; ${esc(r.best.end)})` : "none"));
+        out += "</tbody></table></div>";
+        return out;
+      }).join("");
+    }
+  }
+
+  function renderAllGaps() {
+    const body = $("allGapsBody");
+    if (!body) return;
+    body.innerHTML = "";
+    vacationRows().forEach((r) => {
+      const st = statusForYear(r.year);
+      (r.gaps || []).forEach((g) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML =
+          `<td class="num"><strong>${r.year}</strong></td>` +
+          `<td>${esc(fmtDateISO(g.start))}<div class="small">${esc(g.start)}</div></td>` +
+          `<td>${esc(fmtDateISO(g.end))}<div class="small">${esc(g.end)}</div></td>` +
+          `<td class="num">${g.days} d</td>` +
+          `<td>${rq(g.days >= 7)}</td>` +
+          `<td>${rq(g.days >= 14)}</td>` +
+          `<td>${rq(g.days >= 21)}</td>` +
+          `<td class="${st.cls}">${st.label}</td>`;
+        body.appendChild(tr);
+      });
+    });
   }
 
   // ---------------------------------------------------------------------
@@ -882,13 +1106,17 @@
     $("todayBtn").addEventListener("click", () => { renderDay(new Date().toISOString().slice(0, 10)); refreshMlb(currentDate); });
     $("dateInput").addEventListener("change", (e) => { if (e.target.value) { renderDay(e.target.value); refreshMlb(currentDate); } });
     $("refreshMlb").addEventListener("click", () => refreshMlb(currentDate));
-    document.querySelectorAll('input[name="interp"]').forEach((r) => r.addEventListener("change", () => { renderVacation(); renderCompare(); }));
+    document.querySelectorAll('input[name="interp"]').forEach((r) => r.addEventListener("change", () => setInterp(r.value)));
+    document.querySelectorAll('input[name="interpDecide"]').forEach((r) => r.addEventListener("change", () => setInterp(r.value)));
+    document.querySelectorAll('input[name="trip"]').forEach((r) => r.addEventListener("change", () => { tripLength = parseInt(r.value, 10); renderDecision(); }));
 
     renderScopePicker();
     renderScopeNote();
     renderNflSlate();
     renderVacation();
     renderCompare();
+    renderDecScopeCards();
+    renderDecision();
     renderReview();
     renderRadio();
     renderSources();
