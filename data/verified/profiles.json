@@ -9,7 +9,9 @@
       "NCAAF:Stanford": "Stanford Cardinal football. High priority.",
       "NCAAF:California": "California Golden Bears football. High priority.",
       "NCAAF:national": "Westwood One Sports national NCAA football radio broadcast. NOT part of Sections 1-3 (the request lists Westwood One only for the NFL).",
-      "MLS:Earthquakes": "San Jose Earthquakes MLS. High priority."
+      "MLS:Earthquakes": "San Jose Earthquakes MLS. High priority.",
+      "NBA:Warriors": "Golden State Warriors NBA on KGMZ 95.7 The Game. High priority. NOT part of Sections 1-3 (the three sections are the user's verbatim definitions); it counts in the 'all' scope so other live-radio sports still mark the radio busy.",
+      "WNBA:Valkyries": "Golden State Valkyries WNBA on KGMZ 95.7 The Game (per-game radio column). High priority. Only 95.7 games block; Audacy-app-only games are streaming and disclosed. 'all' scope only, like NBA:Warriors."
     },
     "section_ids": {
       "1": "MLB (Giants + A's high priority, all 30 clubs) + NFL 49ers (preseason/regular/postseason, high priority) + Westwood One Sports national NFL radio.",
@@ -108,7 +110,11 @@
     "definition": [
       "All of Section 3",
       "Westwood One Sports national NCAA football radio broadcasts (the request lists Westwood One for the NFL only, so these are NOT part of Sections 1-3)",
+      "Golden State Warriors NBA on KGMZ 95.7 The Game (high priority) - the user asked for other Bay Area live-radio sports to mark the schedule busy; these count here so Sections 1-3 keep their verbatim definitions",
+      "Golden State Valkyries WNBA on KGMZ 95.7 The Game (high priority, per-game radio column; Audacy-only games are streaming and do not block)",
+      "Explicitly EXCLUDED because they are not on AM/FM: San Jose Sharks (Sharks Audio Network is app/streaming only) and Audacy-only Valkyries games",
       "Any future league added to data/verified/"
-    ]
+    ],
+    "note": "Still not every sport on every Bay Area station: USF basketball on KNBR, Westwood One NCAA basketball, and local college basketball remain documented coverage gaps (data/verified/other_radio_sports.json), not silently verified free time."
   }
 }

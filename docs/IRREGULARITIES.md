@@ -426,3 +426,108 @@ them outside Sections 1–3 so the comparison remains exactly MLB/49ers/Westwood
 then Stanford/Cal, then Earthquakes. They remain prominently documented as an
 out-of-scope limitation; a future opt-in section must source both official schedules
 and Bay Area radio carriage before changing any score.
+
+---
+
+## Items added in the 2026-09-21 line-by-line verification pass
+
+### IR-32 — The postseason snapshot listed the Rays as AL East champions (HIGH, fixed)
+
+**Found:** `mlb_postseason_2026.json` (2026-09-20 snapshot) had
+`clinched_division: [... "Tampa Bay Rays (AL East)"]`. MLB's own tracker and the
+Sept 20 standings say otherwise: the Rays had **not** clinched the AL East
+(their magic number was 2), and the Braves' NL East title (clinched Sept 20)
+was missing from the same list.
+
+**Impact:** anyone reasoning from "clinched division" facts about first-round
+byes or seeding would have been misled — exactly the class of error the user's
+"resolve TBD dates from clinched facts" request must not produce.
+
+**Done (2026-09-21):** the division list is now Brewers (NL Central, 9/15),
+Dodgers (NL West, 9/17), Braves (NL East, 9/20). The Rays remain a **berth**
+(9/11) only. A `resolution_progress` block now records explicitly what clinching
+does and does not resolve (berths 6/12; divisions 3/6; matchups 0; times 0).
+Tests: `test_rays_are_not_listed_as_division_winners`, `test_braves_nl_east_is_recorded`.
+
+### IR-33 — The seasons headline contradicted the file's own 2027 record (MEDIUM, fixed)
+
+**Found:** `seasons.json` `_meta.headline` claimed "The MLB Stats API returns a
+season record for 2026 ONLY," while the same file stores a VERIFIED 2027 frame
+sourced to the individual `season=2027` query. Re-checked 2026-09-21: the **range**
+query (`startSeason=2026&endSeason=2029`) really does return 2026 only, the
+**individual** 2027 query returns the released frame, and 2028/2029 return
+`seasons: []`. Both statements were half-true.
+
+**Done:** headline rewritten to describe the range-vs-individual distinction,
+with a `reverified_utc` stamp. Nothing in the data model changed.
+
+### IR-34 — Super Bowl LXIII's date is official, but three documents and one test still called it an estimate (MEDIUM, fixed)
+
+**Found:** IR-12's second-pass update said the date (2029-02-11) became official
+with the NFL's 2026-03-30 announcement, but `nfl_calendar.py`, `seasons.json`,
+`README.md` and `docs/VACATION-WINDOWS.md` still labelled it ESTIMATED — and
+`test_2029_super_bowl_exact_date_is_not_verified` asserted ESTIMATED, while IR-12
+claimed "a test asserts the status is VERIFIED." The repository disagreed with itself.
+
+**Re-read sources 2026-09-21:** the NFL's Annual-Meeting announcement (via
+KLAS/WJHL) names **Feb. 11, 2029** outright; Wikipedia's Super Bowl LXIII page
+gives the same date; fbschedules calls it "tentatively scheduled... barring
+calendar changes."
+
+**Done:** `SUPER_BOWL_BY_YEAR[2029]` is now VERIFIED with the announcement
+provenance in its note; `seasons.json` anchors updated; the regression test now
+asserts the source-verified state (and that the 2030 Super Bowl is still an
+estimate). All user-facing docs updated in the same pass. Sensitivity analysis
+in IR-12 ("if it slips to Feb 18 the window disappears") is retired: the date is
+set. The general caveat that the NFL controls its calendar remains.
+
+### IR-35 — Valkyries September home games disagree with results feeds by one day (LOW, open)
+
+**Found:** the club's broadcast table (2026-04-25, "subject to change") lists
+Portland on **Sep 18** and Seattle on **Sep 19** (both Chase Center). USA Today's
+results feed shows those finals on **Sep 19** and **Sep 20**.
+
+**Done:** the club table is used (it is the radio source), and both rows carry a
+`date_flag` surfaced on the Needs Review tab. The club's game record (30-11 =
+41 played) also does not reconcile with the 44-row regular-season table plus two
+remaining games; flagged rather than smoothed over.
+
+**Not resolved:** which date stamp is right for those two games (both are now
+historical). Low impact: the affected dates are already inside the MLS/NFL blocks.
+
+### IR-36 — San Jose Sharks have no Bay Area AM/FM broadcast (INFORMATIONAL, resolved by exclusion)
+
+**Found:** the user asked which OTHER sports are live over the radio. The Sharks
+are the trap case: they left KUFX 98.5 K-Fox after 2020-21 and the 2026-27
+broadcast release says all games are on the **Sharks Audio Network** (app/online
+streaming). Trade coverage confirms "no flagship radio station in the Bay Area."
+
+**Done:** Sharks games do **not** block free time under the project's standard
+AM/FM rule. The exclusion, with sources, is shown on the Radio tab and in
+`data/verified/other_radio_sports.json` / `radio_stations.json`. Same treatment
+for the 18 Audacy-only Valkyries games.
+
+### IR-37 — Warriors fixtures come from a secondary grid (LOW, accepted with flags)
+
+**Found:** the released 2026-27 Warriors schedule was transcribed from the CBS
+Sports schedule grid (times published in ET) because sandbox TLS blocks direct
+NBA-feed access. The ESPN public API spot-check matched the opener
+(2026-10-04T23:00Z at the Clippers). The grid transcription contains 6
+preseason + 80 regular-season rows; an NBA season is nominally 82 games, so up
+to two rows are **unreconciled** (a transcription gap at a page-chunk boundary
+or a genuinely unlisted game cannot be distinguished from here).
+
+**Done:** every row stores its source; `schedule_status` says "secondary grid +
+spot-check, league feed wins on conflict"; the Needs Review tab carries the row
+count caveat. Per-game 95.7 carriage is presumed from the flagship partnership,
+not re-verified game by game (a conflict can move a game to the Audacy app).
+
+### IR-38 — The "Everything tracked" scope now models zero free days (INFORMATIONAL, by design)
+
+With Warriors NBA envelopes (Oct-Apr), WNBA envelopes (May-Oct), MLB (Mar-Oct),
+NFL (Aug-Dec + playoffs) and college/MLS envelopes, the continuous-envelope
+vacation model finds **no** unblocked run in any year for the `all` scope.
+This is the conservative envelope talking, not a proof that every week has a
+game (NBA rest days etc. are hidden inside envelopes, exactly like MLB travel
+days). The three requested sections are unchanged and still report their
+windows; the `all` collapse is stated plainly on the Compare tab and here.

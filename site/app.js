@@ -24,9 +24,9 @@
   // Must match TBD_ENVELOPE_PT in lib_windows.py.
   const TBD_ENVELOPE = DATA._meta.tbd_envelope_pt;
 
-  const LEAGUE_NAMES = { MLB: "MLB", NFL: "NFL", NCAAF: "College Football", MLS: "MLS" };
-  const LEAGUE_ORDER = ["MLB", "NFL", "NCAAF", "MLS"];
-  const HIGH_PRIORITY_TEAMS = ["San Francisco 49ers", "San Jose Earthquakes", "Stanford", "California", "San Francisco Giants", "Athletics"];
+  const LEAGUE_NAMES = { MLB: "MLB", NFL: "NFL", NCAAF: "College Football", MLS: "MLS", NBA: "NBA", WNBA: "WNBA" };
+  const LEAGUE_ORDER = ["MLB", "NFL", "NCAAF", "MLS", "NBA", "WNBA"];
+  const HIGH_PRIORITY_TEAMS = ["San Francisco 49ers", "San Jose Earthquakes", "Stanford", "California", "San Francisco Giants", "Athletics", "Golden State Warriors", "Golden State Valkyries"];
 
   const MLB_TBD_SENTINEL = "07:33:00";
   // A day report is evaluated for multiple scopes/frame variants by parity tests.
@@ -680,6 +680,7 @@
         `<div class="reviewitem">Current NFL season opens <strong>${esc(p.nfl_current_season_start.date)}</strong> &mdash; ${esc(p.nfl_current_season_start.status)}: ${esc(p.nfl_current_season_start.note)}</div>` +
         (p.ncaaf_blocks || []).map((s) => `<div class="reviewitem">College football: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
         (p.mls_blocks || []).map((s) => `<div class="reviewitem">MLS: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
+        (p.other_radio_blocks || []).map((s) => `<div class="reviewitem">Other live radio (${esc(s.league)}): <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
         `<div class="reviewitem">All clean runs found: ${r.gaps.slice(0, 12).map((g) => `${esc(g.start)} &rarr; ${esc(g.end)} (${g.days}d)`).join("; ")}${r.gaps.length > 12 ? " &hellip; " + (r.gaps.length - 12) + " more" : ""}</div>` +
         `</div>`;
     }).join("");
@@ -924,6 +925,9 @@
         (p.mls_blocks || []).forEach((s) => {
           line("MLS", `<strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label || "")}) &mdash; ${esc(s.status || "")}${s.conditional ? " &middot; conditional" : ""}`);
         });
+        (p.other_radio_blocks || []).forEach((s) => {
+          line("Other live radio (" + esc(s.league || "") + ")", `<strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label || "")}) &mdash; ${esc(s.status || "")}${s.conditional ? " &middot; conditional" : ""}`);
+        });
         line("Result", r.free_day_count + " free days; longest run " + (r.best ? `<strong>${r.best.days} days</strong> (${esc(r.best.start)} &rarr; ${esc(r.best.end)})` : "none"));
         out += "</tbody></table></div>";
         return out;
@@ -1024,7 +1028,14 @@
       { label: "Westwood One Sports &mdash; station finder (San Francisco market affiliates)", url: "https://www.westwoodonesports.com/station-finder/" },
       { label: "NFL key dates 2026-27 (Wild Card, Divisional, Championships, Super Bowl LXI)", url: "https://www.seahawks.com/news/nfl-announces-important-dates-for-2026-2027" },
       { label: "NFL Operations &mdash; 2026 Pro Bowl Games moved to Super Bowl week", url: "https://operations.nfl.com/updates/the-game/2026-pro-bowl-games-presented-by-verizon-moved-to-tuesday-of-super-bowl-lx-week-in-bay-area/" },
-      { label: "Super Bowl LXIII host/year confirmed; exact date not specified", url: "https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029" },
+      { label: "NFL &mdash; Super Bowl LXIII host/year confirmed (Las Vegas, 2029)", url: "https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029" },
+      { label: "NFL Annual Meeting 2026-03-30 &mdash; Super Bowl LXIII exact date: February 11, 2029", url: "https://www.forbes.com/sites/alexkirschner/2026/03/30/nfl-super-bowl-2029-date-location-las-vegas-allegiant-stadium/" },
+      { label: "CBS Sports &mdash; Warriors 2026-27 schedule grid (ET tips; transcribed)", url: "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/" },
+      { label: "ESPN API &mdash; Warriors opener spot-check (matches transcribed grid)", url: "http://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/9/schedule?dates=2026-2027" },
+      { label: "Golden State Valkyries &mdash; 2026 broadcast partners and per-game radio flags", url: "https://www.wnba.com/valkyries/roster" },
+      { label: "KGMZ 95.7 The Game &mdash; official Warriors/Valkyries release", url: "https://www.cumulusmedia.com/2025/09/25/golden-state-valkyries-join-95-7-the-game-as-official-flagship-station/" },
+      { label: "San Jose Sharks &mdash; Sports Radio 1140 AM listing; app-only broadcasts (verified streaming)", url: "https://www.nhl.com/sharks/fans/how-to-listen-watch-2526" },
+      { label: "Forbes sports business &mdash; new NHL local radio coverage (no Bay Area 49ers/Sharks carry)", url: "https://www.forbes.com/sites/paulkaplan/2026/09/04/san-jose-sharks-new-local-radio-coverage/" },
       { label: "49ers / Cumulus &mdash; KNBR flagship extension, 2026-04-15", url: "https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/" },
       { label: "California Golden Bears &mdash; 2026 football schedule (radio: KSFO 810 AM)", url: "https://calbears.com/sports/football/schedule" },
       { label: "Stanford Cardinal &mdash; 2026 football schedule", url: "https://gostanford.com/sports/football/schedule" },

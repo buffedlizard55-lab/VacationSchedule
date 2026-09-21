@@ -18,11 +18,13 @@ ESTIMATED
 
 Why the offsets are trustworthy for the *vacation* question
 -----------------------------------------------------------
-Every round is anchored to a Super Bowl date; 2027/2028 are official inputs,
-whereas the exact 2029 date is an estimate (only host/year was confirmed). The offsets (Wild Card = SB-29/28/27, Divisional = SB-22/21, Conference
-Championships = SB-14) reproduce the verified 2026-27 layout exactly; a test asserts
-that. A shift of one week in any future round would move a blocked date, so the
-analysis output labels every future-year row ESTIMATED.
+Every round is anchored to a Super Bowl date; 2027/2028/2029 are official inputs
+(Super Bowl LXIII's exact day, 2029-02-11, was part of the NFL's 2026-03-30
+announcement; Super Bowl LXIV in 2030 is still an estimate). The offsets (Wild
+Card = SB-29/28/27, Divisional = SB-22/21, Conference Championships = SB-14)
+reproduce the verified 2026-27 layout exactly; a test asserts that. A shift of
+one week in any future round would move a blocked date, so the analysis output
+labels every future-year row ESTIMATED.
 """
 
 from __future__ import annotations
@@ -47,9 +49,11 @@ SUPER_BOWL_BY_YEAR = {
     ),
     2029: (
         "2029-02-11",
-        "ESTIMATED",
-        "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement "
-        "does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+        "VERIFIED",
+        "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact "
+        "date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual "
+        "Meeting in Phoenix. Secondary coverage notes the league can still adjust its "
+        "calendar; re-check before booking far out.",
     ),
 }
 

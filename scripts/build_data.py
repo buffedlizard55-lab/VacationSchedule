@@ -391,6 +391,119 @@ def from_mls() -> tuple[list[dict], list[dict]]:
     return games, unresolved
 
 
+def from_other_radio_sports() -> tuple[list[dict], list[dict]]:
+    """Warriors (NBA) and Valkyries (WNBA) on KGMZ 95.7, plus research disclosures.
+
+    These answer the request to look for OTHER Bay Area live radio sports and flag
+    them high priority. They carry tags that belong to none of the three requested
+    sections, so they only count in the `all` scope; Sections 1-3 are unchanged.
+    Only AM/FM broadcasts block time. Valkyries rows whose radio column is the
+    Audacy app alone are streaming-only and are disclosed, never blocked (the
+    user's definition is a standard AM/FM radio in 94122).
+    """
+    payload = load("other_radio_sports.json")
+    games: list[dict] = []
+    unresolved: list[dict] = []
+
+    warriors = payload["warriors"]
+    w_src = warriors["schedule_sources"][0]
+    for row in warriors["games_2026_27"]:
+        where = "at" if row["ha"] == "away" else "vs"
+        detail = (row.get("phase", "regular") + " · tip-off per published schedule grid (ET)"
+                  + (f" · {row['tv']}" if row.get("tv") else ""))
+        games.append({
+            "league": "NBA",
+            "label": f"Golden State Warriors {where} {row['opponent']}",
+            "detail": detail,
+            "venue": row.get("venue", ""),
+            "priority": "high",
+            "source": w_src,
+            "network": "KGMZ 95.7 The Game (radio flagship; per-game carriage presumed)",
+            "date_local": utc_to_local_date(et_to_utc(row["date"], row["start_et"])),
+            "start_utc": et_to_utc(row["date"], row["start_et"]),
+            "duration": DEFAULT_DURATIONS["NBA"],
+            "time_status": "published_start_time",
+            "tags": ["NBA:Warriors"],
+        })
+
+    valk = payload["valkyries"]
+    v_src = valk["radio_sources"][0]
+    streaming_only = 0
+    for row in valk["games_2026"]:
+        if not row.get("on_957"):
+            streaming_only += 1
+            continue
+        where = "at" if row["ha"] == "away" else "vs"
+        games.append({
+            "league": "WNBA",
+            "label": f"Golden State Valkyries {where} {row['opponent']}",
+            "detail": (row.get("phase", "regular") + " · tip-off per the club's broadcast table (PT)"
+                       + (" · " + row["date_flag"] if row.get("date_flag") else "")),
+            "venue": "Chase Center" if row["ha"] == "home" else "",
+            "priority": "high",
+            "source": v_src,
+            "network": "KGMZ 95.7 The Game (club's published radio column)",
+            "date_local": row["date"],
+            "start_utc": pt_to_utc(row["date"], row["start_pt"]),
+            "duration": DEFAULT_DURATIONS["WNBA"],
+            "time_status": "published_start_time",
+            "tags": ["WNBA:Valkyries"],
+        })
+        if row.get("date_flag"):
+            unresolved.append({
+                "league": "WNBA", "date_local": row["date"], "label": row["opponent"],
+                "reason": row["date_flag"], "source": v_src,
+            })
+
+    playoffs = valk["playoffs_2026"]
+    for row in playoffs["reserved_dates"]:
+        date_iso = row["date"]
+        games.append({
+            "league": "WNBA",
+            "label": row["label"],
+            "detail": "playoff date reserved conservatively; time and opponent "
+                      + row["status"].lower() + ". " + playoffs["playoff_radio"],
+            "venue": "Chase Center (first home playoff game) / TBD",
+            "priority": "high",
+            "source": playoffs["sources"][0],
+            "network": "presumed KGMZ 95.7 - playoff radio carriage NOT published",
+            "date_local": date_iso,
+            "start_utc": pt_to_utc(date_iso, TBD_ENVELOPE["WNBA"][0]),
+            "duration": _envelope_minutes("WNBA"),
+            "time_status": "TBD_envelope",
+            "status": row["status"],
+            "tags": ["WNBA:Valkyries"],
+        })
+        unresolved.append({
+            "league": "WNBA", "date_local": date_iso, "label": row["label"],
+            "reason": f"{row['status']}. Time and opponent not announced; the full date is "
+                      "reserved so it can never read as free. " + playoffs["playoff_radio"],
+            "source": playoffs["sources"][0],
+        })
+
+    if streaming_only:
+        unresolved.append({
+            "league": "WNBA", "date_local": None,
+            "label": f"Valkyries streaming-only games ({streaming_only} of 2026)",
+            "reason": "The club's radio column lists 'The Audacy App' only for these games: "
+                      "no AM/FM broadcast, so they are NOT counted busy on a standard radio. "
+                      "Rows stay auditable in data/verified/other_radio_sports.json (on_957=false).",
+            "source": v_src,
+        })
+    unresolved.append({
+        "league": "WNBA", "date_local": None,
+        "label": "Valkyries playoffs beyond the first round",
+        "reason": valk["playoffs_2026"]["later_rounds"],
+        "source": valk["playoffs_2026"]["sources"][0],
+    })
+    for item in payload.get("unresolved_coverage", []):
+        unresolved.append({
+            "league": "NBA", "date_local": None, "label": item["name"],
+            "reason": item["finding"], "source": item["sources"][0],
+        })
+    return games, unresolved
+
+
 def ncaaf_tags(team: str, opponent: str) -> list[str]:
     """Section tags for a Stanford/Cal football game.
 
@@ -733,7 +846,7 @@ def _build() -> dict:
     unresolved: list[dict] = load("review_flags.json")
     nfl_schedule_2026 = load_nfl_regular_schedule()
     for loader in (from_westwood_one, from_49ers, from_westwood_one_ncaaf, from_ncaaf, from_mls,
-                   from_mlb_postseason, from_nfl_calendar):
+                   from_mlb_postseason, from_nfl_calendar, from_other_radio_sports):
         g, u = loader()
         games.extend(g)
         unresolved.extend(u)
@@ -819,7 +932,7 @@ def _build() -> dict:
                 "nfl_regular_schedule_2026": len(nfl_schedule_2026),
                 "by_league": {
                     lg: sum(1 for g in games if g["league"] == lg)
-                    for lg in ("MLB", "NFL", "NCAAF", "MLS")
+                    for lg in ("MLB", "NFL", "NCAAF", "MLS", "NBA", "WNBA")
                 },
                 "high_priority": sum(1 for g in games if g["priority"] == "high"),
                 "westwood_one_ncaaf": sum(
@@ -848,6 +961,13 @@ def _build() -> dict:
         "sections": profiles,
         "mlb_frames": mlb_frames,
         "radio": load("radio_stations.json"),
+        "other_radio": {
+            "summary": load("other_radio_sports.json")["_meta"],
+            "excluded_streaming_only": load("other_radio_sports.json")["excluded_streaming_only"],
+            "unresolved_coverage": load("other_radio_sports.json")["unresolved_coverage"],
+            "warriors_note": load("other_radio_sports.json")["warriors"]["radio"],
+            "valkyries_note": load("other_radio_sports.json")["valkyries"]["radio"],
+        },
         "mlb_clubs": load("mlb_clubs.json"),
     }
 

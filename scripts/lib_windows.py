@@ -13,10 +13,10 @@ blocking interval
 
 game record
     A dict with at least:
-        league   : 'MLB' | 'NFL' | 'NCAAF' | 'MLS'
+        league   : 'MLB' | 'NFL' | 'NCAAF' | 'MLS' | 'NBA' | 'WNBA'
         start_utc: ISO-8601 UTC instant of the scheduled start
-                 (kickoff / first pitch).  `None` means the time is not yet
-                 officially set -- the caller must pass `placeholder=True`.
+                 (kickoff / first pitch / tip-off).  `None` means the time is not
+                 yet officially set -- the caller must pass `placeholder=True`.
         duration : minutes, taken from documented planning estimates (see docs/
                    METHODOLOGY.md).  Never invented per game.
         priority : 'high' for the user's flagged Bay Area teams, else 'normal'
@@ -39,11 +39,16 @@ USER_TZ = ZoneInfo("America/Los_Angeles")
 #:   NFL   192 = 3:12  (widely reported NFL average, 12-minute halftime)
 #:   NCAAF 204 = 3:24  (NCAA FBS average, 20-minute halftime)
 #:   MLS   120 = 2:00  (90 min regulation + stoppage + 15 min halftime)
+#:   NBA   150 = 2:30  (2025-26 tip-to-buzzer ~2:18-2:19; 150 is a conservative
+#:                      planning length - see data/verified/other_radio_sports.json)
+#:   WNBA  120 = 2:00  (40-minute game; ~1:45-2:00 tip-to-buzzer references)
 DEFAULT_DURATIONS = {
     "MLB": 164,
     "NFL": 192,
     "NCAAF": 204,
     "MLS": 120,
+    "NBA": 150,
+    "WNBA": 120,
 }
 
 #: MLB Stats API sentinel timestamp used for games whose start time has not been

@@ -2,12 +2,13 @@
   "_meta": {
     "description": "Season boundary frames for MLB and NFL, 2026-2029. This is the backbone of the vacation-window analysis: a vacation requires dates with zero MLB and zero NFL games, so the season frames matter more than individual games.",
     "retrieved_utc": "2026-09-20T00:00:00Z",
+    "reverified_utc": "2026-09-21T00:00:00Z",
     "status_legend": {
       "VERIFIED": "read directly from a league-owned source on the retrieval date",
       "VERIFIED_ANCHOR": "a single official fixed date (e.g. a Super Bowl) inside an otherwise unreleased season",
       "ESTIMATED": "NOT released by the league. Inferred from the 2026 verified frame and the league's published scheduling rules. Must not be treated as a real schedule."
     },
-    "headline": "The MLB Stats API returns a season record for 2026 ONLY. Requests for 2027, 2028 and 2029 return no seasons, which is the authoritative signal that those schedules are unreleased."
+    "headline": "MLB Stats API (re-verified 2026-09-21): the RANGE query (startSeason=2026&endSeason=2029) returns a 2026 record ONLY, but the individual season=2027 query returns the released 2027 frame stored below, and season=2028 / season=2029 return empty. So 2026 and 2027 are VERIFIED; 2028-2029 remain ESTIMATED."
   },
   "mlb": {
     "2026": {
@@ -241,7 +242,7 @@
       "source": "NOT RELEASED. Only the Super Bowl date is official.",
       "verified_anchors": {
         "super_bowl": "2029-02-11",
-        "super_bowl_status": "PARTIALLY VERIFIED - NFL announced on 2026-03-30 that Las Vegas / Allegiant Stadium will host Super Bowl LXIII in February 2029. The exact date is NOT yet official; 2029-02-11 is the second Sunday of February 2029 and is an ESTIMATE."
+        "super_bowl_status": "VERIFIED - the NFL announced on 2026-03-30 (Annual Meeting, Phoenix) that Super Bowl LXIII will be played at Allegiant Stadium, Las Vegas on Sunday 2029-02-11. The exact day is part of the announcement (not just host/year). Secondary coverage notes the league retains control of its calendar. See docs/IRREGULARITIES.md IR-12/IR-34."
       },
       "preseason_start": "2028-08-03",
       "regular_season_start": "2028-09-07",

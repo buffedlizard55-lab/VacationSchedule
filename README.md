@@ -14,9 +14,14 @@ Pacific-time free intervals, sources, and a review queue.
 | **2 · Add Stanford / Cal** | Everything in Section 1, plus Stanford and California football, high priority. |
 | **3 · Add Earthquakes** | Everything in Section 2, plus San Jose Earthquakes MLS, high priority. |
 
-The additional “Everything tracked” option includes national NCAA football. It
-**does not mean every sport on every Bay Area station**. Other sports remain a
-coverage gap, not silently verified free time.
+The additional “Everything tracked” option includes national NCAA football plus
+the **other verified Bay Area live-radio sports** added at the user's request:
+Golden State Warriors (NBA) and Golden State Valkyries (WNBA) on KGMZ 95.7 The
+Game, flagged high priority. Only AM/FM broadcasts count: the San Jose Sharks
+(app/streaming only — no Bay Area flagship) and Audacy-app-only Valkyries games
+are disclosed exclusions. This scope still **does not mean every sport on every
+Bay Area station** — USF basketball on KNBR, Westwood One NCAA basketball and
+local college basketball remain documented gaps, not silently verified free time.
 
 ## What can I book?
 
@@ -37,8 +42,9 @@ windows:
 
 2027 MLB Opening Night is **March 24**, so it is not part of that vacation window.
 2027 NFL round/Pro Bowl assumptions still make that year's result provisional.
-2029's February 11 Super Bowl date is an **estimate**: the NFL host announcement
-reviewed confirms Las Vegas and the year, not the exact day.
+Super Bowl LXIII on **February 11, 2029** (Allegiant Stadium) is a verified anchor:
+the NFL announced the exact day on 2026-03-30. Super Bowl LXIV in 2030 is still an
+estimate.
 
 With Spring Training included, no modeled section reaches two weeks. Adding the
 Earthquakes removes the future February corridor in this conservative model:
@@ -49,8 +55,10 @@ a proof that a trip is impossible. See [the complete generated report](docs/VACA
 ## Data honesty and current coverage
 
 - **No blanket “fully verified” claim.** The bundled inputs are partly inherited
-  snapshots. This review did not independently re-fetch and compare every NFL,
-  college or MLS fixture. See [the source audit](docs/SOURCES.md).
+  snapshots. The 2026-09-21 line-by-line pass re-verified the Westwood One rows,
+  MLB clinch facts, Super Bowl dates, the MLB API year frames, and the new
+  Warriors/Valkyries/Sharks findings; college and MLS fixtures are still
+  inherited snapshots. See [the source audit](docs/SOURCES.md).
 - MLB all-club **per-day online fetching** is available. The checked-in offline
   bundle has postseason date holds, not every 2026 regular-season game.
 - A daily Pages workflow attempts an **all-club 2026 MLB snapshot**. It validates
@@ -104,8 +112,10 @@ both `/VacationSchedule/` and `/VacationSchedule/site/` work.
 
 ## Review and next work
 
-The three-pass review, source corrections, tests and environmental limitations
-are recorded in [REVIEW-PAGES-2026-09-20.md](docs/REVIEW-PAGES-2026-09-20.md).
-The next session should prioritize [LIMITATIONS-NEXT.md](docs/LIMITATIONS-NEXT.md):
-per-game local radio carriage, complete college/MLS fixtures, additional local
-sports, all-team NFL preseason, and automated source reconciliation.
+The three-pass reviews, source corrections, tests and environmental limitations
+are recorded in [REVIEW-PAGES-2026-09-20.md](docs/REVIEW-PAGES-2026-09-20.md) and
+[REVIEW-2026-09-21.md](docs/REVIEW-2026-09-21.md). The next session should
+prioritize [LIMITATIONS-NEXT.md](docs/LIMITATIONS-NEXT.md): resolving MLB
+postseason times as they publish (from 2026-09-27), Valkyries playoff radio and
+later rounds, the Warriors grid row-count discrepancy, per-game local radio
+carriage, complete college/MLS fixtures, and automated source reconciliation.
