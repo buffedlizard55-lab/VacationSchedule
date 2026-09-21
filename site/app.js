@@ -697,8 +697,7 @@
         `<div class="reviewitem">Previous NFL season: Super Bowl on <strong>${esc(p.nfl_previous_season_end.super_bowl)}</strong> &mdash; ${esc(p.nfl_previous_season_end.status)}: ${esc(p.nfl_previous_season_end.note)}` +
         `<span class="r">Playoff dates blocked this year: ${esc((p.nfl_previous_season_end.playoff_dates_in_year || []).join(", "))}</span></div>` +
         `<div class="reviewitem">Pro Bowl Games (NFL all-star): <strong>${esc(pb.date)}</strong> &mdash; ${esc(pb.status)}: ${esc(pb.note)}</div>` +
-        (p.mlb_block ? `<div class="reviewitem">MLB blocks <strong>${esc(p.mlb_block.start)} &rarr; ${esc(p.mlb_block.end)}</strong> &mdash; ${esc(p.mlb_block.status)}${p.mlb_block.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}` +
-          `<span class="r">Source: statsapi.mlb.com/api/v1/seasons</span></div>` : "") +
+        (p.mlb_block ? `<div class="reviewitem">MLB: ${mlbBlockLine(r.year, p.mlb_block)}</div>` : "") +
         `<div class="reviewitem">Current NFL season opens <strong>${esc(p.nfl_current_season_start.date)}</strong> &mdash; ${esc(p.nfl_current_season_start.status)}: ${esc(p.nfl_current_season_start.note)}</div>` +
         (p.ncaaf_blocks || []).map((s) => `<div class="reviewitem">College football: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
         (p.mls_blocks || []).map((s) => `<div class="reviewitem">MLS: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
@@ -878,6 +877,22 @@
     });
   }
 
+  /** The MLB blocking line for the audit tables: exact fixture dates or a frame. */
+  function mlbBlockLine(year, mb) {
+    const src = esc(mb.source || "");
+    if (mb.mode === "exact_fixtures") {
+      const anchors = (mb.anchors || []).map((a) => `${esc(a.date)} (${esc(a.reason)})`).join("; ");
+      return `<strong>${mb.days_blocked} official fixture dates</strong>, ` +
+        `${esc(mb.start)} &rarr; ${esc(mb.end)} &mdash; ${esc(mb.status || "")}` +
+        `${mb.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}` +
+        (anchors ? ` &middot; announced anchors not in the feed: ${anchors}` : "") +
+        `<span class="r">Every date here carries at least one league game; a date without one is free of MLB. ${src}</span>`;
+    }
+    return `<strong>${esc(mb.start)} &rarr; ${esc(mb.end)}</strong> &mdash; ${esc(mb.status || "")}` +
+      `${mb.includes_spring_training ? " (includes Spring Training; envelope, not per-date fixtures)" : " (Spring Training excluded; envelope, not per-date fixtures)"}` +
+      `<span class="r">No committed per-date fixture list for this season, so the whole published frame is reserved. ${src}</span>`;
+  }
+
   function renderDecision() {
     const summary = $("decisionSummary"), body = $("decisionBody"),
       opts = $("decisionOptionsBody"), why = $("decisionWhy");
@@ -973,7 +988,7 @@
         if (prev.super_bowl) line("Super Bowl", `<strong>${esc(prev.super_bowl)}</strong> &mdash; ${esc(prev.status || "")}: ${esc(prev.note || "")}`);
         if ((prev.playoff_dates_in_year || []).length) line("Playoff dates blocked", esc(prev.playoff_dates_in_year.join(", ")));
         if (pb.date) line("Pro Bowl Games", `<strong>${esc(pb.date)}</strong> &mdash; ${esc(pb.status || "")}: ${esc(pb.note || "")}`);
-        if (mlb.start) line("MLB blocks", `<strong>${esc(mlb.start)} &rarr; ${esc(mlb.end)}</strong> &mdash; ${esc(mlb.status || "")}${mlb.includes_spring_training ? " (includes Spring Training)" : " (Spring Training excluded)"}`);
+        if (mlb.start) line("MLB blocks", mlbBlockLine(r.year, mlb));
         if (cur.date) line("NFL season starts", `<strong>${esc(cur.date)}</strong> &mdash; ${esc(cur.status || "")}: ${esc(cur.note || "")}`);
         (p.ncaaf_blocks || []).forEach((s) => {
           line("College football", `<strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label || "")}) &mdash; ${esc(s.status || "")}${s.conditional ? " &middot; conditional" : ""}`);
