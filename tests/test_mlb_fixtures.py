@@ -228,6 +228,51 @@ class TestExactFixtureAnalysis(unittest.TestCase):
         self.assertIn("2026-03-25", blocked)
 
 
+class TestPostseasonState(unittest.TestCase):
+    """The measured postseason state must agree with the reviewed snapshot."""
+
+    def _state(self) -> dict | None:
+        path = ROOT / "data" / "verified" / "mlb_postseason_state_2026.json"
+        if not path.exists():
+            return None
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def test_window_dates_cover_the_whole_postseason_window(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from export_mlb_schedule import postseason_window, window_dates  # noqa: PLC0415
+
+        start, end = postseason_window(2026)
+        dates = window_dates(start, end)
+        self.assertEqual(dates[0], "2026-09-28")
+        self.assertEqual(dates[-1], "2026-10-31")
+        self.assertEqual(len(dates), 34, "2026-09-28 to 2026-10-31 inclusive is 34 days")
+
+    def test_measured_state_matches_the_reviewed_snapshot(self) -> None:
+        state = self._state()
+        if state is None:
+            self.skipTest("postseason state not committed yet (CI refresh pending)")
+        review = json.loads((ROOT / "data" / "verified" / "mlb_postseason_2026.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            state["dates_with_a_reserved_game"],
+            sorted(date for date in review["dates_with_a_reserved_game"]),
+            "measured reserved dates must equal the reviewed list",
+        )
+        measured = state["dates_in_window_with_no_game"]
+        reviewed = sorted(review["off_days_with_no_possible_game"])
+        # Every measured travel day must be a reviewed travel day. The measured list
+        # may omit a leading travel day that falls before the first scheduled game
+        # (the exporter's window fix lands on the next refresh); nothing else may differ.
+        self.assertTrue(set(measured) <= set(reviewed),
+                        f"measured {measured} is not a subset of reviewed {reviewed}")
+        first_game = min(state["dates_with_a_reserved_game"])
+        allowed_missing = {d for d in reviewed if d < first_game}
+        self.assertLessEqual(len(set(reviewed) - set(measured)), len(allowed_missing),
+                             "only a travel day before the first game may be absent")
+        self.assertEqual(state["counts"]["participants_are_placeholders"], True)
+        self.assertEqual(state["counts"]["with_published_time"], 0,
+                         "no first pitch is published yet; remeasure if this ever changes")
+
+
 class TestCommittedSnapshots(unittest.TestCase):
     """Validate the CI-committed fixture lists. Skips until a season is committed."""
 

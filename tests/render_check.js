@@ -178,6 +178,12 @@ setTimeout(() => {
     /1 week/.test($("tab-vacation").textContent) && /2 weeks/.test($("tab-vacation").textContent) && /3 weeks/.test($("tab-vacation").textContent));
   check("strict section 3 cannot reach two weeks", /no/.test($("vacationBody").textContent));
 
+  // ---- audit table states WHICH blocking mode produced the answer ----
+  check("audit table reports exact fixture dates, not a frame",
+    /official fixture dates/.test(text("decisionWhy")), text("decisionWhy").slice(0, 200));
+  check("audit table names the committed snapshot as the source",
+    /mlb_schedule_2026\.csv/.test(text("decisionWhy")), text("decisionWhy").slice(0, 300));
+
   // ---- interpretation toggle recomputes ----
   const strictText = $("vacationBody").textContent;
   const regular = window.document.querySelector('input[name="interp"][value="regular"]');
