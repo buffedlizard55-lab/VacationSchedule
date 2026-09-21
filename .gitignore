@@ -2,3 +2,7 @@ node_modules/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Generated full-feed deployment artifact; do not commit bulk fixture refreshes.
+data/verified/mlb_schedule_*.json
+site/data/refresh-status.json

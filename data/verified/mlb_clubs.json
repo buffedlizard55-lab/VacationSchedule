@@ -1,0 +1,156 @@
+{
+  "source": "https://statsapi.mlb.com/api/v1/teams?sportId=1&season=2026&fields=teams,id,name",
+  "reviewed_date": "2026-09-20",
+  "teams": [
+    {
+      "id": 109,
+      "name": "Arizona Diamondbacks",
+      "priority": "normal"
+    },
+    {
+      "id": 133,
+      "name": "Athletics",
+      "priority": "high"
+    },
+    {
+      "id": 144,
+      "name": "Atlanta Braves",
+      "priority": "normal"
+    },
+    {
+      "id": 110,
+      "name": "Baltimore Orioles",
+      "priority": "normal"
+    },
+    {
+      "id": 111,
+      "name": "Boston Red Sox",
+      "priority": "normal"
+    },
+    {
+      "id": 112,
+      "name": "Chicago Cubs",
+      "priority": "normal"
+    },
+    {
+      "id": 145,
+      "name": "Chicago White Sox",
+      "priority": "normal"
+    },
+    {
+      "id": 113,
+      "name": "Cincinnati Reds",
+      "priority": "normal"
+    },
+    {
+      "id": 114,
+      "name": "Cleveland Guardians",
+      "priority": "normal"
+    },
+    {
+      "id": 115,
+      "name": "Colorado Rockies",
+      "priority": "normal"
+    },
+    {
+      "id": 116,
+      "name": "Detroit Tigers",
+      "priority": "normal"
+    },
+    {
+      "id": 117,
+      "name": "Houston Astros",
+      "priority": "normal"
+    },
+    {
+      "id": 118,
+      "name": "Kansas City Royals",
+      "priority": "normal"
+    },
+    {
+      "id": 108,
+      "name": "Los Angeles Angels",
+      "priority": "normal"
+    },
+    {
+      "id": 119,
+      "name": "Los Angeles Dodgers",
+      "priority": "normal"
+    },
+    {
+      "id": 146,
+      "name": "Miami Marlins",
+      "priority": "normal"
+    },
+    {
+      "id": 158,
+      "name": "Milwaukee Brewers",
+      "priority": "normal"
+    },
+    {
+      "id": 142,
+      "name": "Minnesota Twins",
+      "priority": "normal"
+    },
+    {
+      "id": 121,
+      "name": "New York Mets",
+      "priority": "normal"
+    },
+    {
+      "id": 147,
+      "name": "New York Yankees",
+      "priority": "normal"
+    },
+    {
+      "id": 143,
+      "name": "Philadelphia Phillies",
+      "priority": "normal"
+    },
+    {
+      "id": 134,
+      "name": "Pittsburgh Pirates",
+      "priority": "normal"
+    },
+    {
+      "id": 135,
+      "name": "San Diego Padres",
+      "priority": "normal"
+    },
+    {
+      "id": 137,
+      "name": "San Francisco Giants",
+      "priority": "high"
+    },
+    {
+      "id": 136,
+      "name": "Seattle Mariners",
+      "priority": "normal"
+    },
+    {
+      "id": 138,
+      "name": "St. Louis Cardinals",
+      "priority": "normal"
+    },
+    {
+      "id": 139,
+      "name": "Tampa Bay Rays",
+      "priority": "normal"
+    },
+    {
+      "id": 140,
+      "name": "Texas Rangers",
+      "priority": "normal"
+    },
+    {
+      "id": 141,
+      "name": "Toronto Blue Jays",
+      "priority": "normal"
+    },
+    {
+      "id": 120,
+      "name": "Washington Nationals",
+      "priority": "normal"
+    }
+  ]
+}

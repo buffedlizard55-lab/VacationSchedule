@@ -300,3 +300,78 @@ code { background: var(--panel2); padding: 1px 5px; border-radius: 4px; font-siz
   .nflweek { overflow-x: auto; }
   .brand h1 { font-size: 21px; }
 }
+
+/* Vacation planner: calm, accessible, mobile-first presentation. */
+:root { --bg:#f5f6f2; --panel:#f0f3ee; --panel2:#e8eee8; --ink:#20352e; --muted:#52675f; --line:#d7e0d7; --accent:#17654f; --accentbg:#edf6ef; }
+body { font-size:15px; }
+.topbar { padding:32px 24px 0; }
+.eyebrow { font-size:10px; font-weight:750; letter-spacing:.18em; color:var(--accent); margin:0 0 12px; }
+.brand h1 { font-size:clamp(28px,4vw,42px); letter-spacing:-.04em; font-weight:650; color:#173f35; }
+.tagline { margin:10px 0 22px; }
+.tabs { gap:8px; }
+.tab { padding:13px 12px; }
+.scopebar { padding:14px max(24px, calc((100vw - 1136px) / 2)); background:#fff; }
+main { padding-top:26px; }
+.trust-banner { border:1px solid #cfdbcd; border-left:4px solid #74927d; border-radius:10px; background:#edf2e8; padding:14px 18px; margin-bottom:28px; color:#344a3c; font-size:13px; }
+.trust-label { font-size:10px; font-weight:800; letter-spacing:.08em; }
+.trust-banner p { margin:6px 0; }
+.trust-banner > span:not(.trust-label) { font-size:12px; display:block; color:#52675f; }
+.dayheading { font-weight:650; letter-spacing:-.025em; color:#173f35; }
+.lede { max-width:900px; }
+.step { border-radius:12px; padding:20px; }
+.steps { grid-template-columns:1fr 1fr; }
+.step:first-child { grid-column:1 / -1; }
+.sitecards { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.sitecard { display:flex; flex-direction:column; border-width:1px; padding:18px; }
+.sitecard.active { box-shadow:inset 0 0 0 1px var(--accent); }
+.sitecard .preview { margin-top:auto; padding-top:12px; }
+.sitecard ul { margin-bottom:18px; }
+.stepnum { background:#dfebe1; color:var(--accent); }
+.trips { grid-template-columns:1fr; }
+.pick { padding:12px; }
+input { accent-color:var(--accent); }
+input:checked + span { color:var(--accent); }
+.tablewrap { border-radius:12px; border:1px solid var(--line); background:white; }
+th { background:#edf1eb; }
+td { padding:14px 12px; }
+.verdict { padding:20px; border-radius:12px; }
+.audit-details, .calendar-box { border:1px solid var(--line); border-radius:12px; background:#fff; padding:16px; margin:20px 0; }
+summary { cursor:pointer; font-weight:650; }
+.audit-details[open] summary { margin-bottom:18px; }
+.calendar-nav { display:flex; align-items:center; justify-content:space-between; margin:16px 0; }
+.month-calendar { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px; }
+.month-calendar .weekday { text-align:center; color:var(--muted); font-size:11px; padding:6px; }
+.calendar-day { border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--ink); min-height:46px; cursor:pointer; font:inherit; }
+.calendar-day span { display:block; font-size:9px; line-height:10px; color:#98702a; }
+.calendar-day.selected { background:var(--accentbg); border:2px solid var(--accent); font-weight:750; }
+.calendar-day:hover { background:var(--panel); }
+.calendar-day:disabled, button:disabled { opacity:.4; cursor:not-allowed; }
+.calendar-box summary .small { font-weight:400; display:block; margin-top:6px; }
+.past-label { display:block; color:#765326; font-size:11px; font-weight:500; }
+:focus-visible { outline:3px solid #b57623; outline-offset:3px; }
+.skip-link { position:absolute; top:-100px; left:12px; z-index:100; padding:12px; background:#fff; color:var(--accent); }
+.skip-link:focus { top:12px; }
+a { overflow-wrap:anywhere; }
+.foot { line-height:1.8; }
+.game .meta { white-space:normal; }
+@media(max-width:760px) {
+  .steps { grid-template-columns:1fr; }
+  .sitecards { grid-template-columns:1fr; }
+  .tabs { flex-wrap:nowrap; overflow-x:auto; }
+  .tab { flex:0 0 auto; }
+  .scopebar { padding:12px 16px; }
+  .scopehint { display:none; }
+  .topbar { padding:24px 16px 0; }
+  main { padding:18px 14px; }
+  .step { padding:14px; }
+  .datebar { gap:6px; }
+  .datepick { order:-1; width:100%; }
+  .game { grid-template-columns:66px minmax(0,1fr); }
+  .game .meta { grid-column:2; text-align:left; }
+  .sitecard .preview { padding-top:8px; }
+  .whyyear { overflow-x:auto; }
+}
+@media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; transition:none !important; } }
+
+.club-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(225px,1fr)); gap:8px; margin-top:16px; }
+.club-item { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:8px; border-bottom:1px solid var(--line); font-size:13px; }

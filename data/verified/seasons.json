@@ -84,33 +84,141 @@
       "super_bowl_status": "VERIFIED - NFL confirmed Super Bowl LXI at SoFi Stadium, Inglewood CA on Sunday 2027-02-14.",
       "note": "2026 regular season opened Wed 2026-09-09 (Seahawks vs Patriots, NFL Kickoff) with the 49ers-Rams Melbourne game Thu 2026-09-10. Playoff round dates are from the NFL's official key-dates release (seahawks.com/news/nfl-announces-important-dates-for-2026-2027, 2026-07-07): Wild Card 2027-01-16..18, Divisional 2027-01-23..24, Championships 2027-01-31, Super Bowl LXI 2027-02-14.",
       "week_boundaries": [
-        {"week": "HOF", "start": "2026-08-06", "end": "2026-08-12"},
-        {"week": "PRE1", "start": "2026-08-13", "end": "2026-08-19"},
-        {"week": "PRE2", "start": "2026-08-20", "end": "2026-08-26"},
-        {"week": "PRE3", "start": "2026-08-27", "end": "2026-09-05"},
-        {"week": "1", "start": "2026-09-09", "end": "2026-09-15"},
-        {"week": "2", "start": "2026-09-16", "end": "2026-09-22"},
-        {"week": "3", "start": "2026-09-23", "end": "2026-09-29"},
-        {"week": "4", "start": "2026-09-30", "end": "2026-10-06"},
-        {"week": "5", "start": "2026-10-07", "end": "2026-10-13"},
-        {"week": "6", "start": "2026-10-14", "end": "2026-10-20"},
-        {"week": "7", "start": "2026-10-21", "end": "2026-10-27"},
-        {"week": "8", "start": "2026-10-28", "end": "2026-11-03"},
-        {"week": "9", "start": "2026-11-04", "end": "2026-11-10"},
-        {"week": "10", "start": "2026-11-11", "end": "2026-11-17"},
-        {"week": "11", "start": "2026-11-18", "end": "2026-11-24"},
-        {"week": "12", "start": "2026-11-25", "end": "2026-12-01"},
-        {"week": "13", "start": "2026-12-02", "end": "2026-12-08"},
-        {"week": "14", "start": "2026-12-09", "end": "2026-12-15"},
-        {"week": "15", "start": "2026-12-16", "end": "2026-12-22"},
-        {"week": "16", "start": "2026-12-23", "end": "2026-12-29"},
-        {"week": "17", "start": "2026-12-30", "end": "2027-01-05"},
-        {"week": "18", "start": "2027-01-06", "end": "2027-01-10"},
-        {"week": "WC", "start": "2027-01-16", "end": "2027-01-18"},
-        {"week": "DIV", "start": "2027-01-23", "end": "2027-01-24"},
-        {"week": "CC", "start": "2027-01-31", "end": "2027-01-31"},
-        {"week": "PRO", "start": "2027-02-03", "end": "2027-02-09"},
-        {"week": "SB", "start": "2027-02-14", "end": "2027-02-14"}
+        {
+          "week": "HOF",
+          "start": "2026-08-06",
+          "end": "2026-08-12"
+        },
+        {
+          "week": "PRE1",
+          "start": "2026-08-13",
+          "end": "2026-08-19"
+        },
+        {
+          "week": "PRE2",
+          "start": "2026-08-20",
+          "end": "2026-08-26"
+        },
+        {
+          "week": "PRE3",
+          "start": "2026-08-27",
+          "end": "2026-09-05"
+        },
+        {
+          "week": "1",
+          "start": "2026-09-09",
+          "end": "2026-09-15"
+        },
+        {
+          "week": "2",
+          "start": "2026-09-16",
+          "end": "2026-09-22"
+        },
+        {
+          "week": "3",
+          "start": "2026-09-23",
+          "end": "2026-09-29"
+        },
+        {
+          "week": "4",
+          "start": "2026-09-30",
+          "end": "2026-10-06"
+        },
+        {
+          "week": "5",
+          "start": "2026-10-07",
+          "end": "2026-10-13"
+        },
+        {
+          "week": "6",
+          "start": "2026-10-14",
+          "end": "2026-10-20"
+        },
+        {
+          "week": "7",
+          "start": "2026-10-21",
+          "end": "2026-10-27"
+        },
+        {
+          "week": "8",
+          "start": "2026-10-28",
+          "end": "2026-11-03"
+        },
+        {
+          "week": "9",
+          "start": "2026-11-04",
+          "end": "2026-11-10"
+        },
+        {
+          "week": "10",
+          "start": "2026-11-11",
+          "end": "2026-11-17"
+        },
+        {
+          "week": "11",
+          "start": "2026-11-18",
+          "end": "2026-11-24"
+        },
+        {
+          "week": "12",
+          "start": "2026-11-25",
+          "end": "2026-12-01"
+        },
+        {
+          "week": "13",
+          "start": "2026-12-02",
+          "end": "2026-12-08"
+        },
+        {
+          "week": "14",
+          "start": "2026-12-09",
+          "end": "2026-12-15"
+        },
+        {
+          "week": "15",
+          "start": "2026-12-16",
+          "end": "2026-12-22"
+        },
+        {
+          "week": "16",
+          "start": "2026-12-23",
+          "end": "2026-12-29"
+        },
+        {
+          "week": "17",
+          "start": "2026-12-30",
+          "end": "2027-01-05"
+        },
+        {
+          "week": "18",
+          "start": "2027-01-06",
+          "end": "2027-01-10"
+        },
+        {
+          "week": "WC",
+          "start": "2027-01-16",
+          "end": "2027-01-18"
+        },
+        {
+          "week": "DIV",
+          "start": "2027-01-23",
+          "end": "2027-01-24"
+        },
+        {
+          "week": "CC",
+          "start": "2027-01-31",
+          "end": "2027-01-31"
+        },
+        {
+          "week": "PRO",
+          "start": "2027-02-03",
+          "end": "2027-02-09"
+        },
+        {
+          "week": "SB",
+          "start": "2027-02-14",
+          "end": "2027-02-14"
+        }
       ]
     },
     "2027": {
@@ -162,13 +270,28 @@
   "bay_area_teams": {
     "2026": {
       "status": "VERIFIED",
-      "stanford_football": {"first_game": "2026-08-29", "last_regular_season_game": "2026-11-28", "acc_championship_if_qualified": "2026-12-05", "source": "https://gostanford.com/news/2026-08-24/2026-season-begins-with-week-0-matchup-against-hawaii-at-stanford-stadium and https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"},
-      "cal_football": {"first_game": "2026-09-05", "last_regular_season_game": "2026-11-28", "acc_championship_if_qualified": "2026-12-05", "source": "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"},
-      "earthquakes": {"first_game": "2026-02-21", "last_regular_season_game": "2026-11-07", "playoffs_if_qualified": "2026-11-22 through 2026-12-12 (MLS Cup)", "source": "https://www.sjearthquakes.com/news/news-earthquakes-announce-2026-major-league-soccer-schedule"}
+      "stanford_football": {
+        "first_game": "2026-08-29",
+        "last_regular_season_game": "2026-11-28",
+        "acc_championship_if_qualified": "2026-12-05",
+        "source": "https://gostanford.com/news/2026-08-24/2026-season-begins-with-week-0-matchup-against-hawaii-at-stanford-stadium and https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"
+      },
+      "cal_football": {
+        "first_game": "2026-09-05",
+        "last_regular_season_game": "2026-11-28",
+        "acc_championship_if_qualified": "2026-12-05",
+        "source": "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"
+      },
+      "earthquakes": {
+        "first_game": "2026-02-21",
+        "last_regular_season_game": "2026-11-07",
+        "playoffs_if_qualified": "2026-11-22 through 2026-12-12 (MLS Cup)",
+        "source": "https://www.sjearthquakes.com/news/news-earthquakes-announce-2026-major-league-soccer-schedule"
+      }
     },
     "2027_2029": {
       "status": "ESTIMATED",
-      "basis": "NCAA FBS runs roughly the last weekend of August through the last weekend of November, with conference championships the first weekend of December and bowl games late December. MLS runs late February through early December. Both patterns are stable but 2027-2029 schedules are unreleased."
+      "basis": "NCAAF seasonal pattern estimated. MLS official format changes in 2027: February\u2013May transition, July\u2013May seasons, mid-December\u2013early-February winter break. Exact fixtures unresolved."
     }
   }
 }

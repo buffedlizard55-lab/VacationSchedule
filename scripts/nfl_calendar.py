@@ -10,7 +10,6 @@ VERIFIED
     Read from an NFL-owned or club-owned source on the retrieval date.
     * Super Bowl LXI  2027-02-14  club/league key-dates release (seahawks.com, 2026-07-07)
     * Super Bowl LXII 2028-02-13  NFL announcement, Mercedes-Benz Stadium
-    * Super Bowl LXIII 2029-02-11 NFL announcement 2026-03-30, Allegiant Stadium
     * 2026-27 playoff rounds       same key-dates release
     * Pro Bowl Games 2026-02-03    operations.nfl.com, 2025-10-22
 ESTIMATED
@@ -19,8 +18,8 @@ ESTIMATED
 
 Why the offsets are trustworthy for the *vacation* question
 -----------------------------------------------------------
-Every round is anchored to the Super Bowl date, which IS official for 2027, 2028 and
-2029. The offsets (Wild Card = SB-29/28/27, Divisional = SB-22/21, Conference
+Every round is anchored to a Super Bowl date; 2027/2028 are official inputs,
+whereas the exact 2029 date is an estimate (only host/year was confirmed). The offsets (Wild Card = SB-29/28/27, Divisional = SB-22/21, Conference
 Championships = SB-14) reproduce the verified 2026-27 layout exactly; a test asserts
 that. A shift of one week in any future round would move a blocked date, so the
 analysis output labels every future-year row ESTIMATED.
@@ -48,10 +47,9 @@ SUPER_BOWL_BY_YEAR = {
     ),
     2029: (
         "2029-02-11",
-        "VERIFIED",
-        "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - the NFL announced both the "
-        "site and the date on 2026-03-30. (An earlier revision of this project carried "
-        "this date as ESTIMATED; it is now confirmed. See docs/IRREGULARITIES.md IR-12.)",
+        "ESTIMATED",
+        "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement "
+        "does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
     ),
 }
 

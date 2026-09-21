@@ -1,3 +1,5 @@
+> **Historical record, superseded where inconsistent:** see [Pages review](REVIEW-PAGES-2026-09-20.md), [current method](METHODOLOGY.md), and [source audit](SOURCES.md). Earlier exact-date/fully-verified claims are not current assurances.
+
 # Irregularities flagged for review
 
 Every place where a source was wrong, inconsistent, ambiguous, or silent. Nothing

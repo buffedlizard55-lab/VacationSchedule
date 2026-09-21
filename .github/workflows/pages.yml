@@ -1,0 +1,68 @@
+name: Test and publish vacation planner
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '27 13 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: python3 -m unittest discover -s tests
+      # Published artifact gets a fresh all-club schedule. Offline PR checks do
+      # not depend on a third-party server. A failure leaves a visible warning.
+      - name: Refresh official MLB schedule
+        if: github.event_name != 'pull_request'
+        id: mlb
+        continue-on-error: true
+        run: python3 scripts/refresh_mlb.py
+      - name: Record refresh health
+        if: github.event_name != 'pull_request'
+        env:
+          OUTCOME: ${{ steps.mlb.outcome }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          Path('site/data/refresh-status.json').write_text(json.dumps({
+            'mlb': os.environ['OUTCOME'], 'attempted_utc': datetime.now(timezone.utc).isoformat()
+          }))
+          PY
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: site
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish site
+        id: deployment
+        uses: actions/deploy-pages@v4

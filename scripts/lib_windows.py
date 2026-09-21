@@ -17,7 +17,7 @@ game record
         start_utc: ISO-8601 UTC instant of the scheduled start
                  (kickoff / first pitch).  `None` means the time is not yet
                  officially set -- the caller must pass `placeholder=True`.
-        duration : minutes, taken from VERIFIED league averages (see docs/
+        duration : minutes, taken from documented planning estimates (see docs/
                    METHODOLOGY.md).  Never invented per game.
         priority : 'high' for the user's flagged Bay Area teams, else 'normal'
 """
@@ -34,7 +34,7 @@ from zoneinfo import ZoneInfo
 
 USER_TZ = ZoneInfo("America/Los_Angeles")
 
-#: Verified average game durations, in minutes.
+#: Planning duration estimates, in minutes.
 #:   MLB   164 = 2:44  (2026 season average, BetMGM/MLB pace-of-play reporting)
 #:   NFL   192 = 3:12  (widely reported NFL average, 12-minute halftime)
 #:   NCAAF 204 = 3:24  (NCAA FBS average, 20-minute halftime)
@@ -102,6 +102,9 @@ def local_wall_clock(date_iso: str, hhmm: str = "00:00") -> datetime:
     Normalizing to UTC up front makes that class of bug impossible: all
     arithmetic and comparisons then happen on a single fixed offset.
     """
+    if hhmm == "24:00":
+        date_iso = (datetime.fromisoformat(date_iso) + timedelta(days=1)).date().isoformat()
+        hhmm = "00:00"
     naive = datetime.strptime(f"{date_iso}T{hhmm}:00", "%Y-%m-%dT%H:%M:%S")
     # fold=0 picks the first occurrence of an ambiguous fallback wall-clock time.
     return naive.replace(tzinfo=USER_TZ, fold=0).astimezone(timezone.utc)
@@ -281,7 +284,7 @@ def longest_free_window(windows: Sequence[Interval]) -> Interval | None:
 #: Window blocked for a game whose DATE is verified but whose start time has not
 #: been announced.  Conservative on purpose: it is far better to hide a real
 #: free window than to advertise one that turns out to have a game on the radio.
-TBD_ENVELOPE_PT = {"NCAAF": ("11:00", "23:59"), "MLS": ("16:00", "23:59"), "NFL": ("09:00", "23:59"), "MLB": ("15:00", "23:59")}
+TBD_ENVELOPE_PT = {league: ("00:00", "24:00") for league in DEFAULT_DURATIONS}
 
 #: The All scope: every game the project tracks, regardless of section.
 SCOPE_ALL = "all"
@@ -352,13 +355,15 @@ def game_to_interval(
     envelope from `TBD_ENVELOPE_PT`, because reporting that day as free would
     repeat the exact bug this project exists to fix.
     """
+    if game.get("cancelled"):
+        return None
     table = durations or DEFAULT_DURATIONS
     league = game["league"]
     start_raw = game.get("start_utc")
-    if not start_raw:
+    if not start_raw and not game.get("date_local"):
         return None
 
-    if game_time_is_unconfirmed(game):
+    if not start_raw or game_time_is_unconfirmed(game):
         interval = _envelope_interval(game, game.get("date_local"), table)
         interval.time_confirmed = False
         return interval
