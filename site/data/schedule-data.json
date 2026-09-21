@@ -1,7 +1,7 @@
 {
   "_meta": {
     "generated_by": "scripts/build_data.py",
-    "generated_utc": "2026-09-21T22:46:53Z",
+    "generated_utc": "2026-09-21T22:56:14Z",
     "timezone": "America/Los_Angeles",
     "durations_minutes": {
       "MLB": 164,
@@ -56,11 +56,177 @@
         "WNBA": 32
       },
       "high_priority": 256,
+      "mlb_complete_seasons": {
+        "2026": 0,
+        "2027": 0
+      },
       "westwood_one_ncaaf": 13,
       "athletics_note": "Athletics (A's) games are carried on KSTE 650 AM (Sacramento) + KNEW 960 AM (Bay Area), NOT KNBR; see docs/SOURCES.md. A's per-game MLB times are fetched live via statsapi.mlb.com like all MLB clubs."
     }
   },
   "mlb_snapshot": null,
+  "mlb_seasons": {
+    "2026": {
+      "available": false
+    },
+    "2027": {
+      "available": false
+    }
+  },
+  "postseason": {
+    "_meta": {
+      "description": "The 2026 MLB postseason, resolved as far as MLB has actually published it. DATES are official and machine-readable from the MLB Stats API. FIRST-PITCH TIMES are NOT published yet - every one of these games is currently served by the API with the 07:33:00Z sentinel (an impossible 03:33 ET start), which is MLB's own 'time not set' marker. Per MLB, game times are set once the matchups lock in the final weekend of the regular season. Nothing here invents or infers a time.",
+      "retrieved_utc": "2026-09-20T00:00:00Z",
+      "primary_source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W",
+      "supporting_sources": [
+        "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+        "https://www.usatoday.com/story/sports/mlb/2026/09/18/mlb-playoff-schedule-2026-postseason-dates-world-series/91826300007/",
+        "https://www.foxsports.com/stories/mlb/2026-mlb-playoff-schedule-dates-rounds-how-watch"
+      ],
+      "time_resolution_status": "UNRESOLVED as of 2026-09-21T22:00:00Z. The question was re-checked line by line in this session against the live Stats API postseason window (2026-09-28 -> 2026-10-31, gameType=E,S,D,L,F,W): the records still carry seed-placeholder participants ('AL Wild Card #1', 'NL #3 Seed', 'World Series ...') and the no-time sentinel. Zero first-pitch times are published. MLB sets early-round times round by round once matchups lock on 2026-09-27; this project does NOT treat recent-season time windows as this season's times. Each official date is blocked with the full local-date TBD envelope. Machine counts of the same window are refreshed into data/verified/mlb_postseason_state_2026.json by the CI job. See docs/IRREGULARITIES.md IR-02.",
+      "date_resolution_status": "RESOLVED - the dates below are the exact dates the league schedule reserves for games, including 'if necessary' games. Note the gaps: 2026-10-02, 10-21, 10-22, 10-25 and 10-29 carry no game under any scenario (travel days). An earlier version of this project blocked 2026-09-29 through 2026-10-31 continuously, which over-blocked those five dates.",
+      "reverified_utc": "2026-09-21T22:00:00Z"
+    },
+    "clinch_status": {
+      "as_of": "2026-09-21",
+      "source": "https://www.mlb.com/news/2026-postseason-teams (MLB's clinch tracker, read 2026-09-21; URL redirects to a related news article but retains the tracker text)",
+      "corroborating_sources": [
+        "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+        "https://www.espn.com/mlb/story/_/id/49752366/mlb-2026-playoff-tracker-clinch-scenarios-postseason-bracket-schedule"
+      ],
+      "clinched_postseason_berth": [
+        "Tampa Bay Rays (clinched 2026-09-11)",
+        "Milwaukee Brewers (clinched 2026-09-11)",
+        "Los Angeles Dodgers (clinched 2026-09-14)",
+        "New York Yankees (clinched 2026-09-14)",
+        "Atlanta Braves (clinched 2026-09-18)",
+        "Boston Red Sox (clinched 2026-09-20)"
+      ],
+      "clinched_division": [
+        "Milwaukee Brewers (NL Central, clinched 2026-09-15)",
+        "Los Angeles Dodgers (NL West, clinched 2026-09-17)",
+        "Atlanta Braves (NL East, clinched 2026-09-20)"
+      ],
+      "corrections_2026_09_21": "Two fields were wrong in the 2026-09-20 snapshot and are fixed here: 'Tampa Bay Rays (AL East)' was listed as a clinched division - the Rays had NOT clinched the AL East (magic number 2 through Sep 20) and are re-listed as a berth only; the Braves' NL East title (Sep 20) was missing from the division list. See docs/IRREGULARITIES.md IR-32.",
+      "resolution_progress": {
+        "berths": "6 of 12 clinched (verified)",
+        "division_titles": "3 of 6 clinched (verified: MIL NL Central, LAD NL West, ATL NL East). The AL East (Rays lead), AL Central and AL West remain open.",
+        "wild_card_slots": "AL: Yankees and Red Sox hold two of the three wild-card slots but seeds are not final. NL: Cubs/Padres/Phillies hold the three projected slots; none clinched as of 2026-09-21.",
+        "matchups": "0 of 4 Wild Card Series set. No official matchup exists; MLB's own tracker notes Boston would 'likely' face the Yankees on the road, which is a projection, not a fixture, and this site does not store it as one.",
+        "first_pitch_times": "0 set. Times are expected to be announced round by round after the field is fixed on 2026-09-27.",
+        "what_clinching_does_resolve": "The six berths cannot disappear from the bracket, and the five no-game dates stay no-game dates. Nothing else about a specific game is implied: a berth sets neither opponent, host, seed nor time."
+      },
+      "still_unresolved": "Seeds 1-6 in each league except the three clinched division winners' titles (seeds themselves still move), all matchups, and every first-pitch time. Any row on this site naming a specific club in a still-TBD postseason game would be a guess, so the site shows the league's reserved dates with participants TBD.",
+      "review_note": "Re-read 2026-09-21 against MLB's clinch tracker and the Sept 20 playoff-picture standings. Corrected the Rays/Braves division list (IR-32). Berths do not establish opponents or first-pitch times. Session 2 re-read (same day): still exactly six berths - no new clinch between reads; the tracker text confirms the Wild Card Series begin Tuesday 2026-09-29 and that the two best division winners in each league get first-round byes. Link extraction redirects to a related article while retaining the tracker text; flagged previously as a redirect irregularity.",
+      "reverified": "Session 3 re-read 2026-09-21T22:00:00Z against https://www.mlb.com/news/2026-postseason-teams: still exactly six berths with the same clinch dates (Rays 9/11, Brewers 9/11, Dodgers 9/14, Yankees 9/14, Braves 9/18, Red Sox 9/20) and the same three division titles (MIL 9/15, LAD 9/17, ATL 9/20). The tracker text confirms the best-of-three Wild Card Series begin Tuesday 2026-09-29 and that the two best division winners in each league get first-round byes. No matchup or time is inferable from a berth."
+    },
+    "rounds": [
+      {
+        "round": "Wild Card Series",
+        "game_type": "F",
+        "best_of": 3,
+        "first_date": "2026-09-29",
+        "last_date": "2026-10-01",
+        "dates": [
+          "2026-09-29",
+          "2026-09-30",
+          "2026-10-01"
+        ],
+        "games_per_round_day": 4
+      },
+      {
+        "round": "Division Series",
+        "game_type": "D",
+        "best_of": 5,
+        "first_date": "2026-10-03",
+        "last_date": "2026-10-10",
+        "dates": [
+          "2026-10-03",
+          "2026-10-04",
+          "2026-10-05",
+          "2026-10-06",
+          "2026-10-07",
+          "2026-10-08",
+          "2026-10-09",
+          "2026-10-10"
+        ]
+      },
+      {
+        "round": "League Championship Series",
+        "game_type": "L",
+        "best_of": 7,
+        "first_date": "2026-10-11",
+        "last_date": "2026-10-20",
+        "dates": [
+          "2026-10-11",
+          "2026-10-12",
+          "2026-10-13",
+          "2026-10-14",
+          "2026-10-15",
+          "2026-10-16",
+          "2026-10-17",
+          "2026-10-18",
+          "2026-10-19",
+          "2026-10-20"
+        ]
+      },
+      {
+        "round": "World Series",
+        "game_type": "W",
+        "best_of": 7,
+        "first_date": "2026-10-23",
+        "last_date": "2026-10-31",
+        "dates": [
+          "2026-10-23",
+          "2026-10-24",
+          "2026-10-26",
+          "2026-10-27",
+          "2026-10-28",
+          "2026-10-30",
+          "2026-10-31"
+        ]
+      }
+    ],
+    "dates_with_a_reserved_game": [
+      "2026-09-29",
+      "2026-09-30",
+      "2026-10-01",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-17",
+      "2026-10-18",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28",
+      "2026-10-30",
+      "2026-10-31"
+    ],
+    "off_days_with_no_possible_game": [
+      "2026-09-28",
+      "2026-10-02",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-25",
+      "2026-10-29"
+    ]
+  },
+  "postseason_state": null,
   "games": [
     {
       "league": "WNBA",
@@ -16610,7 +16776,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -16765,7 +16932,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -16911,7 +17079,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -17055,7 +17224,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -17163,7 +17333,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -17334,7 +17505,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -17505,7 +17677,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -17674,7 +17847,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -17834,7 +18008,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -17996,7 +18171,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -18177,7 +18353,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -18358,7 +18535,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -18513,7 +18691,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -18762,7 +18941,8 @@
           "status": "VERIFIED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -19021,7 +19201,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -19280,7 +19461,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": true,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -19627,7 +19809,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -19798,7 +19981,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -19960,7 +20144,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -20120,7 +20305,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -20244,7 +20430,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -20431,7 +20618,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -20618,7 +20806,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -20803,7 +20992,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -20963,7 +21153,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -21125,7 +21316,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -21306,7 +21498,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -21487,7 +21680,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",
@@ -21642,7 +21836,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05."
+          "note": "API reports postSeasonStartDate 2026-09-28 but the first scheduled postseason games are 2026-09-29 (Wild Card Game 1); 2026-09-28 is a travel/off day. See docs/IRREGULARITIES.md item IR-05.",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2026-08-06",
@@ -21891,7 +22086,8 @@
           "status": "VERIFIED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19)."
+          "note": "MLB released the full 2027 schedule on 2026-07-16. Opening Night (first regular-season game, matchup TBD, Netflix) is Wed 2027-03-24; the Stats API's regularSeasonStartDate 2027-03-25 is the full Opening Day (14 games). All-Star Game 2027-07-13 at Wrigley Field. Per-game start TIMES are still the 07:33Z sentinel (TBD). CAVEAT: the calendar is contingent on a new CBA -- the current agreement expires 2026-12-01 and a lockout could delay or cancel games (see docs/IRREGULARITIES.md IR-19).",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2027-08-05",
@@ -22150,7 +22346,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2028-08-03",
@@ -22409,7 +22606,8 @@
           "status": "ESTIMATED",
           "includes_spring_training": false,
           "source": "https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029",
-          "note": ""
+          "note": "",
+          "mode": "season_frame"
         },
         "nfl_current_season_start": {
           "date": "2029-08-02",

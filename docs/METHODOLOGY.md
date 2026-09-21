@@ -24,6 +24,26 @@ affiliate list do not prove that the game airs locally. A streaming link is not
 an AM/FM station. HD-2 requires an HD receiver. No signal strength at a 94122
 address has been measured by this project.
 
+## Season blocking: exact fixtures before envelopes
+
+For the vacation question the project needs to know which dates have a game. There
+are two modes and the analysis states which one it used (`mlb_block.mode`):
+
+* `exact_fixtures` - the committed official snapshot for that year
+  (`data/verified/mlb_schedule_<year>.csv`) lists every game the league has scheduled.
+  Only real fixture dates are blocked, so a date with no row is genuinely free of
+  MLB under the chosen reading. This is what the 2026 and 2027 seasons use once the
+  CI refresh has committed them.
+* `season_frame` - no snapshot exists for that year, so the published season window
+  (Spring Training -> postseason end, or first regular game -> postseason end under
+  the regular-season reading) is blocked continuously. Conservative, and it can hide
+  real breaks.
+
+The strict reading keeps Spring Training (`S`) rows; the regular-season reading drops
+them. Postseason (`F`,`D`,`L`,`W`), All-Star (`A`) and exhibition (`E`) rows always
+count. No time is inferred anywhere in this step: a row with no published first pitch
+still blocks the whole local date through the TBD envelope described below.
+
 ## Daily intervals
 
 1. Convert scheduled start and any known earlier radio airtime to UTC.

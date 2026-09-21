@@ -33,7 +33,7 @@ import io
 import json
 import sys
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
@@ -261,9 +261,85 @@ def export_year(year: int, out_dir: Path = OUT_DIR, raw_dir: Path = RAW_DIR) -> 
     return summary
 
 
+def postseason_window(year: int) -> tuple[str, str]:
+    """The window the league reserves for a season's postseason games."""
+    return f"{year}-09-28", f"{year}-10-31"
+
+
+def export_postseason_state(year: int, out_dir: Path = OUT_DIR, raw_dir: Path = RAW_DIR) -> dict:
+    """Machine-count the postseason: how many game records exist, how many have a
+    published first pitch, which dates are reserved and which are impossible.
+
+    This is the answer to "can we resolve the TBDs yet?" - it is measured from the
+    league response, never asserted, and it is re-measured on every refresh so the
+    moment the league publishes a round's times the site can say so.
+    """
+    start, end = postseason_window(year)
+    url = (
+        "https://statsapi.mlb.com/api/v1/schedule?sportId=1"
+        f"&startDate={start}&endDate={end}&gameType=E,S,D,L,F,W"
+    )
+    request = Request(url, headers={"User-Agent": "VacationSchedule/3.1 (public schedule research)"})
+    with urlopen(request, timeout=120) as response:
+        raw = response.read()
+    payload = json.loads(raw.decode("utf-8"))
+    rows = normalize(payload, year)
+    dates = sorted({r["date_local"] for r in rows})
+    all_dates = []
+    cursor = datetime.strptime(dates[0], "%Y-%m-%d").date() if dates else None
+    if cursor:
+        last = datetime.strptime(dates[-1], "%Y-%m-%d").date()
+        while cursor <= last:
+            all_dates.append(cursor.isoformat())
+            cursor += timedelta(days=1)
+    placeholder = any(
+        not r["away"].split()[0].isupper() or "Winner" in r["away"] or "Seed" in r["away"] or "#" in r["away"]
+        for r in rows
+    )
+    state = {
+        "_meta": {
+            "description": (
+                f"{year} MLB postseason state as measured from the league's own schedule API. "
+                "Counts the reserved dates, the game records behind them and how many records still "
+                "carry the league's no-time sentinel, so 'times are not published' is a measurement "
+                "rather than a claim."
+            ),
+            "year": year,
+            "window": [start, end],
+            "source_url": url,
+            "retrieved_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "raw_sha256": hashlib.sha256(raw).hexdigest(),
+            "generated_by": "scripts/export_mlb_schedule.py",
+        },
+        "counts": {
+            "game_records": len(rows),
+            "with_published_time": sum(1 for r in rows if r["time_tbd"] == "false"),
+            "still_time_tbd": sum(1 for r in rows if r["time_tbd"] == "true"),
+            "distinct_dates_with_a_game": len(dates),
+            "by_game_type": {GAME_TYPE_NAMES.get(k, k): v for k, v in sorted(Counter(r["game_type"] for r in rows).items())},
+            "participants_are_placeholders": placeholder,
+        },
+        "dates_with_a_reserved_game": dates,
+        "dates_in_window_with_no_game": [d for d in all_dates if d not in set(dates)],
+        "first_games": [
+            {"date": r["date_local"], "start_pt": r["start_pt"], "time_tbd": r["time_tbd"],
+             "label": f"{r['away']} at {r['home']}", "venue": r["venue"], "game_type": r["game_type"]}
+            for r in rows[:12]
+        ],
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / f"mlb_postseason_state_{year}.json").write_text(
+        json.dumps(state, indent=2) + "\n", encoding="utf-8"
+    )
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    (raw_dir / f"mlb_postseason_{year}.json").write_bytes(raw)
+    return state
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--years", type=int, nargs="+", default=[2026, 2027])
+    parser.add_argument("--postseason-years", type=int, nargs="+", default=[2026])
     parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
     parser.add_argument("--raw-dir", type=Path, default=RAW_DIR)
     args = parser.parse_args(argv)
@@ -285,8 +361,22 @@ def main(argv: list[str] | None = None) -> int:
         for note in summary["validation_notes"]:
             print(f"  note: {note}", file=sys.stderr)
 
+    for year in args.postseason_years:
+        try:
+            state = export_postseason_state(year, args.out_dir, args.raw_dir)
+        except Exception as error:  # noqa: BLE001 - reported, never hidden
+            print(f"postseason {year}: FAILED - {error}", file=sys.stderr)
+            failures.append(f"postseason {year}: {error}")
+            continue
+        counts = state["counts"]
+        print(
+            f"postseason {year}: {counts['game_records']} game records on "
+            f"{counts['distinct_dates_with_a_game']} dates; published times "
+            f"{counts['with_published_time']}, still TBD {counts['still_time_tbd']}"
+        )
+
     if failures:
-        print("Some years failed: " + "; ".join(failures), file=sys.stderr)
+        print("Some fetches failed: " + "; ".join(failures), file=sys.stderr)
         return 1
     return 0
 

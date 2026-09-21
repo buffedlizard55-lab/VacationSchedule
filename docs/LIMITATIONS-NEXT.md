@@ -26,6 +26,22 @@ re-verified live; a permanent "Spring Training included vs excluded" side-by-sid
 table added to the All windows tab; five new regression tests. See
 REVIEW-2026-09-21.md (Session 2 section) and SOURCES.md (session 2 table).
 
+## Session 2026-09-21 (session 3, this pass)
+
+Added `scripts/export_mlb_schedule.py` plus the CI refresh step in
+`.github/workflows/pages.yml`: the runner now fetches the complete 2026 and 2027
+MLB fixture lists (all clubs, Spring Training through the postseason), validates
+them, commits the compact CSV + provenance summary and uploads the raw responses
+as an artifact. The site gained two tabs (**MLB 2026 & 2027**, **Postseason 2026**)
+and an answer matrix that puts all three sections and both Spring Training
+readings side by side. The vacation analysis now uses exact fixture dates when a
+season snapshot is committed, and falls back to the documented season frame
+otherwise. The MLB postseason tracker now reports machine-measured counts
+(`data/verified/mlb_postseason_state_<year>.json`) rather than prose claims:
+re-verified 2026-09-21 that the live API still serves every postseason record with
+placeholder participants and no first-pitch time, and that MLB's tracker still
+lists exactly six clinched berths. See REVIEW-2026-09-21.md and SOURCES.md.
+
 ## Highest priority for the next session
 
 1. **MLB postseason times, from 2026-09-27.** Dates are official and stored;

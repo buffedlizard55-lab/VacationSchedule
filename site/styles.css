@@ -379,3 +379,24 @@ a { overflow-wrap:anywhere; }
 
 .club-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(225px,1fr)); gap:8px; margin-top:16px; }
 .club-item { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:8px; border-bottom:1px solid var(--line); font-size:13px; }
+
+/* ---------- MLB season explorer + postseason tracker + answer matrix ---------- */
+.filterbar {
+  display:flex; flex-wrap:wrap; gap:12px 20px; align-items:flex-end;
+  border:1px solid var(--line); border-radius:12px; background:#fff; padding:14px 16px; margin:18px 0;
+}
+.filterbar label { display:flex; flex-direction:column; gap:5px; font-size:12px; font-weight:650; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
+.filterbar select { font:inherit; font-size:14px; padding:7px 9px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); min-width:150px; }
+.filterbar .chk { flex-direction:row; align-items:center; gap:8px; text-transform:none; letter-spacing:0; font-size:14px; color:var(--ink); font-weight:500; }
+.filterbar .chk input { width:18px; height:18px; }
+.filtercount { margin-left:auto; font-size:13px; color:var(--muted); font-weight:600; }
+.mlbtable { min-width:960px; }
+.mlbtable td { vertical-align:top; }
+.mlbtable .hp-row { background:var(--highbg); }
+.mlbtable .hp-row td:first-child { box-shadow:inset 3px 0 0 #d97706; }
+.vtable.answer { min-width:820px; }
+.vtable.answer .tabletitle { text-align:left; font-size:13px; letter-spacing:.02em; color:#fff; background:var(--accent); }
+.vtable.answer td { vertical-align:top; }
+@media(max-width:760px) {
+  .filtercount { margin-left:0; width:100%; }
+}

@@ -120,6 +120,46 @@ def mlb_span(year: int, mlb: dict, count_spring_training: bool) -> tuple[str, st
     }
 
 
+#: Game types that count as "an MLB game is being played that day".
+#: S = Spring Training (only under the strict reading), R = regular season,
+#: E = exhibition, F/D/L/W = postseason rounds, P/C = legacy postseason codes,
+#: A = All-Star Game.
+_MLB_ALWAYS_BLOCKING_TYPES = {"R", "E", "F", "D", "L", "W", "P", "C", "A"}
+
+
+def mlb_fixture_days(year: int, count_spring_training: bool) -> list[str] | None:
+    """Exact dates with at least one official MLB game, or None if unknown.
+
+    Reads the committed official snapshot written by
+    ``scripts/export_mlb_schedule.py`` (``data/verified/mlb_schedule_<year>.csv``,
+    straight from the league's Stats API). When the file exists, the vacation
+    analysis blocks the real fixture dates instead of a continuous season
+    envelope, which is both more accurate and easier to audit: a date with no row
+    is genuinely free of MLB under the chosen reading.
+
+    Returns ``None`` when the snapshot is not present for that year, in which case
+    the caller keeps the documented conservative envelope.
+    """
+    path = VERIFIED / f"mlb_schedule_{year}.csv"
+    if not path.exists():
+        return None
+    allowed = set(_MLB_ALWAYS_BLOCKING_TYPES)
+    if count_spring_training:
+        allowed.add("S")
+    days: set[str] = set()
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        columns = line.split("|")
+        if len(columns) < 6:
+            raise ValueError(f"{path}: malformed row: {line[:80]}")
+        date_local, game_type = columns[0], columns[5]
+        if game_type in allowed and date_local.startswith(f"{year}-"):
+            days.add(date_local)
+    return sorted(days)
+
+
 def _cfp_end_estimate(year: int) -> str:
     first = date(year, 1, 1)
     return (first + timedelta(days=(0 - first.weekday()) % 7 + 21)).isoformat()
@@ -359,11 +399,30 @@ def blocked_days_for_year(
     pro_bowl_date, pro_bowl_status, pro_bowl_note = nfl_calendar.PRO_BOWL_BY_YEAR[year]
     blocked.add(pro_bowl_date)
 
-    # 2. MLB season of `year`.
+    # 2. MLB season of `year`. Exact fixture dates are used whenever the official
+    #    snapshot for that year is committed; otherwise the season frame stands in.
     mlb_block = None
     if "MLB" in leagues:
-        mlb_start, mlb_end, mlb_block = mlb_span(year, mlb, count_spring_training)
-        blocked.update(daterange(mlb_start, mlb_end))
+        exact_days = mlb_fixture_days(year, count_spring_training)
+        if exact_days:
+            blocked.update(exact_days)
+            mlb_block = {
+                "mode": "exact_fixtures",
+                "start": exact_days[0],
+                "end": exact_days[-1],
+                "days_blocked": len(exact_days),
+                "status": "VERIFIED",
+                "includes_spring_training": count_spring_training,
+                "source": f"data/verified/mlb_schedule_{year}.csv (official MLB Stats API snapshot)",
+                "note": (
+                    "Every date here has at least one official MLB game in the committed "
+                    "snapshot; dates without a row are free of MLB under this reading."
+                ),
+            }
+        else:
+            mlb_start, mlb_end, mlb_block = mlb_span(year, mlb, count_spring_training)
+            blocked.update(daterange(mlb_start, mlb_end))
+            mlb_block["mode"] = "season_frame"
 
     # 3. This year's NFL season: Hall of Fame Game -> Dec 31.
     blocked.update(daterange(nfl_start, f"{year}-12-31"))
@@ -580,7 +639,7 @@ def main(verbose: bool = True) -> dict:
                 "strict": "Spring Training exhibitions count as MLB games.",
                 "regular": "Only MLB regular season and postseason count.",
             },
-            "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB season as a continuous frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, (e) in section 3 the Earthquakes MLS span, and (f) in the superset only the Warriors NBA and Valkyries WNBA spans. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
+            "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB games - exact official fixture dates when the committed league snapshot for that year exists, otherwise the documented continuous season frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, (e) in section 3 the Earthquakes MLS span, and (f) in the superset only the Warriors NBA and Valkyries WNBA spans. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
             "caveat": "Continuous season envelopes are conservative and can hide real fixture gaps. No candidate found is not proof a trip is impossible. Future schedule and radio coverage remain incomplete.",
         },
         "comparison": comparison,
