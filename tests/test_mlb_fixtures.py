@@ -60,6 +60,12 @@ class TestSnapshotParsing(unittest.TestCase):
         build_data.VERIFIED = self._real_verified
         self.tmp.cleanup()
 
+    def _copy_seasons(self) -> None:
+        (self.dir / "seasons.json").write_text(
+            (ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+
     def _write(self, year: int, rows: list[str], summary: dict | None = None) -> None:
         body = HEADER.format(year=year, n=len(rows)) + "\n".join(rows) + "\n"
         (self.dir / f"mlb_schedule_{year}.csv").write_text(body, encoding="utf-8")
@@ -80,9 +86,56 @@ class TestSnapshotParsing(unittest.TestCase):
         self.assertEqual(snapshot["clubs"]["137"], "San Francisco Giants")
         self.assertEqual(snapshot["tbd"], 1)
         self.assertEqual(snapshot["with_time"], 1)
-        # Compact row order: date, start_pt, away, home, venue, type, status.
+        # Compact row order: date, start_pt, away, home, venue, type, status, game_pk.
         self.assertEqual(snapshot["rows"][0][1], "13:05")
+        self.assertEqual(snapshot["rows"][0][7], "10", "the league game id must survive into the site file")
+        self.assertEqual(snapshot["rows"][0][0], "2026-03-25")
         self.assertEqual(snapshot["rows"][1][1], "", "a TBD first pitch must not become a time")
+
+    def test_quiet_dates_exclude_the_all_star_game(self) -> None:
+        """A date whose only fixture is the All-Star Game is not a quiet date."""
+        self._write(2026, [
+            row("2026-03-25", "R", "A", "B", "1", "2", game_pk="1"),
+            row("2026-03-26", "R", "C", "D", "3", "4", game_pk="2"),
+            row("2026-03-27", "A", "E", "F", "5", "6", game_pk="3"),
+            row("2026-03-29", "R", "G", "H", "7", "8", game_pk="4"),
+        ])
+        snapshot = build_data.load_mlb_season_snapshot(2026)
+        assert snapshot is not None
+        # 2026-03-27 carries the All-Star Game, so it is NOT quiet; 2026-03-28 has
+        # no fixture of any type and is.
+        self.assertEqual(snapshot["quiet_dates"], ["2026-03-28"])
+        self.assertEqual(snapshot["regular_dates"], ["2026-03-25", "2026-03-26", "2026-03-29"])
+        self.assertEqual(snapshot["first_date"], "2026-03-25")
+        self.assertEqual(snapshot["last_date"], "2026-03-29")
+
+    def test_quiet_dates_report_a_real_gap(self) -> None:
+        self._write(2026, [
+            row("2026-03-25", "R", "A", "B", "1", "2", game_pk="1"),
+            row("2026-03-27", "R", "C", "D", "3", "4", game_pk="2"),
+        ])
+        snapshot = build_data.load_mlb_season_snapshot(2026)
+        assert snapshot is not None
+        self.assertEqual(snapshot["quiet_dates"], ["2026-03-26"])
+
+    def test_club_filter_offers_the_official_roster_only(self) -> None:
+        """Exhibition opponents are not MLB clubs and must not join the filter."""
+        (self.dir / "mlb_clubs.json").write_text(
+            (ROOT / "data" / "verified" / "mlb_clubs.json").read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+        self._write(2026, [
+            row("2026-03-25", "R", "Detroit Tigers", "San Francisco Giants", "116", "137", game_pk="10"),
+            row("2026-03-26", "E", "Colombia", "Pittsburgh Pirates", "792", "134", tbd=True, game_pk="11"),
+        ])
+        snapshot = build_data.load_mlb_season_snapshot(2026)
+        assert snapshot is not None
+        official = set(snapshot["mlb_club_ids"])
+        roster = json.loads((ROOT / "data" / "verified" / "mlb_clubs.json").read_text(encoding="utf-8"))
+        self.assertEqual(official, {str(team["id"]) for team in roster["teams"]})
+        self.assertEqual(len(official), 30)
+        self.assertIn("792", snapshot["clubs"], "the opponent name is still available for the row")
+        self.assertNotIn("792", official)
 
     def test_malformed_row_is_rejected(self) -> None:
         (self.dir / "mlb_schedule_2026.csv").write_text("2026-03-25|only|three\n", encoding="utf-8")
@@ -109,6 +162,12 @@ class TestExactFixtureAnalysis(unittest.TestCase):
         analyze_vacation.VERIFIED = self._real
         self.tmp.cleanup()
 
+    def _copy_seasons(self) -> None:
+        (self.dir / "seasons.json").write_text(
+            (ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+
     def _write(self, year: int, rows: list[str]) -> None:
         (self.dir / f"mlb_schedule_{year}.csv").write_text(
             HEADER.format(year=year, n=len(rows)) + "\n".join(rows) + "\n", encoding="utf-8"
@@ -132,6 +191,7 @@ class TestExactFixtureAnalysis(unittest.TestCase):
         self.assertIsNone(analyze_vacation.mlb_fixture_days(2026, True))
 
     def test_blocked_days_use_exact_dates_when_available(self) -> None:
+        self._copy_seasons()
         self._write(2026, [
             row("2026-03-25", "R", "E", "F", "5", "6", game_pk="3"),
             row("2026-03-26", "R", "G", "H", "7", "8", game_pk="4"),
@@ -149,7 +209,17 @@ class TestExactFixtureAnalysis(unittest.TestCase):
         # block this date, exact fixtures must not.
         self.assertNotIn("2026-05-15", blocked, "the season frame must not be applied once fixtures are known")
 
+    def test_announced_anchors_block_even_when_the_feed_lacks_them(self) -> None:
+        """2027 Opening Night (2027-03-24) is announced but not in the fixture feed."""
+        self._copy_seasons()
+        self._write(2027, [
+            row("2027-03-25", "R", "E", "F", "5", "6", game_pk="3"),
+        ])
+        days = analyze_vacation.mlb_fixture_days(2027, count_spring_training=False)
+        self.assertEqual(days, ["2027-03-24", "2027-03-25"])
+
     def test_frame_mode_is_reported_when_no_snapshot_exists(self) -> None:
+        self._copy_seasons()
         seasons = json.loads((ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8"))
         blocked, provenance = analyze_vacation.blocked_days_for_year(
             2026, seasons["mlb"], count_spring_training=True, section="1"
@@ -187,9 +257,18 @@ class TestCommittedSnapshots(unittest.TestCase):
             self.skipTest("2027 snapshot not committed yet (CI refresh pending)")
         seasons = json.loads((ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8"))
         frame = seasons["mlb"]["2027"]
-        self.assertEqual(summary["regular_season"]["first_date"], frame["first_regular_season_game"])
+        # The Stats API's 2027 list starts on Opening Day (2027-03-25). Opening
+        # Night one day earlier (2027-03-24) was announced separately in MLB's
+        # 2026-07-16 release and is therefore an explicit anchor, not a feed row.
+        self.assertEqual(summary["regular_season"]["first_date"], frame["regular_season_start"])
         self.assertEqual(summary["regular_season"]["last_date"], frame["regular_season_end"])
         self.assertTrue(summary["validation"]["all_30_clubs_present"])
+        if frame.get("opening_night") and frame["opening_night"] != frame["regular_season_start"]:
+            self.assertIn(
+                frame["opening_night"],
+                analyze_vacation.mlb_fixture_days(2027, count_spring_training=False),
+                "the announced Opening Night must still block the date",
+            )
 
     def test_committed_csv_dates_are_inside_the_season_window(self) -> None:
         """No fixture may sit outside Spring Training -> postseason end."""

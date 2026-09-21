@@ -77,7 +77,11 @@ idea for the postseason: it counts game records, published first pitches, reserv
 dates and impossible dates instead of asserting them.
 
 When a season snapshot is committed, the vacation analysis blocks real fixture
-dates (`mlb_block.mode = exact_fixtures`) instead of a continuous season frame.
+dates (`mlb_block.mode = exact_fixtures`) instead of a continuous season frame. Both
+2026 and 2027 are in that state now: 2973 and 2900 fixtures, re-validated on every
+run (30 clubs, 2430 regular-season games each, every club at 162, unique game ids).
+The MLB tab carries each fixture's league `game_pk`, and the season files name the
+dates inside the regular season that carry no game at all (the All-Star break).
 
 ## Data honesty and current coverage
 

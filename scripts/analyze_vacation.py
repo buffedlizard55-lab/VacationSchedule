@@ -67,10 +67,23 @@ previous_season_nfl_dates = nfl_calendar.previous_season_nfl_dates
 
 
 def _seasons() -> dict:
-    """data/verified/seasons.json, parsed once."""
+    """data/verified/seasons.json, parsed once.
+
+    ``VERIFIED`` is monkeypatched to a temporary directory by the fixture tests, so
+    fall back to the repository copy when a caller points at a directory without
+    the file. Never invent values: if neither location has it, raise.
+    """
     global _SEASONS_CACHE
     if _SEASONS_CACHE is None:
-        _SEASONS_CACHE = json.loads((VERIFIED / "seasons.json").read_text(encoding="utf-8"))
+        candidates = [VERIFIED / "seasons.json", ROOT / "data" / "verified" / "seasons.json"]
+        for candidate in candidates:
+            if candidate.exists():
+                _SEASONS_CACHE = json.loads(candidate.read_text(encoding="utf-8"))
+                break
+        else:
+            raise FileNotFoundError(
+                "seasons.json not found in " + ", ".join(str(c) for c in candidates)
+            )
     return _SEASONS_CACHE
 
 
@@ -120,11 +133,40 @@ def mlb_span(year: int, mlb: dict, count_spring_training: bool) -> tuple[str, st
     }
 
 
-#: Game types that count as "an MLB game is being played that day".
-#: S = Spring Training (only under the strict reading), R = regular season,
-#: E = exhibition, F/D/L/W = postseason rounds, P/C = legacy postseason codes,
-#: A = All-Star Game.
-_MLB_ALWAYS_BLOCKING_TYPES = {"R", "E", "F", "D", "L", "W", "P", "C", "A"}
+#: Game types that count as "an MLB game is being played that day" under BOTH
+#: readings: R = regular season, A = All-Star Game, F/D/L/W = postseason rounds,
+#: P/C = legacy postseason codes.
+_MLB_ALWAYS_BLOCKING_TYPES = {"R", "A", "F", "D", "L", "W", "P", "C"}
+
+#: Games that are exhibitions rather than real competition: S = Spring Training,
+#: E = exhibition (MLB clubs against national teams, WBC warm-ups, college teams -
+#: the API labels the 2026 Colombia / Netherlands / Panama games as E). They block
+#: under the strict reading only, because that reading is literally "any MLB club
+#: game counts", while the regular-season reading is "regular season + postseason".
+_MLB_STRICT_ONLY_TYPES = {"S", "E"}
+
+
+def mlb_announced_anchors(year: int) -> list[tuple[str, str]]:
+    """League-announced MLB dates that the fixture feed does not carry yet.
+
+    Returns ``(date, reason)`` pairs. Today this is Opening Night: MLB's 2026-07-16
+    release announced the first 2027 regular-season game for Wednesday 2027-03-24
+    (a Netflix game), and the Stats API's 2027 list starts the next day with the
+    15-game Opening Day. Blocking the announced date keeps the analysis from
+    opening a vacation day that the league has already sold.
+    """
+    try:
+        frame = _seasons()["mlb"].get(str(year), {})
+    except (FileNotFoundError, KeyError, json.JSONDecodeError):
+        return []
+    anchors: list[tuple[str, str]] = []
+    opening_night = frame.get("opening_night")
+    first_regular = frame.get("first_regular_season_game")
+    if opening_night and opening_night != frame.get("regular_season_start"):
+        anchors.append((opening_night, "league-announced Opening Night (not yet in the Stats API fixture feed)"))
+    elif first_regular and first_regular != frame.get("regular_season_start"):
+        anchors.append((first_regular, "league-announced first regular-season game (not yet in the fixture feed)"))
+    return anchors
 
 
 def mlb_fixture_days(year: int, count_spring_training: bool) -> list[str] | None:
@@ -145,7 +187,7 @@ def mlb_fixture_days(year: int, count_spring_training: bool) -> list[str] | None
         return None
     allowed = set(_MLB_ALWAYS_BLOCKING_TYPES)
     if count_spring_training:
-        allowed.add("S")
+        allowed |= _MLB_STRICT_ONLY_TYPES
     days: set[str] = set()
     for raw in path.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
@@ -157,6 +199,9 @@ def mlb_fixture_days(year: int, count_spring_training: bool) -> list[str] | None
         date_local, game_type = columns[0], columns[5]
         if game_type in allowed and date_local.startswith(f"{year}-"):
             days.add(date_local)
+    for anchor, _reason in mlb_announced_anchors(year):
+        if anchor.startswith(f"{year}-"):
+            days.add(anchor)
     return sorted(days)
 
 
@@ -416,8 +461,12 @@ def blocked_days_for_year(
                 "source": f"data/verified/mlb_schedule_{year}.csv (official MLB Stats API snapshot)",
                 "note": (
                     "Every date here has at least one official MLB game in the committed "
-                    "snapshot; dates without a row are free of MLB under this reading."
+                    "snapshot (plus any league-announced anchor the feed does not carry yet); "
+                    "dates without a row are free of MLB under this reading."
                 ),
+                "anchors": [
+                    {"date": anchor, "reason": reason} for anchor, reason in mlb_announced_anchors(year)
+                ],
             }
         else:
             mlb_start, mlb_end, mlb_block = mlb_span(year, mlb, count_spring_training)

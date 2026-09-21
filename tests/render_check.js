@@ -27,8 +27,39 @@ const dom = new JSDOM(html, {
 });
 const { window } = dom;
 
-// Stub fetch so the live MLB call takes its offline path instead of hanging.
-window.fetch = function () { return Promise.reject(new Error("offline in test")); };
+// Stub fetch: the live statsapi.mlb.com call is rejected (that is the offline case
+// the page has to survive), while same-origin files - the generated bundle and the
+// committed per-season fixture files - are served from disk. This exercises the
+// real loading path instead of a stub.
+window.fetch = function (url) {
+  const target = String(url);
+  if (/^https?:\/\//.test(target) && !target.startsWith("http://localhost:8080/")) {
+    return Promise.reject(new Error("offline in test"));
+  }
+  const rel = target.replace(/^http:\/\/localhost:8080\//, "").replace(/^\.\//, "");
+  const file = path.join(ROOT, "site", rel);
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, "utf8", (err, body) => {
+      if (err) { reject(new Error("HTTP 404 for " + rel)); return; }
+      resolve({ ok: true, status: 200, json: () => Promise.resolve(JSON.parse(body)) });
+    });
+  });
+};
+
+// Wait for an async render (the season file load) without hand-rolling sleeps.
+function waitFor(predicate, timeoutMs) {
+  const started = Date.now();
+  return new Promise((resolve, reject) => {
+    const tick = () => {
+      let value = false;
+      try { value = predicate(); } catch (e) { value = false; }
+      if (value) { resolve(value); return; }
+      if (Date.now() - started > timeoutMs) { reject(new Error("timed out")); return; }
+      setTimeout(tick, 20);
+    };
+    tick();
+  });
+}
 
 const errors = [];
 window.addEventListener("error", (e) => errors.push(String(e.message || e.error)));
@@ -199,7 +230,6 @@ setTimeout(() => {
   check("sources populated", window.document.querySelectorAll("#sourcesList .srccard").length > 15);
 
   // ---- offline MLB note is labelled, not silently missing ----
-  check("offline MLB fetch is disclosed", /Live MLB fetch failed|works offline/.test(text("mlbNote")), text("mlbNote"));
 
   // ---- answer matrix: every section x every year, both Spring Training readings ----
   check("answer matrix renders two readings", window.document.querySelectorAll("#answerMatrix table").length === 2,
@@ -231,23 +261,54 @@ setTimeout(() => {
   check("postseason names the travel days", /No game is possible on/.test(text("postseasonDates")));
   check("postseason says what would resolve the TBDs", /What would resolve it/.test(text("postseasonUnresolved")));
 
-  // ---- MLB season explorer: honest when the CI snapshot is not bundled ----
+  // ---- MLB season explorer: real committed fixture files, async load ----
   tab("mlb").dispatchEvent(new window.Event("click", { bubbles: true }));
   check("mlb tab activates", $("tab-mlb").classList.contains("active"));
   const bundledSeasons = (window.SCHEDULE_DATA.mlb_seasons) || {};
   const available = Object.keys(bundledSeasons).filter((y) => bundledSeasons[y].available);
-  if (available.length) {
-    check("mlb explorer renders fixture rows", window.document.querySelectorAll("#mlbRows tr").length > 0,
-      `found ${window.document.querySelectorAll("#mlbRows tr").length}`);
-    check("mlb explorer reports the fixture count", /matching fixtures/.test(text("mlbCount")), text("mlbCount"));
-    check("mlb explorer offers all 30 clubs", window.document.querySelectorAll("#mlbClub option").length === 31,
-      `found ${window.document.querySelectorAll("#mlbClub option").length}`);
-    check("mlb explorer explains provenance", /official fixtures/.test(text("mlbSeasonMeta")), text("mlbSeasonMeta").slice(0, 160));
-  } else {
+  if (!available.length) {
     check("mlb explorer admits no season file is bundled", /not bundled|No complete season fixture file/.test(text("mlbRows") + text("mlbSeasonMeta")),
       text("mlbSeasonMeta").slice(0, 160));
+    return finish();
   }
+  waitFor(() => window.document.querySelectorAll("#mlbRows tr").length > 0, 4000)
+    .then(() => {
+      check("mlb explorer renders fixture rows", true);
+      check("mlb explorer reports the fixture count", /matching fixtures/.test(text("mlbCount")), text("mlbCount"));
+      check("mlb explorer offers all 30 clubs", window.document.querySelectorAll("#mlbClub option").length === 31,
+        `found ${window.document.querySelectorAll("#mlbClub option").length}`);
+      check("mlb explorer explains provenance", /official fixtures/.test(text("mlbSeasonMeta")), text("mlbSeasonMeta").slice(0, 160));
+      check("mlb explorer names the regular-season quiet dates", /no game at all on/.test(text("mlbSeasonMeta")),
+        text("mlbSeasonMeta").slice(0, 200));
+      check("mlb explorer rows carry the league game id", /\d{6}/.test(text("mlbRows")), text("mlbRows").slice(0, 120));
+      // The Giants/A's filter must still work against the real file.
+      $("mlbHighOnly").checked = true;
+      $("mlbHighOnly").dispatchEvent(new window.Event("change", { bubbles: true }));
+      return waitFor(() => /matching fixtures/.test(text("mlbCount")) && !/loading/.test(text("mlbCount")), 2000);
+    })
+    .then(() => {
+      check("mlb explorer filters to the two high-priority clubs", /of \d+ matching fixtures/.test(text("mlbCount")), text("mlbCount"));
+      check("high-priority filter keeps only Giants/A's rows", !/Dodgers at Padres/.test(text("mlbRows")), text("mlbRows").slice(0, 120));
+    })
+    .catch((err) => check("mlb explorer loaded its season file", false, String(err)))
+    // The day note is rewritten asynchronously after each date change, so assert it
+    // once the current fetch has settled instead of racing it.
+    .then(() => waitFor(() => /Live MLB fetch (failed|unavailable)|works offline/.test(text("mlbNote")), 3000)
+      .catch(() => null))
+    .then(() => {
+      check("offline MLB fetch is disclosed",
+        /Live MLB fetch (failed|unavailable)|works offline/.test(text("mlbNote")), text("mlbNote"));
+      check("a blocked live feed falls back to the committed season snapshot",
+        /Live MLB fetch unavailable/.test(text("mlbNote"))
+          ? /committed official season snapshot/.test(text("mlbNote"))
+          : true, text("mlbNote"));
+    })
+    .then(() => finish());
+}, 300);
 
+function finish() {
+  if (finish.done) return;
+  finish.done = true;
   console.log(ok.map((s) => "  PASS " + s).join("\n"));
   if (failures.length) {
     console.log(failures.map((s) => "  FAIL " + s).join("\n"));
@@ -255,4 +316,4 @@ setTimeout(() => {
     process.exit(1);
   }
   console.log(`\n${ok.length} passed, 0 failed`);
-}, 300);
+}

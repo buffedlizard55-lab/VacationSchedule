@@ -841,7 +841,7 @@ def mlb_regular_season_days() -> list[str]:
 
 #: Compact row order for site/data/mlb-<year>.json. Documented in the file's own
 #: `_meta.fields` entry so a reader can decode it without reading this source.
-MLB_ROW_FIELDS = ["date_local", "start_pt", "away_id", "home_id", "venue", "game_type", "status"]
+MLB_ROW_FIELDS = ["date_local", "start_pt", "away_id", "home_id", "venue", "game_type", "status", "game_pk"]
 
 
 def load_mlb_season_snapshot(year: int) -> dict | None:
@@ -872,7 +872,7 @@ def load_mlb_season_snapshot(year: int) -> dict | None:
         if len(cols) != 13:
             raise ValueError(f"{csv_path}: expected 13 pipe-separated columns, got {len(cols)}")
         (date_local, _start_utc, start_pt, _start_et, time_tbd, game_type,
-         away, home, away_id, home_id, venue, status, _game_pk) = cols
+         away, home, away_id, home_id, venue, status, game_pk) = cols
         clubs[away_id] = away
         clubs[home_id] = home
         rows.append([
@@ -883,18 +883,49 @@ def load_mlb_season_snapshot(year: int) -> dict | None:
             venue,
             game_type,
             status,
+            game_pk,
         ])
     if not rows:
         raise ValueError(f"{csv_path}: no fixture rows")
+
+    # Dates between the first and last regular-season fixture that carry no fixture
+    # of ANY game type: real, checkable quiet days inside the baseball year. The
+    # All-Star Game itself is an A row, so it is NOT a quiet date.
+    regular_dates = sorted({r[0] for r in rows if r[5] == "R"})
+    any_dates = {r[0] for r in rows}
+    quiet_dates: list[str] = []
+    if regular_dates:
+        cursor = datetime.strptime(regular_dates[0], "%Y-%m-%d").date()
+        last = datetime.strptime(regular_dates[-1], "%Y-%m-%d").date()
+        while cursor <= last:
+            iso = cursor.isoformat()
+            if iso not in any_dates:
+                quiet_dates.append(iso)
+            cursor += timedelta(days=1)
+
+    # The fixture list also carries non-MLB opponents (national teams and college
+    # squads in exhibition games), so expose the official 30-club roster separately
+    # for the club filter. Reviewers can point at data/verified/mlb_clubs.json.
+    official_ids: set[str] = set()
+    for club_file in (VERIFIED / "mlb_clubs.json", ROOT / "data" / "verified" / "mlb_clubs.json"):
+        if club_file.exists():
+            official = json.loads(club_file.read_text(encoding="utf-8"))
+            official_ids = {str(team["id"]) for team in official.get("teams", [])}
+            break
 
     return {
         "year": year,
         "rows": rows,
         "clubs": dict(sorted(clubs.items(), key=lambda kv: kv[1])),
+        "mlb_club_ids": sorted(official_ids),
         "header": header_comments,
         "summary": summary,
         "with_time": sum(1 for r in rows if r[1]),
         "tbd": sum(1 for r in rows if not r[1]),
+        "regular_dates": regular_dates,
+        "quiet_dates": quiet_dates,
+        "first_date": rows[0][0] if rows else "",
+        "last_date": rows[-1][0] if rows else "",
     }
 
 
@@ -906,22 +937,28 @@ def write_mlb_season_site_file(snapshot: dict, out_dir: Path) -> str:
             "year": snapshot["year"],
             "fields": MLB_ROW_FIELDS,
             "clubs": snapshot["clubs"],
+            "mlb_club_ids": snapshot["mlb_club_ids"],
             "club_note": (
                 "Club ids are MLB Stats API ids: 137 = San Francisco Giants, "
-                "133 = Athletics. Both are flagged high priority in the UI."
+                "133 = Athletics. Both are flagged high priority in the UI. "
+                "Exhibition rows can list opponents that are not MLB clubs "
+                "(national teams, college squads); the club filter offers the 30 MLB clubs."
             ),
             "header": snapshot["header"],
             "games": len(snapshot["rows"]),
             "with_published_time": snapshot["with_time"],
             "time_tbd": snapshot["tbd"],
+            "regular_season_days": len(snapshot["regular_dates"]),
+            "dates_without_a_game": snapshot["quiet_dates"],
             "summary": snapshot["summary"],
             "source": (
                 "https://statsapi.mlb.com/api/v1/schedule?sportId=1"
                 f"&startDate={snapshot['year']}-01-01&endDate={snapshot['year']}-12-31&gameType=R,E,S,D,L,F,W,A"
             ),
             "caveat": (
-                "Every row is a league-published fixture with a game_pk a reviewer can look up. "
-                "A blank start time means the league has not published a first pitch yet; the date is official."
+                "Every row is a league-published fixture; the last field is the league's game_pk, "
+                "which a reviewer can look up. A blank start time means the league has not published "
+                "a first pitch yet; the date is still official."
             ),
         },
         "games": snapshot["rows"],
@@ -1041,6 +1078,10 @@ def _build() -> dict:
             "with_published_time": snapshot["with_time"],
             "time_tbd": snapshot["tbd"],
             "clubs": len(snapshot["clubs"]),
+            "first_date": snapshot["first_date"],
+            "last_date": snapshot["last_date"],
+            "regular_season_days": len(snapshot["regular_dates"]),
+            "dates_without_a_game": snapshot["quiet_dates"],
             "summary": snapshot["summary"],
         }
 
