@@ -8,6 +8,17 @@ portion is the 49ers plus Westwood One national feeds; the full NFL regular-seas
 slate is separately displayed as reference. Extra tracked national NCAA games
 belong to `all`, not silently to Sections 1–3.
 
+Since the 2026-09-21 pass, `all` also carries the other verified Bay Area
+live-radio sports the request asked for as high-priority busy time: the Golden
+State Warriors (NBA) and Golden State Valkyries (WNBA) on KGMZ 95.7 The Game.
+They are **deliberately outside Sections 1–3**, whose definitions are the user's
+verbatim words ("just the following set of games"). Only AM/FM broadcasts block:
+Valkyries games the club lists as Audacy-app-only and the San Jose Sharks
+(app/streaming only, no Bay Area flagship) are disclosed exclusions. The wider
+scope is still not exhaustive — USF basketball on KNBR, Westwood One NCAA
+basketball and local college basketball remain documented gaps in
+`data/verified/other_radio_sports.json`.
+
 **Affiliation ≠ carriage ≠ reception.** A national broadcast listing and an
 affiliate list do not prove that the game airs locally. A streaming link is not
 an AM/FM station. HD-2 requires an HD receiver. No signal strength at a 94122
@@ -47,6 +58,8 @@ not from the browser's UTC date.
 | NFL | 192 | Planning estimate including halftime. |
 | NCAAF | 204 | Planning estimate including halftime. |
 | MLS | 120 | Planning estimate including halftime/stoppage. |
+| NBA | 150 | Planning estimate. Secondary 2025-26 tip-to-buzzer references ≈ 2:18-2:19; see Sources (2026-09-21). |
+| WNBA | 120 | Planning estimate. Secondary references ≈ 1:45-2:00 for a 40-minute game. |
 
 No duration guarantees against overtime, extra innings, weather, extended
 pregame or postgame coverage. Where only Westwood One airtime is known and no
@@ -67,6 +80,11 @@ For each calendar year, section and Spring Training choice, the model reserves:
   title dates are fourth-Monday-in-January estimates, not confirmed schedules.
 - In Section 3, MLS envelopes. From 2027: February 1–May 31 and July 1–December 15.
   Official format is summer–spring; those exact envelope boundaries are assumptions.
+- In `all` only, Warriors NBA and Valkyries WNBA envelopes: the verified 2026-27 /
+  2026 frames where they exist, otherwise estimated mid-October→mid-April and
+  May→September envelopes with conditional playoff tails. Envelopes hide rest
+  days; that is why the `all` scope now reports no free run at all while the
+  three requested sections are unchanged.
 
 The complement yields inclusive start/end dates and 7/14/21-day checks. Continuous
 frames are **conservative and can hide real breaks**, particularly for a single

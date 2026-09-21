@@ -8,27 +8,40 @@
       "https://www.usatoday.com/story/sports/mlb/2026/09/18/mlb-playoff-schedule-2026-postseason-dates-world-series/91826300007/",
       "https://www.foxsports.com/stories/mlb/2026-mlb-playoff-schedule-dates-rounds-how-watch"
     ],
-    "time_resolution_status": "UNRESOLVED - no official first-pitch time exists for any 2026 postseason game at retrieval time. The engine blocks each official date with the documented MLB TBD envelope (15:00-23:59 PT), which is conservative rather than precise. See docs/IRREGULARITIES.md IR-02.",
+    "time_resolution_status": "UNRESOLVED as of 2026-09-21 - no official first-pitch time exists for any 2026 postseason game (the Stats API still serves the 07:33:00Z sentinel). MLB sets early-round times round by round once matchups lock on 2026-09-27; recent postseasons used roughly 2-4 p.m. ET and 7-8 p.m. ET windows, which this project does NOT treat as times. The engine blocks each official date with the full local-date TBD envelope, which is conservative rather than precise. See docs/IRREGULARITIES.md IR-02.",
     "date_resolution_status": "RESOLVED - the dates below are the exact dates the league schedule reserves for games, including 'if necessary' games. Note the gaps: 2026-10-02, 10-21, 10-22, 10-25 and 10-29 carry no game under any scenario (travel days). An earlier version of this project blocked 2026-09-29 through 2026-10-31 continuously, which over-blocked those five dates."
   },
   "clinch_status": {
-    "as_of": "2026-09-20",
-    "source": "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+    "as_of": "2026-09-21",
+    "source": "https://www.mlb.com/news/2026-postseason-teams (MLB's clinch tracker, read 2026-09-21; URL redirects to a related news article but retains the tracker text)",
+    "corroborating_sources": [
+      "https://www.mlb.com/news/mlb-playoff-picture-and-bracket-2026",
+      "https://www.espn.com/mlb/story/_/id/49752366/mlb-2026-playoff-tracker-clinch-scenarios-postseason-bracket-schedule"
+    ],
     "clinched_postseason_berth": [
-      "Tampa Bay Rays",
-      "Milwaukee Brewers",
-      "Los Angeles Dodgers",
-      "New York Yankees",
-      "Atlanta Braves",
-      "Boston Red Sox"
+      "Tampa Bay Rays (clinched 2026-09-11)",
+      "Milwaukee Brewers (clinched 2026-09-11)",
+      "Los Angeles Dodgers (clinched 2026-09-14)",
+      "New York Yankees (clinched 2026-09-14)",
+      "Atlanta Braves (clinched 2026-09-18)",
+      "Boston Red Sox (clinched 2026-09-20)"
     ],
     "clinched_division": [
       "Milwaukee Brewers (NL Central, clinched 2026-09-15)",
-      "Los Angeles Dodgers (NL West)",
-      "Tampa Bay Rays (AL East)"
+      "Los Angeles Dodgers (NL West, clinched 2026-09-17)",
+      "Atlanta Braves (NL East, clinched 2026-09-20)"
     ],
-    "still_unresolved": "Seeds 3-6 in each league, plus the remaining divisions. MLB has not published matchups, and it will not publish first-pitch times until the field is set on 2026-09-27. Any row on this site naming a specific club in a postseason game would be a guess, so the site shows the league's placeholder participants verbatim (e.g. 'AL Wild Card #1').",
-    "review_note": "MLB playoff picture re-read 2026-09-20: Red Sox also clinched. Berths do not establish opponents or first-pitch times. Link extraction redirected to a related article; extracted playoff-picture text was present."
+    "corrections_2026_09_21": "Two fields were wrong in the 2026-09-20 snapshot and are fixed here: 'Tampa Bay Rays (AL East)' was listed as a clinched division - the Rays had NOT clinched the AL East (magic number 2 through Sep 20) and are re-listed as a berth only; the Braves' NL East title (Sep 20) was missing from the division list. See docs/IRREGULARITIES.md IR-32.",
+    "resolution_progress": {
+      "berths": "6 of 12 clinched (verified)",
+      "division_titles": "3 of 6 clinched (verified: MIL NL Central, LAD NL West, ATL NL East). The AL East (Rays lead), AL Central and AL West remain open.",
+      "wild_card_slots": "AL: Yankees and Red Sox hold two of the three wild-card slots but seeds are not final. NL: Cubs/Padres/Phillies hold the three projected slots; none clinched as of 2026-09-21.",
+      "matchups": "0 of 4 Wild Card Series set. No official matchup exists; MLB's own tracker notes Boston would 'likely' face the Yankees on the road, which is a projection, not a fixture, and this site does not store it as one.",
+      "first_pitch_times": "0 set. Times are expected to be announced round by round after the field is fixed on 2026-09-27.",
+      "what_clinching_does_resolve": "The six berths cannot disappear from the bracket, and the five no-game dates stay no-game dates. Nothing else about a specific game is implied: a berth sets neither opponent, host, seed nor time."
+    },
+    "still_unresolved": "Seeds 1-6 in each league except the three clinched division winners' titles (seeds themselves still move), all matchups, and every first-pitch time. Any row on this site naming a specific club in a still-TBD postseason game would be a guess, so the site shows the league's reserved dates with participants TBD.",
+    "review_note": "Re-read 2026-09-21 against MLB's clinch tracker and the Sept 20 playoff-picture standings. Corrected the Rays/Braves division list (IR-32). Berths do not establish opponents or first-pitch times. Link extraction redirects to a related article while retaining the tracker text; flagged previously as a redirect irregularity."
   },
   "rounds": [
     {

@@ -56,8 +56,15 @@ class TestPublicationRevision(unittest.TestCase):
             self.assertTrue(all(s["status"] == "ESTIMATED" for s in spans))
             self.assertTrue(all(s["source"].startswith("https://www.mlssoccer.com/") for s in spans))
 
-    def test_2029_super_bowl_exact_date_is_not_verified(self):
-        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][1], "ESTIMATED")
+    def test_2029_super_bowl_exact_date_status_matches_sources(self):
+        # NFL announced Super Bowl LXIII for Sunday 2029-02-11 on 2026-03-30
+        # (Annual Meeting, Phoenix). The old ESTIMATED label was corrected in the
+        # 2026-09-21 line-by-line review once the announcement text was re-read.
+        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][0], "2029-02-11")
+        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][1], "VERIFIED")
+        self.assertIn("2026-03-30", SUPER_BOWL_BY_YEAR[2029][2])
+        # The 2030 Super Bowl, by contrast, is still an estimate.
+        self.assertEqual(SUPER_BOWL_BY_YEAR[2030][1], "ESTIMATED")
 
     def test_missing_regular_season_data_not_marked_complete(self):
         frame = build()["mlb_frames"]["2026"]

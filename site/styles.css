@@ -20,6 +20,8 @@
   --nfl: #c2410c;
   --ncaaf: #6d28d9;
   --mls: #0f766e;
+  --nba: #b45309;
+  --wnba: #be185d;
   --accent: #1d4ed8;
   --accentbg: #eff6ff;
   --tbd: #64748b;
@@ -186,6 +188,8 @@ input[type="date"] {
 .dot.NFL { background: var(--nfl); }
 .dot.NCAAF { background: var(--ncaaf); }
 .dot.MLS { background: var(--mls); }
+.dot.NBA { background: var(--nba); }
+.dot.WNBA { background: var(--wnba); }
 .leaguehead .cnt { margin-left: auto; color: var(--muted); font-weight: 400; }
 
 .game {

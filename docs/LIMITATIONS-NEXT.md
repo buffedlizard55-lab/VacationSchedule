@@ -1,71 +1,86 @@
 # Next session: outstanding requirements and limitations
 
-The site and three comparisons are implemented. **The exhaustive verified
-Bay Area AM/FM inventory requested is not complete.** Do not describe this
-project as a fully audited schedule of every broadcast or guarantee a quiet trip.
+The site, the three-section comparison, the 2026–2029 vacation analysis, the
+daily scoreboard and the wider live-radio scope are implemented and merged to
+`main`. **The exhaustive verified Bay Area AM/FM inventory is still not
+complete.** Do not describe this project as a fully audited schedule of every
+broadcast or guarantee a quiet trip.
 
-Session 2026-09-21: GitHub Pages planner remains the published artifact (`site/`).
-Compare-table week pills were de-duplicated. MLB Stats API still fails TLS from
-this sandbox (`SSL_ERROR_SYSCALL`); do not invent fixture rows. Merge to `main`
-is required for Pages deploy. Remaining work is data completeness, not UI shell.
+Session 2026-09-21 (this document's pass): Westwood One rows re-verified line by
+line against the live page; MLB clinch facts corrected (IR-32); Super Bowl LXIII
+promoted to VERIFIED everywhere consistently (IR-34); Warriors NBA + Valkyries
+WNBA added as high-priority live-radio sports with per-game 95.7 flags; Sharks
+verified streaming-only and excluded with sources; MLB/MLB-API year frames
+re-checked (IR-33). Merge to `main` publishes the Pages artifact.
 
-## Highest priority
+## Highest priority for the next session
 
-1. **Verify the published full MLB refresh.** The sandbox cannot directly retrieve
-   the complete API response (TLS connection failure). The Pages workflow attempts
-   it automatically and exposes status. Check the resulting all-club artifact and
-   record source hashes/response timestamps. The checked-in snapshot is partial.
-2. **Local carriage per game.** Join Westwood One national listings to dated
-   KNBR/KTCT/other local station grids. Affiliation alone is insufficient; blackouts
-   and Giants/49ers scheduling conflicts can displace feeds. Store separate
-   `national_feed`, `local_station`, `carriage_status`, and evidence timestamp.
-3. **Complete Stanford/Cal and Earthquakes fixtures.** Refresh kickoff TBDs, full
-   MLS fixtures and conditional postseason/bowl slots. Cup and friendly fixtures
-   are not comprehensively covered. Never infer a full quiet day from a missing row.
-4. **Other local sports, high priority.** Research Warriors and college basketball,
-   and determine whether any Sharks coverage is actually over analog AM/FM rather
-   than streaming only. Westwood One NCAA basketball, golf, soccer and other sports
-   also need local carriage evidence. Keep Sections 1–3 unchanged; add these to a
-   clearly named wider radio profile when verified. Current `all` is not exhaustive.
-5. **NFL full archive and reconciliation.** The reference has 272 regular-season
-   rows, not every team's preseason game. Re-fetch the official release, reconcile
-   every matchup/date/time against the inherited CSV, add preseason and per-game
-   postseason fixtures, and track flex changes and any Pro Bowl radio assignment.
-6. **MLB postseason.** Boston's clinched berth was added from the reviewed playoff
-   picture. Matchups/times stay TBD until the official fixture feed sets them.
-   Clinching does not establish an opponent, home field or start time. Retire
-   obsolete conditional games once series end; preserve rainout/resumption history.
+1. **MLB postseason times, from 2026-09-27.** Dates are official and stored;
+   first-pitch times do not exist yet. When MLB sets Wild Card times (expected
+   after the field locks on the final Sunday), fetch them, replace the TBD
+   envelope rows, and re-run the day board for Sept 29–Oct 1. Then repeat round
+   by round (DS, LCS, WS). Record source URLs and timestamps. Retire obsolete
+   conditional rows as series end (rainout/resumption history preserved).
+2. **Valkyries playoffs.** First-round reserved dates (Sept 27 + two windows)
+   are in the engine with time/opponent TBD. Update as the WNBA publishes:
+   tip times, opponents, whether 95.7 carries each game, and the
+   semifinal/final windows (currently one unresolved flag). Reconcile the IR-35
+   September date/record discrepancy with a game log source.
+3. **Warriors grid reconciliation (IR-37).** The transcribed CBS grid has 6
+   preseason + 80 regular-season rows (nominally 82). Find the missing rows
+   against an NBA-owned feed when sandbox TLS allows (the Pages workflow's
+   runner can fetch statsapi-style endpoints where this sandbox cannot), flip
+   `schedule_status` to league-verified, and confirm per-game 95.7 carriage
+   against the station's own schedule where possible.
+4. **Local carriage per game.** Join Westwood One national listings to dated
+   KNBR/KTCT grids; store `national_feed`, `local_station`, `carriage_status`,
+   evidence timestamp. Affiliation alone is insufficient: blackouts and
+   conflicts displace feeds (the Station Finder says so explicitly).
+5. **Complete Stanford/Cal and Earthquakes fixtures.** Refresh kickoff TBDs, the
+   2027 MLS transition-season fixtures as they release, and conditional bowl/CFP
+   slots. Never infer a free day from a missing row.
+6. **Remaining wider-scope gaps** (`data/verified/other_radio_sports.json`
+   `unresolved_coverage`): USF men's basketball on KNBR (2026-27 schedule when
+   published), Westwood One NCAA basketball event grid + local carriage,
+   Stanford/Cal/USF basketball radio evidence. Add each as a clearly tagged
+   wider-scope league when verified. Keep Sections 1–3 unchanged.
+7. **NFL full archive and reconciliation.** The reference has 272 regular-season
+   rows, not every team's preseason. Re-fetch the official release each season,
+   track flex changes and any Pro Bowl radio assignment, and keep Week 18's
+   date/kickoff fields honest until the league sets them.
 
 ## Planning precision
 
-- Replace continuous season envelopes with complete per-day fixture coverage when
-  available. The current model can miss real weeks off; “none found” is not “impossible.”
-- Refresh future MLB/NFL releases and MLS's 2027 transition fixtures. MLB 2028/2029
-  individual season API queries returned empty in this review. Treat candidate
-  endpoints as estimates, not exact bookable boundaries.
-- Reconfirm the **exact** Super Bowl LXIII date separately. The reviewed NFL
-  announcement verifies Las Vegas/2029 only. February 11 is a model assumption.
-- Research official measured duration distributions rather than single secondary
-  averages. Add automatic broadcast pre/postgame allowances and uncertainty bands;
-  overnight overtime can spill beyond a TBD date's midnight hold.
-- Reception is site/equipment dependent; signal contours do not establish indoor
-  reception in the Outer Sunset. Do not count HD-only or internet-only feeds as
-  ordinary analog AM/FM coverage.
+- Replace continuous season envelopes with complete per-day fixture coverage
+  where possible. The envelopes (including the new NBA/WNBA ones) deliberately
+  over-block rest days; "none found" in the `all` scope is a model statement,
+  not proof that no week is gameless. This matters most for the superset row
+  (IR-38).
+- Reconfirm MLB 2028/2029 and NFL 2027–2029 the moment each league publishes;
+  every future row is labelled ESTIMATED until then. The 2027 MLB frame is
+  contingent on a new CBA (the old one expires 2026-12-01) — re-check after any
+  agreement or lockout (IR-19).
+- Research official measured duration distributions rather than single
+  secondary averages; add broadcast pre/postgame allowances and uncertainty
+  bands. NBA 150 / WNBA 120 are planning numbers like the rest.
+- Reception is site/equipment dependent; no field strength at 94122 has been
+  measured. Do not count HD-only or internet-only feeds as analog AM/FM.
 
 ## Engineering and operations
 
-- Add automated source adapters with captured responses, hashes, timestamps and
-  schema validation for all leagues and station grids, not just MLB.
-- Add end-to-end Chrome/mobile/accessibility tests in CI. Real browser installation
-  failed in this sandbox; current checks are jsdom, interval/parity tests and HTTP.
-- Pages refresh failure currently publishes the available checked-in fallback, not
-  the previous deployment's live snapshot. Consider durable last-good snapshots
-  outside Git, with maximum staleness policies.
-- Add a first-class unknown-coverage interval type per league; currently uncertainty
-  is disclosed globally and TBD dates are reserved, but absent non-MLB data does
-  not have a comprehensive per-minute coverage map.
-- Extend the trip finder across December/January boundaries and support filtered
-  future-only results without hiding historical comparison rows.
+- Automated source adapters with captured responses, hashes, timestamps and
+  schema validation for every league and station grid, not just the MLB refresh.
+  The sandbox blocks TLS to statsapi.mlb.com/site.api.espn.com; run retrievals in
+  the Pages workflow or another network-capable runner and commit normalized
+  snapshots only.
+- End-to-end Chrome/mobile/accessibility tests in CI (still jsdom-only here).
+- Pages refresh failure currently publishes the checked-in fallback rather than
+  the previous deployment's live snapshot; consider durable last-good snapshots
+  with staleness limits.
+- A first-class unknown-coverage interval type per league (uncertainty is today
+  global disclosure + TBD reservation, not a per-minute coverage map).
+- Extend the trip finder across December/January boundaries and support
+  future-only filtering without hiding historical comparison rows.
 
 No manual game entry is required by the current UI. These are development/data
 verification tasks, not requests for the user to reconstruct the schedule.

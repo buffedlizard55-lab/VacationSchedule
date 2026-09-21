@@ -48,7 +48,7 @@ SECTION_LEAGUES = {
     "1": ("MLB", "NFL"),
     "2": ("MLB", "NFL", "NCAAF"),
     "3": ("MLB", "NFL", "NCAAF", "MLS"),
-    "all": ("MLB", "NFL", "NCAAF", "MLS"),
+    "all": ("MLB", "NFL", "NCAAF", "MLS", "NBA", "WNBA"),
 }
 
 SECTION_NAMES = {
@@ -245,6 +245,63 @@ def mls_spans(year: int, seasons: dict) -> list[dict]:
 # The blocked set for one year, in one section
 # ---------------------------------------------------------------------------
 
+def other_radio_spans(year: int) -> list[dict]:
+    """NBA (Warriors) and WNBA (Valkyries) season spans overlapping `year`.
+
+    Only the `all` scope includes these leagues (see SECTION_LEAGUES): the three
+    requested sections are defined verbatim by the user and must not change.
+    2026-27 Warriors and 2026 Valkyries frames come from the verified game lists
+    in data/verified/other_radio_sports.json; every other season is an ESTIMATED
+    envelope plus a conditional playoff tail. Continuous envelopes can hide real
+    rest days - same caveat as the MLB/NFL frames.
+    """
+    spans: list[dict] = []
+    gs_src = "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)"
+    gs_est = ("NOT RELEASED - estimated NBA envelope (mid-October through mid-April) "
+              "plus a conditional playoff window")
+    # Warriors seasons overlapping `year` (a season starting Oct of Y-1 ends in Y).
+    for start_year in (year - 1, year):
+        if start_year == 2026:
+            spans.append({"start": "2026-10-04", "end": "2027-04-11",
+                          "status": "VERIFIED", "label": "Golden State Warriors 2026-27 NBA season",
+                          "conditional": False, "source": gs_src,
+                          "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."})
+            spans.append({"start": "2027-04-12", "end": "2027-06-30",
+                          "status": "ESTIMATED", "label": "NBA playoffs (conditional on the Warriors qualifying)",
+                          "conditional": True, "source": "NOT RELEASED - conservative Finals tail",
+                          "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."})
+        else:
+            spans.append({"start": f"{start_year}-10-12", "end": f"{start_year + 1}-04-15",
+                          "status": "ESTIMATED",
+                          "label": f"Golden State Warriors {start_year}-{str(start_year + 1)[2:]} NBA season (estimated envelope)",
+                          "conditional": False, "source": gs_est,
+                          "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."})
+            spans.append({"start": f"{start_year + 1}-04-16", "end": f"{start_year + 1}-06-30",
+                          "status": "ESTIMATED", "label": "NBA playoffs (conditional, estimated)",
+                          "conditional": True, "source": gs_est})
+    # Valkyries WNBA seasons overlapping `year`.
+    for season in (year - 1, year):
+        if season == 2026:
+            spans.append({"start": "2026-04-25", "end": "2026-09-24",
+                          "status": "VERIFIED", "label": "Golden State Valkyries 2026 WNBA season",
+                          "conditional": False,
+                          "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+                          "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."})
+            spans.append({"start": "2026-09-27", "end": "2026-10-25",
+                          "status": "ESTIMATED", "label": "WNBA playoffs (conditional; Valkyries qualified)",
+                          "conditional": True,
+                          "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+                          "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."})
+        else:
+            spans.append({"start": f"{season}-05-01", "end": f"{season}-09-30",
+                          "status": "ESTIMATED",
+                          "label": f"Golden State Valkyries {season} WNBA season (estimated envelope)",
+                          "conditional": False, "source": "NOT RELEASED - estimated May-September WNBA envelope"})
+            spans.append({"start": f"{season}-10-01", "end": f"{season}-10-25",
+                          "status": "ESTIMATED", "label": "WNBA playoffs (conditional, estimated)",
+                          "conditional": True, "source": "NOT RELEASED - conditional October window"})
+    return spans
+
 
 def _dedupe(spans: list[dict]) -> list[dict]:
     seen, out = set(), []
@@ -325,6 +382,13 @@ def blocked_days_for_year(
         mls_blocks = _dedupe(mls_spans(year, _seasons()) + mls_spans(year - 1, _seasons()))
         blocked.update(_in_year(mls_blocks, year))
 
+    # 6. Other live-radio sports (NBA Warriors, WNBA Valkyries) - `all` scope only.
+    #    The three requested sections deliberately exclude them.
+    other_blocks = []
+    if "NBA" in leagues or "WNBA" in leagues:
+        other_blocks = _dedupe(other_radio_spans(year) + other_radio_spans(year - 1))
+        blocked.update(_in_year(other_blocks, year))
+
     provenance = {
         "section": section,
         "section_name": SECTION_NAMES[section],
@@ -340,6 +404,7 @@ def blocked_days_for_year(
         "nfl_current_season_start": {"date": nfl_start, "status": nfl_status, "note": nfl_note},
         "ncaaf_blocks": cf_blocks,
         "mls_blocks": mls_blocks,
+        "other_radio_blocks": other_blocks,
     }
     return blocked, provenance
 
@@ -515,7 +580,7 @@ def main(verbose: bool = True) -> dict:
                 "strict": "Spring Training exhibitions count as MLB games.",
                 "regular": "Only MLB regular season and postseason count.",
             },
-            "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB season as a continuous frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, and (e) in section 3 the Earthquakes MLS span. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
+            "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB season as a continuous frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, (e) in section 3 the Earthquakes MLS span, and (f) in the superset only the Warriors NBA and Valkyries WNBA spans. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
             "caveat": "Continuous season envelopes are conservative and can hide real fixture gaps. No candidate found is not proof a trip is impossible. Future schedule and radio coverage remain incomplete.",
         },
         "comparison": comparison,

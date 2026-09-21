@@ -12,7 +12,7 @@
       "strict": "Spring Training exhibitions count as MLB games.",
       "regular": "Only MLB regular season and postseason count."
     },
-    "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB season as a continuous frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, and (e) in section 3 the Earthquakes MLS span. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
+    "method": "For each section and calendar year we block (a) the previous NFL season's precise Week 17/18 and playoff dates plus the Pro Bowl Games, (b) that year's MLB season as a continuous frame, (c) that year's NFL season from the Hall of Fame Game to Dec 31, (d) in sections 2-3 the Stanford/California football span, (e) in section 3 the Earthquakes MLS span, and (f) in the superset only the Warriors NBA and Valkyries WNBA spans. We then report every contiguous unblocked run and whether it satisfies 1, 2 or 3 weeks.",
     "caveat": "Continuous season envelopes are conservative and can hide real fixture gaps. No candidate found is not proof a trip is impossible. Future schedule and radio coverage remain incomplete."
   },
   "comparison": {
@@ -92,25 +92,17 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 11,
-          "longest_start": "2026-02-09",
-          "longest_end": "2026-02-19",
-          "free_days": 22,
-          "blocked_days": 343,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 365,
           "requirements": {
-            "week_1": true,
+            "week_1": false,
             "weeks_2": false,
             "weeks_3": false
           },
-          "best_1_week": {
-            "start": "2026-02-09",
-            "end": "2026-02-19",
-            "days": 11,
-            "weeks": 1.57,
-            "week_1": true,
-            "weeks_2": false,
-            "weeks_3": false
-          },
+          "best_1_week": null,
           "best_2_weeks": null,
           "best_3_weeks": null
         }
@@ -182,11 +174,11 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 5,
-          "longest_start": "2027-01-26",
-          "longest_end": "2027-01-30",
-          "free_days": 5,
-          "blocked_days": 360,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 365,
           "requirements": {
             "week_1": false,
             "weeks_2": false,
@@ -264,11 +256,11 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 5,
-          "longest_start": "2028-01-25",
-          "longest_end": "2028-01-29",
-          "free_days": 6,
-          "blocked_days": 360,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 366,
           "requirements": {
             "week_1": false,
             "weeks_2": false,
@@ -346,11 +338,11 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 5,
-          "longest_start": "2029-01-23",
-          "longest_end": "2029-01-27",
-          "free_days": 8,
-          "blocked_days": 357,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 365,
           "requirements": {
             "week_1": false,
             "weeks_2": false,
@@ -470,25 +462,17 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 12,
-          "longest_start": "2026-02-09",
-          "longest_end": "2026-02-20",
-          "free_days": 23,
-          "blocked_days": 342,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 365,
           "requirements": {
-            "week_1": true,
+            "week_1": false,
             "weeks_2": false,
             "weeks_3": false
           },
-          "best_1_week": {
-            "start": "2026-02-09",
-            "end": "2026-02-20",
-            "days": 12,
-            "weeks": 1.71,
-            "week_1": true,
-            "weeks_2": false,
-            "weeks_3": false
-          },
+          "best_1_week": null,
           "best_2_weeks": null,
           "best_3_weeks": null
         }
@@ -592,11 +576,11 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 5,
-          "longest_start": "2027-01-26",
-          "longest_end": "2027-01-30",
-          "free_days": 5,
-          "blocked_days": 360,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 365,
           "requirements": {
             "week_1": false,
             "weeks_2": false,
@@ -706,11 +690,11 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 5,
-          "longest_start": "2028-01-25",
-          "longest_end": "2028-01-29",
-          "free_days": 6,
-          "blocked_days": 360,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 366,
           "requirements": {
             "week_1": false,
             "weeks_2": false,
@@ -820,11 +804,11 @@
         },
         "all": {
           "section_name": "Superset - everything tracked",
-          "longest_days": 5,
-          "longest_start": "2029-01-23",
-          "longest_end": "2029-01-27",
-          "free_days": 8,
-          "blocked_days": 357,
+          "longest_days": 0,
+          "longest_start": null,
+          "longest_end": null,
+          "free_days": 0,
+          "blocked_days": 365,
           "requirements": {
             "week_1": false,
             "weeks_2": false,
@@ -990,7 +974,8 @@
           "note": "Hall of Fame Game, per the NFL/ESPN league calendar"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -1144,7 +1129,8 @@
           "note": "Not released - same Thursday-of-first-full-August-week pattern"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -1289,7 +1275,8 @@
           "note": "Not released"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -1398,8 +1385,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -1432,7 +1419,8 @@
           "note": "Not released"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -1590,7 +1578,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -1760,7 +1749,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -1930,7 +1920,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -2013,8 +2004,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -2098,7 +2089,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -2282,7 +2274,8 @@
             "conditional": true,
             "source": "Historical calendar approximation"
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -2453,7 +2446,8 @@
             "conditional": true,
             "source": "NOT RELEASED as a fixture list - MLS playoff window"
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -2635,7 +2629,8 @@
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -2693,8 +2688,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -2815,7 +2810,8 @@
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -2823,59 +2819,15 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "strict",
-      "blocked_day_count": 343,
-      "free_day_count": 22,
-      "gaps": [
-        {
-          "start": "2026-02-09",
-          "end": "2026-02-19",
-          "days": 11,
-          "weeks": 1.57,
-          "week_1": true,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2026-01-27",
-          "end": "2026-02-02",
-          "days": 7,
-          "weeks": 1.0,
-          "week_1": true,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2026-02-04",
-          "end": "2026-02-07",
-          "days": 4,
-          "weeks": 0.57,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2026-02-09",
-        "end": "2026-02-19",
-        "days": 11,
-        "weeks": 1.57,
-        "week_1": true,
-        "weeks_2": false,
-        "weeks_3": false
-      },
-      "best_1_week": {
-        "start": "2026-02-09",
-        "end": "2026-02-19",
-        "days": 11,
-        "weeks": 1.57,
-        "week_1": true,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 365,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
+      "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
       "requirements": {
-        "week_1": true,
+        "week_1": false,
         "weeks_2": false,
         "weeks_3": false
       },
@@ -2886,7 +2838,9 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2026-02-08",
@@ -2999,6 +2953,110 @@
             "conditional": true,
             "source": "Historical calendar approximation"
           }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2025-10-12",
+            "end": "2026-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2025-26 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2026-04-16",
+            "end": "2026-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2026-10-04",
+            "end": "2027-04-11",
+            "status": "VERIFIED",
+            "label": "Golden State Warriors 2026-27 NBA season",
+            "conditional": false,
+            "source": "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)",
+            "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."
+          },
+          {
+            "start": "2027-04-12",
+            "end": "2027-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional on the Warriors qualifying)",
+            "conditional": true,
+            "source": "NOT RELEASED - conservative Finals tail",
+            "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."
+          },
+          {
+            "start": "2025-05-01",
+            "end": "2025-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2025 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2025-10-01",
+            "end": "2025-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2026-04-25",
+            "end": "2026-09-24",
+            "status": "VERIFIED",
+            "label": "Golden State Valkyries 2026 WNBA season",
+            "conditional": false,
+            "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+            "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."
+          },
+          {
+            "start": "2026-09-27",
+            "end": "2026-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional; Valkyries qualified)",
+            "conditional": true,
+            "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+            "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."
+          },
+          {
+            "start": "2024-10-12",
+            "end": "2025-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2024-25 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2025-04-16",
+            "end": "2025-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2024-05-01",
+            "end": "2024-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2024 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2024-10-01",
+            "end": "2024-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          }
         ]
       }
     },
@@ -3007,28 +3065,10 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "strict",
-      "blocked_day_count": 360,
-      "free_day_count": 5,
-      "gaps": [
-        {
-          "start": "2027-01-26",
-          "end": "2027-01-30",
-          "days": 5,
-          "weeks": 0.71,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2027-01-26",
-        "end": "2027-01-30",
-        "days": 5,
-        "weeks": 0.71,
-        "week_1": false,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 365,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
       "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
@@ -3044,7 +3084,9 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2027-02-14",
@@ -3170,6 +3212,110 @@
             "conditional": true,
             "source": "NOT RELEASED as a fixture list - MLS playoff window"
           }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2026-10-04",
+            "end": "2027-04-11",
+            "status": "VERIFIED",
+            "label": "Golden State Warriors 2026-27 NBA season",
+            "conditional": false,
+            "source": "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)",
+            "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."
+          },
+          {
+            "start": "2027-04-12",
+            "end": "2027-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional on the Warriors qualifying)",
+            "conditional": true,
+            "source": "NOT RELEASED - conservative Finals tail",
+            "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."
+          },
+          {
+            "start": "2027-10-12",
+            "end": "2028-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2027-28 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2028-04-16",
+            "end": "2028-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2026-04-25",
+            "end": "2026-09-24",
+            "status": "VERIFIED",
+            "label": "Golden State Valkyries 2026 WNBA season",
+            "conditional": false,
+            "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+            "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."
+          },
+          {
+            "start": "2026-09-27",
+            "end": "2026-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional; Valkyries qualified)",
+            "conditional": true,
+            "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+            "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."
+          },
+          {
+            "start": "2027-05-01",
+            "end": "2027-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2027 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2027-10-01",
+            "end": "2027-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2025-10-12",
+            "end": "2026-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2025-26 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2026-04-16",
+            "end": "2026-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2025-05-01",
+            "end": "2025-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2025 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2025-10-01",
+            "end": "2025-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          }
         ]
       }
     },
@@ -3178,37 +3324,10 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "strict",
-      "blocked_day_count": 360,
-      "free_day_count": 6,
-      "gaps": [
-        {
-          "start": "2028-01-25",
-          "end": "2028-01-29",
-          "days": 5,
-          "weeks": 0.71,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2028-01-31",
-          "end": "2028-01-31",
-          "days": 1,
-          "weeks": 0.14,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2028-01-25",
-        "end": "2028-01-29",
-        "days": 5,
-        "weeks": 0.71,
-        "week_1": false,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 366,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
       "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
@@ -3224,7 +3343,9 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2028-02-13",
@@ -3352,6 +3473,110 @@
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
           }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2027-10-12",
+            "end": "2028-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2027-28 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2028-04-16",
+            "end": "2028-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2028-10-12",
+            "end": "2029-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2028-29 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2029-04-16",
+            "end": "2029-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2027-05-01",
+            "end": "2027-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2027 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2027-10-01",
+            "end": "2027-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2028-05-01",
+            "end": "2028-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2028 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2028-10-01",
+            "end": "2028-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2026-10-04",
+            "end": "2027-04-11",
+            "status": "VERIFIED",
+            "label": "Golden State Warriors 2026-27 NBA season",
+            "conditional": false,
+            "source": "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)",
+            "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."
+          },
+          {
+            "start": "2027-04-12",
+            "end": "2027-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional on the Warriors qualifying)",
+            "conditional": true,
+            "source": "NOT RELEASED - conservative Finals tail",
+            "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."
+          },
+          {
+            "start": "2026-04-25",
+            "end": "2026-09-24",
+            "status": "VERIFIED",
+            "label": "Golden State Valkyries 2026 WNBA season",
+            "conditional": false,
+            "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+            "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."
+          },
+          {
+            "start": "2026-09-27",
+            "end": "2026-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional; Valkyries qualified)",
+            "conditional": true,
+            "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+            "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."
+          }
         ]
       }
     },
@@ -3360,37 +3585,10 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "strict",
-      "blocked_day_count": 357,
-      "free_day_count": 8,
-      "gaps": [
-        {
-          "start": "2029-01-23",
-          "end": "2029-01-27",
-          "days": 5,
-          "weeks": 0.71,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2029-01-29",
-          "end": "2029-01-31",
-          "days": 3,
-          "weeks": 0.43,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2029-01-23",
-        "end": "2029-01-27",
-        "days": 5,
-        "weeks": 0.71,
-        "week_1": false,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 365,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
       "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
@@ -3406,12 +3604,14 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -3531,6 +3731,107 @@
             "conditional": false,
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
+          }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2028-10-12",
+            "end": "2029-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2028-29 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2029-04-16",
+            "end": "2029-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2029-10-12",
+            "end": "2030-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2029-30 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2030-04-16",
+            "end": "2030-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2028-05-01",
+            "end": "2028-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2028 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2028-10-01",
+            "end": "2028-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2029-05-01",
+            "end": "2029-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2029 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2029-10-01",
+            "end": "2029-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2027-10-12",
+            "end": "2028-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2027-28 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2028-04-16",
+            "end": "2028-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2027-05-01",
+            "end": "2027-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2027 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2027-10-01",
+            "end": "2027-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
           }
         ]
       }
@@ -3690,7 +3991,8 @@
           "note": "Hall of Fame Game, per the NFL/ESPN league calendar"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -3860,7 +4162,8 @@
           "note": "Not released - same Thursday-of-first-full-August-week pattern"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -4021,7 +4324,8 @@
           "note": "Not released"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -4146,8 +4450,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -4180,7 +4484,8 @@
           "note": "Not released"
         },
         "ncaaf_blocks": [],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -4354,7 +4659,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -4540,7 +4846,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -4726,7 +5033,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -4825,8 +5133,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -4910,7 +5218,8 @@
             "note": "Conservative December-to-title-game envelope, not school fixtures. Future title dates use the fourth Monday in January as an estimate."
           }
         ],
-        "mls_blocks": []
+        "mls_blocks": [],
+        "other_radio_blocks": []
       }
     },
     {
@@ -5094,7 +5403,8 @@
             "conditional": true,
             "source": "Historical calendar approximation"
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -5265,7 +5575,8 @@
             "conditional": true,
             "source": "NOT RELEASED as a fixture list - MLS playoff window"
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -5447,7 +5758,8 @@
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -5505,8 +5817,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -5627,7 +5939,8 @@
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
           }
-        ]
+        ],
+        "other_radio_blocks": []
       }
     },
     {
@@ -5635,59 +5948,15 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "regular",
-      "blocked_day_count": 342,
-      "free_day_count": 23,
-      "gaps": [
-        {
-          "start": "2026-02-09",
-          "end": "2026-02-20",
-          "days": 12,
-          "weeks": 1.71,
-          "week_1": true,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2026-01-27",
-          "end": "2026-02-02",
-          "days": 7,
-          "weeks": 1.0,
-          "week_1": true,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2026-02-04",
-          "end": "2026-02-07",
-          "days": 4,
-          "weeks": 0.57,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2026-02-09",
-        "end": "2026-02-20",
-        "days": 12,
-        "weeks": 1.71,
-        "week_1": true,
-        "weeks_2": false,
-        "weeks_3": false
-      },
-      "best_1_week": {
-        "start": "2026-02-09",
-        "end": "2026-02-20",
-        "days": 12,
-        "weeks": 1.71,
-        "week_1": true,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 365,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
+      "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
       "requirements": {
-        "week_1": true,
+        "week_1": false,
         "weeks_2": false,
         "weeks_3": false
       },
@@ -5698,7 +5967,9 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2026-02-08",
@@ -5811,6 +6082,110 @@
             "conditional": true,
             "source": "Historical calendar approximation"
           }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2025-10-12",
+            "end": "2026-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2025-26 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2026-04-16",
+            "end": "2026-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2026-10-04",
+            "end": "2027-04-11",
+            "status": "VERIFIED",
+            "label": "Golden State Warriors 2026-27 NBA season",
+            "conditional": false,
+            "source": "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)",
+            "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."
+          },
+          {
+            "start": "2027-04-12",
+            "end": "2027-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional on the Warriors qualifying)",
+            "conditional": true,
+            "source": "NOT RELEASED - conservative Finals tail",
+            "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."
+          },
+          {
+            "start": "2025-05-01",
+            "end": "2025-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2025 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2025-10-01",
+            "end": "2025-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2026-04-25",
+            "end": "2026-09-24",
+            "status": "VERIFIED",
+            "label": "Golden State Valkyries 2026 WNBA season",
+            "conditional": false,
+            "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+            "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."
+          },
+          {
+            "start": "2026-09-27",
+            "end": "2026-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional; Valkyries qualified)",
+            "conditional": true,
+            "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+            "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."
+          },
+          {
+            "start": "2024-10-12",
+            "end": "2025-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2024-25 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2025-04-16",
+            "end": "2025-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2024-05-01",
+            "end": "2024-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2024 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2024-10-01",
+            "end": "2024-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          }
         ]
       }
     },
@@ -5819,28 +6194,10 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "regular",
-      "blocked_day_count": 360,
-      "free_day_count": 5,
-      "gaps": [
-        {
-          "start": "2027-01-26",
-          "end": "2027-01-30",
-          "days": 5,
-          "weeks": 0.71,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2027-01-26",
-        "end": "2027-01-30",
-        "days": 5,
-        "weeks": 0.71,
-        "week_1": false,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 365,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
       "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
@@ -5856,7 +6213,9 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2027-02-14",
@@ -5982,6 +6341,110 @@
             "conditional": true,
             "source": "NOT RELEASED as a fixture list - MLS playoff window"
           }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2026-10-04",
+            "end": "2027-04-11",
+            "status": "VERIFIED",
+            "label": "Golden State Warriors 2026-27 NBA season",
+            "conditional": false,
+            "source": "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)",
+            "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."
+          },
+          {
+            "start": "2027-04-12",
+            "end": "2027-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional on the Warriors qualifying)",
+            "conditional": true,
+            "source": "NOT RELEASED - conservative Finals tail",
+            "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."
+          },
+          {
+            "start": "2027-10-12",
+            "end": "2028-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2027-28 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2028-04-16",
+            "end": "2028-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2026-04-25",
+            "end": "2026-09-24",
+            "status": "VERIFIED",
+            "label": "Golden State Valkyries 2026 WNBA season",
+            "conditional": false,
+            "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+            "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."
+          },
+          {
+            "start": "2026-09-27",
+            "end": "2026-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional; Valkyries qualified)",
+            "conditional": true,
+            "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+            "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."
+          },
+          {
+            "start": "2027-05-01",
+            "end": "2027-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2027 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2027-10-01",
+            "end": "2027-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2025-10-12",
+            "end": "2026-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2025-26 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2026-04-16",
+            "end": "2026-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2025-05-01",
+            "end": "2025-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2025 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2025-10-01",
+            "end": "2025-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          }
         ]
       }
     },
@@ -5990,37 +6453,10 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "regular",
-      "blocked_day_count": 360,
-      "free_day_count": 6,
-      "gaps": [
-        {
-          "start": "2028-01-25",
-          "end": "2028-01-29",
-          "days": 5,
-          "weeks": 0.71,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2028-01-31",
-          "end": "2028-01-31",
-          "days": 1,
-          "weeks": 0.14,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2028-01-25",
-        "end": "2028-01-29",
-        "days": 5,
-        "weeks": 0.71,
-        "week_1": false,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 366,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
       "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
@@ -6036,7 +6472,9 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2028-02-13",
@@ -6164,6 +6602,110 @@
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
           }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2027-10-12",
+            "end": "2028-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2027-28 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2028-04-16",
+            "end": "2028-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2028-10-12",
+            "end": "2029-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2028-29 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2029-04-16",
+            "end": "2029-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2027-05-01",
+            "end": "2027-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2027 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2027-10-01",
+            "end": "2027-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2028-05-01",
+            "end": "2028-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2028 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2028-10-01",
+            "end": "2028-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2026-10-04",
+            "end": "2027-04-11",
+            "status": "VERIFIED",
+            "label": "Golden State Warriors 2026-27 NBA season",
+            "conditional": false,
+            "source": "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (2026-27 grid read 2026-09-21)",
+            "note": "Preseason from 2026-10-04; regular season ends 2027-04-11 (released grid)."
+          },
+          {
+            "start": "2027-04-12",
+            "end": "2027-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional on the Warriors qualifying)",
+            "conditional": true,
+            "source": "NOT RELEASED - conservative Finals tail",
+            "note": "No fixture implied. The Warriors missed the 2026 playoffs (37-45)."
+          },
+          {
+            "start": "2026-04-25",
+            "end": "2026-09-24",
+            "status": "VERIFIED",
+            "label": "Golden State Valkyries 2026 WNBA season",
+            "conditional": false,
+            "source": "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425",
+            "note": "Club broadcast table. AM/FM blocking follows the per-game radio column; vacation framing uses the full season envelope conservatively."
+          },
+          {
+            "start": "2026-09-27",
+            "end": "2026-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional; Valkyries qualified)",
+            "conditional": true,
+            "source": "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79",
+            "note": "First round starts 2026-09-27 (verified). Semifinal/final dates unplayed/unpublished; late-October tail is conservative."
+          }
         ]
       }
     },
@@ -6172,37 +6714,10 @@
       "section": "all",
       "section_name": "Superset - everything tracked",
       "interpretation": "regular",
-      "blocked_day_count": 357,
-      "free_day_count": 8,
-      "gaps": [
-        {
-          "start": "2029-01-23",
-          "end": "2029-01-27",
-          "days": 5,
-          "weeks": 0.71,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        },
-        {
-          "start": "2029-01-29",
-          "end": "2029-01-31",
-          "days": 3,
-          "weeks": 0.43,
-          "week_1": false,
-          "weeks_2": false,
-          "weeks_3": false
-        }
-      ],
-      "best": {
-        "start": "2029-01-23",
-        "end": "2029-01-27",
-        "days": 5,
-        "weeks": 0.71,
-        "week_1": false,
-        "weeks_2": false,
-        "weeks_3": false
-      },
+      "blocked_day_count": 365,
+      "free_day_count": 0,
+      "gaps": [],
+      "best": null,
       "best_1_week": null,
       "best_2_weeks": null,
       "best_3_weeks": null,
@@ -6218,12 +6733,14 @@
           "MLB",
           "NFL",
           "NCAAF",
-          "MLS"
+          "MLS",
+          "NBA",
+          "WNBA"
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "ESTIMATED",
-          "note": "Super Bowl LXIII host/year is official (Las Vegas, 2029); the linked NFL announcement does not specify a day. February 11 is a second-Sunday estimate, not a verified date.",
+          "status": "VERIFIED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -6343,6 +6860,107 @@
             "conditional": false,
             "source": "https://www.mlssoccer.com/news/mls-to-align-calendar-with-top-leagues-around-world",
             "note": "Official mid/late-July start and mid-December break; July 1\u2013December 15 is a conservative planning assumption."
+          }
+        ],
+        "other_radio_blocks": [
+          {
+            "start": "2028-10-12",
+            "end": "2029-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2028-29 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2029-04-16",
+            "end": "2029-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2029-10-12",
+            "end": "2030-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2029-30 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2030-04-16",
+            "end": "2030-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2028-05-01",
+            "end": "2028-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2028 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2028-10-01",
+            "end": "2028-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2029-05-01",
+            "end": "2029-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2029 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2029-10-01",
+            "end": "2029-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
+          },
+          {
+            "start": "2027-10-12",
+            "end": "2028-04-15",
+            "status": "ESTIMATED",
+            "label": "Golden State Warriors 2027-28 NBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window",
+            "note": "Unreleased season; boundary dates are planning assumptions, not a schedule."
+          },
+          {
+            "start": "2028-04-16",
+            "end": "2028-06-30",
+            "status": "ESTIMATED",
+            "label": "NBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - estimated NBA envelope (mid-October through mid-April) plus a conditional playoff window"
+          },
+          {
+            "start": "2027-05-01",
+            "end": "2027-09-30",
+            "status": "ESTIMATED",
+            "label": "Golden State Valkyries 2027 WNBA season (estimated envelope)",
+            "conditional": false,
+            "source": "NOT RELEASED - estimated May-September WNBA envelope"
+          },
+          {
+            "start": "2027-10-01",
+            "end": "2027-10-25",
+            "status": "ESTIMATED",
+            "label": "WNBA playoffs (conditional, estimated)",
+            "conditional": true,
+            "source": "NOT RELEASED - conditional October window"
           }
         ]
       }

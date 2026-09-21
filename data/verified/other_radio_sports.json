@@ -1,0 +1,264 @@
+{
+  "_meta": {
+    "description": "Live Bay Area sports radio beyond the three requested sections: Golden State Warriors (NBA) and Golden State Valkyries (WNBA) on KGMZ 95.7 The Game, plus researched exclusions. Per the user's request, other sports broadcast live over AM/FM radio in the Bay Area are flagged HIGH priority and count as busy -- but only in the 'Everything tracked' (all) scope, so the three requested section definitions stay exactly as written. Streaming-only broadcasts (Sharks Audio Network, Audacy-only Valkyries games) are NOT counted as busy: the user's definition is a standard AM/FM radio in Outer Sunset 94122.",
+    "retrieved_utc": "2026-09-21T00:00:00Z",
+    "time_semantics": "start_et is the published tip-off in Eastern Time (CBS Sports schedule grids publish ET). The loader converts to UTC exactly like the Westwood One rows. Where a source publishes Pacific wall-clock times (Valkyries), start_pt is used instead.",
+    "counting_rules": {
+      "blocking": "A game blocks (marks time not-free) only when an AM/FM broadcast serving San Francisco is verified or strongly evidenced. Valkyries games whose radio column is 'The Audacy App' only are streaming-only and do NOT block; they are disclosed instead.",
+      "priority": "high for every team in this file that blocks (user's rule: other live-radio Bay Area sports are high priority like the Giants and 49ers).",
+      "scope": "tags NBA:Warriors / WNBA:Valkyries match no section in profiles.json, so these games belong to the 'all' scope only and are shown to Sections 1-3 users as outside-their-situation disclosures."
+    },
+    "duration_basis": {
+      "NBA": "150 minutes (2:30). Secondary timing references put the 2025-26 NBA tip-to-buzzer average near 2:18-2:19 (2h18m32s aggregated figure) with typical 2h15 lengths; 150 is a conservative planning length like the other leagues. Sources: https://sportsgeardaily.com/basketball/how-long-are-basketball-games (2026-05-02), https://www.alibaba.com/product-insights/how-long-is-the-average-basketball-game-2026-guide.html (2026-03-10).",
+      "WNBA": "120 minutes (2:00). Secondary references give 1:45-2:00 tip-to-buzzer for a 40-minute game. Sources: https://sportsmonkie.com/how-long-are-wnba-games/, https://www.gametimehero.com/blog/how-long-is-a-wnba-game, https://opensourcesports.io/rules/basketball-wnba/rules-of-play-game-duration. Planning estimates, not verified current-season league averages."
+    }
+  },
+  "warriors": {
+    "team": "Golden State Warriors",
+    "league": "NBA",
+    "priority": "high",
+    "tags": ["NBA:Warriors"],
+    "radio": "KGMZ 95.7 The Game (95.7 FM, San Francisco) - Warriors radio flagship since 2016; the station's own agreement coverage says virtually every game, including the playoffs, airs on 95.7.",
+    "radio_sources": [
+      "https://www.warriorsworld.net/warriors-reach-agreement-with-95-7-the-game-kgmz-fm/",
+      "https://www.pressdemocrat.com/article/sports/warriors-switching-to-95-7-the-game-for-radio-broadcasts/",
+      "http://www.957thegame.com/categories/warriors (station posted 'GOLDEN STATE WARRIORS 2026-27 REGULAR SEASON SCHEDULE', 2026-08-25)"
+    ],
+    "schedule_sources": [
+      "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/ (full 2026-27 grid read 2026-09-21, times published in ET)",
+      "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/preseason/ (6 preseason games read 2026-09-21)",
+      "http://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/9/schedule?dates=2026-2027 (spot-check: first preseason game 2026-10-04T23:00Z at the Clippers matches the grid)"
+    ],
+    "schedule_status": "2026-27 RELEASED. Rows below are transcribed from the CBS Sports grid (secondary source) with an ESPN API spot-check on the opener. Team schedule pages carry 'subject to change' notices; the NBA-owned feed wins on any conflict. Per-game 95.7 carriage is presumed from the flagship partnership (a conflict preemption can move a game to the Audacy app) and is NOT re-verified game by game - see docs/IRREGULARITIES.md.",
+    "future_seasons": "2027-28, 2028-29 and 2029-30 are NOT released. The vacation model uses an ESTIMATED mid-October-to-mid-April envelope plus a conditional playoff window; those are estimates, not schedules.",
+    "games_2026_27": [
+      {"date": "2026-10-04", "start_et": "19:00", "opponent": "LA Clippers", "ha": "away", "venue": "Stan Sheriff Center, Honolulu, HI", "phase": "preseason", "tv": ""},
+      {"date": "2026-10-06", "start_et": "22:00", "opponent": "Los Angeles Lakers", "ha": "home", "venue": "Chase Center", "phase": "preseason", "tv": ""},
+      {"date": "2026-10-07", "start_et": "22:00", "opponent": "Portland Trail Blazers", "ha": "away", "venue": "Moda Center", "phase": "preseason", "tv": ""},
+      {"date": "2026-10-10", "start_et": "20:30", "opponent": "Sacramento Kings", "ha": "home", "venue": "Chase Center", "phase": "preseason", "tv": ""},
+      {"date": "2026-10-13", "start_et": "22:00", "opponent": "Los Angeles Lakers", "ha": "away", "venue": "T-Mobile Arena, Las Vegas, NV", "phase": "preseason", "tv": ""},
+      {"date": "2026-10-16", "start_et": "22:00", "opponent": "Portland Trail Blazers", "ha": "home", "venue": "Chase Center", "phase": "preseason", "tv": ""},
+      {"date": "2026-10-21", "start_et": "22:00", "opponent": "Los Angeles Lakers", "ha": "away", "venue": "Crypto.com Arena", "phase": "regular", "tv": "ESPN"},
+      {"date": "2026-10-23", "start_et": "22:00", "opponent": "Memphis Grizzlies", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-10-24", "start_et": "22:00", "opponent": "Phoenix Suns", "ha": "away", "venue": "Mortgage Matchup Center", "phase": "regular", "tv": "NBAt"},
+      {"date": "2026-10-26", "start_et": "22:00", "opponent": "Denver Nuggets", "ha": "away", "venue": "Ball Arena", "phase": "regular", "tv": "NBCS"},
+      {"date": "2026-10-28", "start_et": "20:00", "opponent": "Minnesota Timberwolves", "ha": "away", "venue": "Target Center", "phase": "regular", "tv": ""},
+      {"date": "2026-10-30", "start_et": "22:00", "opponent": "Los Angeles Lakers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "AMZN"},
+      {"date": "2026-11-01", "start_et": "20:30", "opponent": "LA Clippers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-02", "start_et": "22:00", "opponent": "Phoenix Suns", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-05", "start_et": "22:00", "opponent": "Miami Heat", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBAt"},
+      {"date": "2026-11-07", "start_et": "20:30", "opponent": "Orlando Magic", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-09", "start_et": "22:00", "opponent": "New Orleans Pelicans", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBAt"},
+      {"date": "2026-11-11", "start_et": "21:30", "opponent": "Houston Rockets", "ha": "away", "venue": "Toyota Center", "phase": "regular", "tv": "ESPN"},
+      {"date": "2026-11-13", "start_et": "21:30", "opponent": "San Antonio Spurs", "ha": "away", "venue": "Frost Bank Center", "phase": "regular", "tv": "AMZN"},
+      {"date": "2026-11-16", "start_et": "20:00", "opponent": "New Orleans Pelicans", "ha": "away", "venue": "Smoothie King Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-18", "start_et": "21:30", "opponent": "Dallas Mavericks", "ha": "away", "venue": "American Airlines Center", "phase": "regular", "tv": "ESPN"},
+      {"date": "2026-11-19", "start_et": "20:00", "opponent": "Memphis Grizzlies", "ha": "away", "venue": "FedExForum", "phase": "regular", "tv": ""},
+      {"date": "2026-11-22", "start_et": "20:30", "opponent": "Boston Celtics", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-25", "start_et": "22:00", "opponent": "Sacramento Kings", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-27", "start_et": "21:30", "opponent": "Portland Trail Blazers", "ha": "away", "venue": "Moda Center", "phase": "regular", "tv": ""},
+      {"date": "2026-11-29", "start_et": "20:30", "opponent": "LA Clippers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-12-01", "start_et": "23:00", "opponent": "Utah Jazz", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2026-12-12", "start_et": "20:00", "opponent": "Cleveland Cavaliers", "ha": "away", "venue": "Rocket Arena", "phase": "regular", "tv": ""},
+      {"date": "2026-12-14", "start_et": "20:00", "opponent": "Memphis Grizzlies", "ha": "away", "venue": "FedExForum", "phase": "regular", "tv": ""},
+      {"date": "2026-12-16", "start_et": "19:00", "opponent": "Indiana Pacers", "ha": "away", "venue": "Gainbridge Fieldhouse", "phase": "regular", "tv": ""},
+      {"date": "2026-12-18", "start_et": "19:30", "opponent": "Toronto Raptors", "ha": "away", "venue": "Scotiabank Arena", "phase": "regular", "tv": ""},
+      {"date": "2026-12-20", "start_et": "20:00", "opponent": "Milwaukee Bucks", "ha": "away", "venue": "Fiserv Forum", "phase": "regular", "tv": ""},
+      {"date": "2026-12-22", "start_et": "22:30", "opponent": "Dallas Mavericks", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2026-12-23", "start_et": "22:30", "opponent": "LA Clippers", "ha": "away", "venue": "Intuit Dome", "phase": "regular", "tv": ""},
+      {"date": "2026-12-25", "start_et": "22:30", "opponent": "Denver Nuggets", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "ABC"},
+      {"date": "2026-12-27", "start_et": "20:30", "opponent": "Minnesota Timberwolves", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2026-12-28", "start_et": "21:00", "opponent": "Phoenix Suns", "ha": "away", "venue": "Mortgage Matchup Center", "phase": "regular", "tv": ""},
+      {"date": "2026-12-30", "start_et": "22:00", "opponent": "Houston Rockets", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBAt"},
+      {"date": "2027-01-02", "start_et": "20:30", "opponent": "Brooklyn Nets", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "DZNY"},
+      {"date": "2027-01-06", "start_et": "22:00", "opponent": "New York Knicks", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "ESPN"},
+      {"date": "2027-01-07", "start_et": "22:00", "opponent": "Detroit Pistons", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-09", "start_et": "20:30", "opponent": "Chicago Bulls", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-12", "start_et": "23:00", "opponent": "Sacramento Kings", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2027-01-13", "start_et": "22:00", "opponent": "Charlotte Hornets", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-15", "start_et": "19:00", "opponent": "Atlanta Hawks", "ha": "away", "venue": "State Farm Arena", "phase": "regular", "tv": ""},
+      {"date": "2027-01-17", "start_et": "18:00", "opponent": "Miami Heat", "ha": "away", "venue": "Kaseya Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-19", "start_et": "19:00", "opponent": "Orlando Magic", "ha": "away", "venue": "Kia Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-21", "start_et": "22:00", "opponent": "Los Angeles Lakers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "AMZN"},
+      {"date": "2027-01-22", "start_et": "22:00", "opponent": "Milwaukee Bucks", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-24", "start_et": "20:30", "opponent": "Oklahoma City Thunder", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2027-01-27", "start_et": "22:00", "opponent": "Portland Trail Blazers", "ha": "away", "venue": "Moda Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-28", "start_et": "21:00", "opponent": "Utah Jazz", "ha": "away", "venue": "Delta Center", "phase": "regular", "tv": ""},
+      {"date": "2027-01-30", "start_et": "17:30", "opponent": "San Antonio Spurs", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "ABC"},
+      {"date": "2027-02-01", "start_et": "22:00", "opponent": "San Antonio Spurs", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBCS"},
+      {"date": "2027-02-03", "start_et": "22:30", "opponent": "LA Clippers", "ha": "away", "venue": "Intuit Dome", "phase": "regular", "tv": ""},
+      {"date": "2027-02-05", "start_et": "19:00", "opponent": "Charlotte Hornets", "ha": "away", "venue": "Spectrum Center", "phase": "regular", "tv": ""},
+      {"date": "2027-02-07", "start_et": "15:00", "opponent": "Detroit Pistons", "ha": "away", "venue": "Little Caesars Arena", "phase": "regular", "tv": "NBAt"},
+      {"date": "2027-02-09", "start_et": "20:00", "opponent": "Chicago Bulls", "ha": "away", "venue": "United Center", "phase": "regular", "tv": ""},
+      {"date": "2027-02-10", "start_et": "19:30", "opponent": "Boston Celtics", "ha": "away", "venue": "TD Garden", "phase": "regular", "tv": "ESPN"},
+      {"date": "2027-02-13", "start_et": "20:30", "opponent": "New York Knicks", "ha": "away", "venue": "Madison Square Garden", "phase": "regular", "tv": "ABC"},
+      {"date": "2027-02-15", "start_et": "19:30", "opponent": "Indiana Pacers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBCS"},
+      {"date": "2027-02-17", "start_et": "22:00", "opponent": "New Orleans Pelicans", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-02-25", "start_et": "22:00", "opponent": "Dallas Mavericks", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "AMZN"},
+      {"date": "2027-03-01", "start_et": "20:30", "opponent": "Houston Rockets", "ha": "away", "venue": "Toyota Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-02", "start_et": "20:00", "opponent": "Dallas Mavericks", "ha": "away", "venue": "American Airlines Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-04", "start_et": "22:00", "opponent": "Washington Wizards", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-07", "start_et": "22:00", "opponent": "Houston Rockets", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2027-03-09", "start_et": "23:00", "opponent": "Portland Trail Blazers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2027-03-10", "start_et": "22:00", "opponent": "Sacramento Kings", "ha": "away", "venue": "Golden 1 Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-12", "start_et": "22:00", "opponent": "Denver Nuggets", "ha": "away", "venue": "Ball Arena", "phase": "regular", "tv": "AMZN"},
+      {"date": "2027-03-14", "start_et": "22:00", "opponent": "Los Angeles Lakers", "ha": "away", "venue": "Crypto.com Arena", "phase": "regular", "tv": "NBC"},
+      {"date": "2027-03-16", "start_et": "22:00", "opponent": "Cleveland Cavaliers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-17", "start_et": "22:00", "opponent": "Memphis Grizzlies", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-19", "start_et": "22:00", "opponent": "Portland Trail Blazers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-22", "start_et": "22:00", "opponent": "Atlanta Hawks", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-24", "start_et": "22:00", "opponent": "Philadelphia 76ers", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "ESPN"},
+      {"date": "2027-03-25", "start_et": "22:00", "opponent": "Toronto Raptors", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""},
+      {"date": "2027-03-27", "start_et": "19:00", "opponent": "Washington Wizards", "ha": "away", "venue": "Capital One Arena", "phase": "regular", "tv": ""},
+      {"date": "2027-03-29", "start_et": "19:30", "opponent": "Brooklyn Nets", "ha": "away", "venue": "Barclays Center", "phase": "regular", "tv": "DZNY"},
+      {"date": "2027-03-31", "start_et": "19:00", "opponent": "Philadelphia 76ers", "ha": "away", "venue": "Xfinity Mobile Arena", "phase": "regular", "tv": "ESPN"},
+      {"date": "2027-04-02", "start_et": "19:30", "opponent": "Minnesota Timberwolves", "ha": "away", "venue": "Target Center", "phase": "regular", "tv": "AMZN"},
+      {"date": "2027-04-04", "start_et": "18:00", "opponent": "Sacramento Kings", "ha": "away", "venue": "Golden 1 Center", "phase": "regular", "tv": ""},
+      {"date": "2027-04-06", "start_et": "23:00", "opponent": "Phoenix Suns", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": "NBC"},
+      {"date": "2027-04-08", "start_et": "21:30", "opponent": "Oklahoma City Thunder", "ha": "away", "venue": "Paycom Center", "phase": "regular", "tv": "AMZN"},
+      {"date": "2027-04-09", "start_et": "20:00", "opponent": "Oklahoma City Thunder", "ha": "away", "venue": "Paycom Center", "phase": "regular", "tv": ""},
+      {"date": "2027-04-11", "start_et": "20:30", "opponent": "Utah Jazz", "ha": "home", "venue": "Chase Center", "phase": "regular", "tv": ""}
+    ],
+    "season_frames": {
+      "2026-27": {
+        "first_preseason": "2026-10-04",
+        "regular_start": "2026-10-21",
+        "regular_end": "2027-04-11",
+        "playoffs_if_qualified": {"start": "2027-04-12", "end": "2027-06-30", "status": "ESTIMATED", "note": "Conditional on qualifying. The Warriors finished 37-45 in 2025-26 (10th West) and did not play a 2026 playoff game. June 30 is a conservative NBA Finals tail; no fixture is implied."},
+        "status": "VERIFIED (2026-27 grid read 2026-09-21; secondary grid + ESPN spot-check)"
+      },
+      "future": {
+        "status": "ESTIMATED",
+        "basis": "2027-28, 2028-29, 2029-30 not released. Envelope: October 12 of the season year through April 15, plus a conditional April 15-June 30 playoff window. Do not treat as a schedule."
+      }
+    }
+  },
+  "valkyries": {
+    "team": "Golden State Valkyries",
+    "league": "WNBA",
+    "priority": "high",
+    "tags": ["WNBA:Valkyries"],
+    "radio": "KGMZ 95.7 The Game for SELECT games (the club's published radio column is authoritative per game); all other games stream on the Audacy App only and are NOT AM/FM.",
+    "radio_sources": [
+      "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425 (club/Audacy broadcast release with a per-game radio column, read 2026-09-21)"
+    ],
+    "schedule_status": "2026 season RELEASED (club broadcast table, marked 'subject to change'). Times in the club table are PACIFIC. Only rows whose radio column includes '95.7 The Game' are counted busy; 'The Audacy App'-only rows are streaming and are disclosed instead of blocking. See docs/IRREGULARITIES.md for the September date-discrepancy flag.",
+    "future_seasons": "2027 and later are NOT released. One verified anchor: the 2027 AT&T WNBA All-Star Game is coming to Chase Center (station/league announcement); its exact date is not published. The vacation model uses ESTIMATED May-September envelopes plus a conditional October playoff window.",
+    "games_2026": [
+      {"date": "2026-04-25", "start_pt": "17:30", "opponent": "Seattle Storm", "ha": "home", "phase": "preseason", "on_957": true},
+      {"date": "2026-05-08", "start_pt": "19:00", "opponent": "Seattle Storm", "ha": "away", "phase": "regular", "on_957": true},
+      {"date": "2026-05-10", "start_pt": "17:30", "opponent": "Phoenix Mercury", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-05-13", "start_pt": "19:00", "opponent": "Chicago Sky", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-05-21", "start_pt": "17:00", "opponent": "New York Liberty", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-05-22", "start_pt": "16:30", "opponent": "Indiana Fever", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-05-25", "start_pt": "19:00", "opponent": "Connecticut Sun", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-05-28", "start_pt": "19:00", "opponent": "Indiana Fever", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-05-31", "start_pt": "12:30", "opponent": "Las Vegas Aces", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-02", "start_pt": "19:00", "opponent": "Portland Fire", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-04", "start_pt": "18:00", "opponent": "Minnesota Lynx", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-06-06", "start_pt": "12:00", "opponent": "Las Vegas Aces", "ha": "away", "phase": "regular", "on_957": true},
+      {"date": "2026-06-09", "start_pt": "19:00", "opponent": "Phoenix Mercury", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-12", "start_pt": "19:00", "opponent": "Seattle Storm", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-06-15", "start_pt": "19:00", "opponent": "Los Angeles Sparks", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-17", "start_pt": "19:00", "opponent": "Dallas Wings", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-19", "start_pt": "19:00", "opponent": "Minnesota Lynx", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-21", "start_pt": "13:00", "opponent": "Las Vegas Aces", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-06-24", "start_pt": "19:00", "opponent": "Atlanta Dream", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-26", "start_pt": "19:00", "opponent": "Atlanta Dream", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-06-28", "start_pt": "16:00", "opponent": "New York Liberty", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-07-04", "start_pt": "10:00", "opponent": "Atlanta Dream", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-07-06", "start_pt": "16:30", "opponent": "Washington Mystics", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-07-08", "start_pt": "16:00", "opponent": "Toronto Tempo", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-07-10", "start_pt": "16:30", "opponent": "Connecticut Sun", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-07-15", "start_pt": "17:00", "opponent": "Indiana Fever", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-07-18", "start_pt": "17:30", "opponent": "Washington Mystics", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-07-20", "start_pt": "19:00", "opponent": "Washington Mystics", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-07-29", "start_pt": "19:00", "opponent": "Phoenix Mercury", "ha": "away", "phase": "regular", "on_957": true},
+      {"date": "2026-08-02", "start_pt": "17:30", "opponent": "Toronto Tempo", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-08-04", "start_pt": "19:00", "opponent": "Toronto Tempo", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-08-07", "start_pt": "18:30", "opponent": "Dallas Wings", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-08-09", "start_pt": "16:00", "opponent": "Los Angeles Sparks", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-08-12", "start_pt": "19:00", "opponent": "Chicago Sky", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-08-17", "start_pt": "19:00", "opponent": "Dallas Wings", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-08-19", "start_pt": "19:00", "opponent": "Minnesota Lynx", "ha": "home", "phase": "regular", "on_957": true},
+      {"date": "2026-08-21", "start_pt": "16:30", "opponent": "Chicago Sky", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-08-24", "start_pt": "17:00", "opponent": "Minnesota Lynx", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-08-26", "start_pt": "16:00", "opponent": "Connecticut Sun", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-08-27", "start_pt": "17:00", "opponent": "New York Liberty", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-08-30", "start_pt": "16:00", "opponent": "Portland Fire", "ha": "away", "phase": "regular", "on_957": false},
+      {"date": "2026-09-18", "start_pt": "19:00", "opponent": "Portland Fire", "ha": "home", "phase": "regular", "on_957": true, "date_flag": "IR-36: club table says Sep 18; final scores feeds show the Portland home game on Sep 19. Schedule marked 'subject to change'; date unresolved."},
+      {"date": "2026-09-19", "start_pt": "18:00", "opponent": "Seattle Storm", "ha": "home", "phase": "regular", "on_957": false, "date_flag": "IR-36: club table says Sep 19; final scores feeds show the Seattle home game on Sep 20. Schedule marked 'subject to change'; date unresolved."},
+      {"date": "2026-09-22", "start_pt": "19:00", "opponent": "Portland Fire", "ha": "away", "phase": "regular", "on_957": true},
+      {"date": "2026-09-24", "start_pt": "19:00", "opponent": "Los Angeles Sparks", "ha": "away", "phase": "regular", "on_957": true}
+    ],
+    "playoffs_2026": {
+      "status": "PARTIALLY VERIFIED",
+      "qualification": "Clinched a 2026 playoff berth (club announcement; finished 30-11). Regular season ended 2026-09-24; playoffs begin 2026-09-27 (WNBA/sportingnews). First round is best-of-three with G1 at the higher seed; the club is guaranteed to host its first playoff game at Chase Center (valkyries.wnba.com fan guide).",
+      "sources": [
+        "https://valkyries.wnba.com/news/valkyries-fan-guide-september-2026",
+        "https://valkyries.wnba.com/news/golden-state-valkyries-announce-2026-wnba-playoffs-ticket-information-20260908",
+        "https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79"
+      ],
+      "reserved_dates": [
+        {"date": "2026-09-27", "label": "WNBA First Round Game 1 (Valkyries home window)", "status": "VERIFIED date / UNRESOLVED time and opponent", "source_note": "Playoffs begin Sun Sep 27; G1 is at the higher seed."},
+        {"date": "2026-09-29", "label": "possible Valkyries First Round Game 2 (window Sep 29-30)", "status": "WINDOW (if series goes 2+ games)"},
+        {"date": "2026-09-30", "label": "possible Valkyries First Round Game 2 (window Sep 29-30)", "status": "WINDOW (if series goes 2+ games)"},
+        {"date": "2026-10-01", "label": "possible Valkyries First Round Game 3 (window Oct 1-2, if necessary)", "status": "WINDOW (if necessary)"},
+        {"date": "2026-10-02", "label": "possible Valkyries First Round Game 3 (window Oct 1-2, if necessary)", "status": "WINDOW (if necessary)"}
+      ],
+      "playoff_radio": "NOT PUBLISHED per game. The Apr 25 radio release covered the regular season only. Reserved playoff dates block conservatively (fail-safe) with an unresolved flag; the site does not assert 95.7 carriage for them.",
+      "later_rounds": "Semifinals (best-of-five) and Finals (best-of-seven) dates are NOT published. If the Valkyries advance, games could occupy dates into late October. Flagged as an unresolved coverage gap rather than guessed dates."
+    },
+    "season_frames": {
+      "2026": {
+        "first": "2026-04-25",
+        "regular_end": "2026-09-24",
+        "playoffs_end_estimate": "2026-10-25",
+        "status": "VERIFIED (club broadcast table) + ESTIMATED playoff tail",
+        "playoff_tail_note": "Conditional Oct 3-25 envelope for possible semifinals/finals; conservative and conditional on advancing."
+      },
+      "future": {
+        "status": "ESTIMATED",
+        "basis": "2027+ not released. Envelope: May 1 - September 30 plus a conditional October playoff window. The 2027 AT&T WNBA All-Star Game is announced for Chase Center but carries no date yet. Do not treat as a schedule."
+      }
+    }
+  },
+  "excluded_streaming_only": [
+    {
+      "name": "San Jose Sharks (NHL)",
+      "finding": "NOT on Bay Area AM/FM. The Sharks left KUFX 98.5 K-Fox after the 2020-21 season and have no Bay Area flagship radio station; the Sharks Audio Network is app/online streaming (Sharks + SAP Center App, sjsharks.com/listen) with some out-of-market terrestrial affiliates. Per the user's AM/FM definition, Sharks games do NOT mark the radio busy and are disclosed as a coverage exclusion.",
+      "sources": [
+        "https://www.nhl.com/sharks/news/san-jose-sharks-announce-broadcast-schedule-for-2026-27-season (2026-09-09: all games on the Sharks Audio Network app/online)",
+        "https://www.insideradio.com/free/streaming-with-the-sharks-san-jose-nhl-team-going-strong-with-streaming-only-distribution/article_88c12110-d6e5-11ee-bacd-9f5bb21101ca.html ('no flagship radio station in the Bay Area')",
+        "https://www.nbcbayarea.com/news/sports/sharks-launch-audio-streaming-network-leave-kfox-radio-after-20-years/2445583/"
+      ]
+    },
+    {
+      "name": "Valkyries games listed 'The Audacy App' only (18 of 45 listed 2026 games)",
+      "finding": "Streaming-only broadcasts are not standard AM/FM. Not counted busy; the rows are kept in valkyries.games_2026 with on_957=false so they remain auditable.",
+      "sources": ["https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425"]
+    }
+  ],
+  "unresolved_coverage": [
+    {
+      "name": "USF Dons men's basketball on KNBR",
+      "finding": "Cumulus lists USF men's basketball among KNBR's properties, so some USF games are live on 680 AM / 104.5 FM (Nov-Mar). The 2026-27 schedule and per-game radio assignment are NOT published yet. No dates are blocked; flagged for the next session.",
+      "sources": ["https://www.cumulusmedia.com/2026/04/15/san-francisco-49ers-announce-multi-year-partnership-extension-with-cumulus-medias-knbr/"]
+    },
+    {
+      "name": "Westwood One NCAA basketball and other Westwood One properties (golf, soccer, MCWS/WSWCWS, lacrosse, hockey)",
+      "finding": "Westwood One carries these nationally with KNBR/KTCT as SF-market affiliates, but the 2026-27 event schedule is not published yet and per-game local carriage is never guaranteed (network blackout/conflict warnings). No dates are blocked; tracked as unresolved.",
+      "sources": ["https://www.westwoodonesports.com/ncaa-basketball/", "https://www.westwoodonesports.com/station-finder/"]
+    },
+    {
+      "name": "Stanford / Cal / USF college basketball and other local-college radio",
+      "finding": "Ballpark Nov-Mar seasons exist, but per-game Bay Area AM/FM carriage evidence was not gathered this pass. Not blocked, not claimed free; a coverage gap by disclosure.",
+      "sources": ["https://gostanford.com/", "https://calbears.com/"]
+    },
+    {
+      "name": "Golden State Valkyries playoffs later than the first round",
+      "finding": "Semifinal/Final date windows (conditional, into late October 2026) are not published; see valkyries.playoffs_2026.later_rounds.",
+      "sources": ["https://www.sportingnews.com/us/tickets/news/valkyries-playoff-tickets-prices-schedule-golden-state-2026-wnba/fabf32cb25126dcdd39d7a79"]
+    }
+  ]
+}
