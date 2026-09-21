@@ -85,6 +85,28 @@ fixture downloads do not automatically validate unrelated inherited datasets.
 | [MLB Stats API — season frames 2026 and 2027](https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029) | 2026 frame re-verified live (spring 02-20 → 03-24, regular 03-25 → 09-27, All-Star 07-14, postseason 09-28 → 10-31); 2027 frame re-verified live (spring 02-19 → 03-24, full Opening Day 03-25, All-Star 07-13, regular 03-25 → 09-26, postseason 09-27 → 10-31). Range query returns 2026 only; 2028/2029 remain absent (ESTIMATED). | Exact 2028/2029 dates; per-game times in 2027. |
 | [MLB clinch tracker re-read](https://www.mlb.com/news/2026-postseason-teams) | Still exactly six berths (Rays 9/11, Brewers 9/11, Dodgers 9/14, Yankees 9/14, Braves 9/18, Red Sox 9/20); divisions Brewers/Dodgers/Braves as stored; tracker text: Wild Card Series "begin Tuesday, Sept. 29", two best division winners in each league get first-round byes. No new clinch since session 1. | Seeds beyond clinches, matchups, times. |
 
+### Re-verified 2026-09-21 (session 3, line-by-line pass)
+
+Every row below was read in this session, through the fetch tool, against the live
+page or API. Nothing in this table is inferred.
+
+| Primary source | What was observed | What it does NOT prove |
+|---|---|---|
+| [MLB Stats API seasons, 2026-2029 range](https://statsapi.mlb.com/api/v1/seasons?sportId=1&startSeason=2026&endSeason=2029) | The range query still returns **only the 2026 frame** (spring 2026-02-20, regular 2026-03-25 -> 2026-09-27, All-Star 2026-07-14, postseason end 2026-10-31). | Nothing about 2027-2029 frames; those stay in `data/verified/seasons.json` (2027 VERIFIED from MLB's 2026-07-16 release, 2028-2029 ESTIMATED). |
+| [MLB Stats API schedule, 2027-03-24 -> 2027-04-01](https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2027-03-24&endDate=2027-04-01) | The released 2027 regular season is present with **real matchups** (2027-03-25 alone carries 15 games, including Athletics @ Pirates and Rockies @ Giants at Oracle Park) and every `gameDate` still the `07:33:00Z` sentinel with `startTimeTBD: true`. | Any first-pitch time for 2027; the snapshot exporter records dates and leaves those times blank. |
+| [MLB Stats API schedule, 2026-09-25 -> 2026-10-31](https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-25&endDate=2026-10-31) | The last regular-season games carry **real published times** (Dodgers @ Giants 2026-09-25 02:15Z = 7:15 PM PT; 2026-09-26 20:05Z = 1:05 PM PT), so the live day board is exact for those dates. | Anything about the postseason. |
+| [MLB Stats API postseason window, 2026-09-28 -> 2026-10-31, gameType E,S,D,L,F,W](https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W) | The postseason is still served as **conditional placeholder games**: participants named `AL Wild Card #1`, `NL #3 Seed`, `AL 3/6 Winner`, venues `AL Stadium` / `NL Stadium`, every record `07:33:00Z` with `startTimeTBD: true`. First games 2026-09-29 (four Wild Card games). | Any matchup, seed, or first-pitch time. The date skeleton is all this proves. |
+| [MLB.com clinch tracker](https://www.mlb.com/news/2026-postseason-teams) (URL redirects to a related article slug; text retained) | Still exactly **six berths**: Rays 9/11, Brewers 9/11 (NL Central 9/15), Dodgers 9/14 (NL West 9/17), Yankees 9/14, Braves 9/18 (NL East 9/20), Red Sox 9/20. Tracker text: best-of-three Wild Card Series begin **Tuesday 2026-09-29**; the two best division winners in each league get first-round byes. | Seeds, matchups, opponents or any time. A berth is not a matchup. |
+| [Westwood One NFL schedule](https://www.westwoodonesports.com/nfl-schedule/) | Page re-read (first of four chunks): current national rows run 2026-09-21 (Giants @ Rams, MNF) through 2026-11-29 and beyond, including the London/Paris internationals and **2026-10-19 Commanders @ 49ers, MNF, Levi's Stadium**. | Local carriage of any row; kickoff (the published value is airtime). |
+| [Published GitHub Pages site](https://buffedlizard55-lab.github.io/VacationSchedule/) | The live site matches the local build: section picker, Spring Training switch, the 11-day strict 2026 run, the NONE verdict for a two-week trip under the strict section-3 reading, and the per-year "inspect all inputs" tables. | Nothing about data completeness; it is the same model rendered. |
+
+#### Committed fixture artifacts (new this session)
+
+| Artifact | Source | What it contains |
+|---|---|---|
+| `data/verified/mlb_schedule_<year>.csv` + `_summary.json` | `scripts/export_mlb_schedule.py` on the GitHub runner | Every fixture for that season with game type, Pacific/Eastern time (or TBD), clubs, venue, status and `game_pk`, plus validation counts, the request URL, retrieval time and a SHA-256 of the raw response. |
+| `data/verified/mlb_postseason_state_<year>.json` | same script | Game records in the postseason window, how many have a published first pitch, the reserved dates, the dates that cannot carry a game, and whether participants are still placeholders. |
+
 ### Duration research added 2026-09-21
 
 NBA **150** and WNBA **120** minutes are planning lengths, like the other

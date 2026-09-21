@@ -6,6 +6,17 @@ Compare three definitions of sports-free vacation time in **2026–2029**, with
 one-, two- and three-week trip checks, a daily scoreboard, a month calendar,
 Pacific-time free intervals, sources, and a review queue.
 
+Two tabs added in the 2026-09-21 session-3 pass answer the other half of the
+request:
+
+| Tab | What it shows |
+|---|---|
+| **MLB 2026 & 2027** | Every fixture the league has scheduled, all 30 clubs: Spring Training, regular season, All-Star Game and postseason, from the committed Stats API snapshot. Filter by club, month or game type; Giants and Athletics rows are highlighted. Each row carries the league's `game_pk`. |
+| **Postseason 2026** | The postseason split into what is resolved and what is not: clinched berths and division titles from MLB's tracker, the official round dates, the dates that cannot carry a game, and a machine-measured count of how many first pitches the league has published (still zero). |
+
+The *Plan a trip* tab now opens with an answer matrix: one row per year, one
+column per section, both Spring Training readings, and which trip lengths fit.
+
 ## The three sections
 
 | Section | What counts as busy |
@@ -51,6 +62,22 @@ Earthquakes removes the future February corridor in this conservative model:
 MLS announced a February–May 2027 transition followed by summer–spring seasons.
 A continuous season envelope can hide real fixture gaps; “none found” is **not**
 a proof that a trip is impossible. See [the complete generated report](docs/VACATION-WINDOWS.md).
+
+## How the official fixture lists get into the repo
+
+`data/verified/mlb_schedule_<year>.csv` and its `_summary.json` are produced by
+`scripts/export_mlb_schedule.py`, which runs on the GitHub runner (the development
+sandbox cannot open TLS to statsapi.mlb.com). The workflow refreshes the 2026 and
+2027 seasons, validates them (all 30 clubs present, plausible regular-season
+count, unique game ids), commits the compact CSV + provenance summary back to the
+branch and uploads the raw payloads as an artifact. The summary records the exact
+request URL, the retrieval time and a SHA-256 of the raw response, so every row is
+re-verifiable by hand. `data/verified/mlb_postseason_state_<year>.json` is the same
+idea for the postseason: it counts game records, published first pitches, reserved
+dates and impossible dates instead of asserting them.
+
+When a season snapshot is committed, the vacation analysis blocks real fixture
+dates (`mlb_block.mode = exact_fixtures`) instead of a continuous season frame.
 
 ## Data honesty and current coverage
 

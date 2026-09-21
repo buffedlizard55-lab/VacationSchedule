@@ -4,7 +4,7 @@ Generated from the current model. Dates are **inclusive**. All results are provi
 
 ## Assumptions
 
-MLB counts all clubs, not just confirmed Bay Area radio broadcasts. Section 1 adds 49ers + national NFL radio; Section 2 adds Stanford/Cal; Section 3 adds Earthquakes. Continuous frames can hide real gaps. MLS follows the new summer–spring format from 2027, with estimated exact boundaries. Super Bowl LXIII (Feb 11, 2029) is a verified anchor since the NFL's 2026-03-30 announcement; Super Bowl LXIV (2030) remains estimated. The `all` ("Everything tracked") rows additionally reserve Warriors NBA and Valkyries WNBA envelopes and therefore report no modeled run — see [method](METHODOLOGY.md) and [sources](SOURCES.md).
+MLB counts all clubs, not just confirmed Bay Area radio broadcasts. Section 1 adds 49ers + national NFL radio; Section 2 adds Stanford/Cal; Section 3 adds Earthquakes. Continuous frames can hide real gaps, but that caveat is being retired year by year: once the CI refresh commits a season's official fixture list, the analysis blocks the real game dates only (`mlb_block.mode = exact_fixtures`) instead of the season envelope. A date with no fixture row is then genuinely free of MLB under the chosen reading. MLS follows the new summer–spring format from 2027, with estimated exact boundaries. Super Bowl LXIII (Feb 11, 2029) is a verified anchor since the NFL's 2026-03-30 announcement; Super Bowl LXIV (2030) remains estimated. The `all` ("Everything tracked") rows additionally reserve Warriors NBA and Valkyries WNBA envelopes and therefore report no modeled run — see [method](METHODOLOGY.md) and [sources](SOURCES.md).
 
 ## Spring Training included
 

@@ -835,6 +835,102 @@ def mlb_regular_season_days() -> list[str]:
     return out
 
 
+# ---------------------------------------------------------------------------
+# Complete official MLB season snapshots (every club, every game type)
+# ---------------------------------------------------------------------------
+
+#: Compact row order for site/data/mlb-<year>.json. Documented in the file's own
+#: `_meta.fields` entry so a reader can decode it without reading this source.
+MLB_ROW_FIELDS = ["date_local", "start_pt", "away_id", "home_id", "venue", "game_type", "status"]
+
+
+def load_mlb_season_snapshot(year: int) -> dict | None:
+    """Read ``data/verified/mlb_schedule_<year>.csv`` written by the CI exporter.
+
+    Returns a dict with the compact rows plus provenance/counts, or ``None`` when
+    that season has not been fetched. Nothing here infers a fixture: rows come
+    from the league's own API response and every row keeps its ``game_pk`` in the
+    CSV for manual review.
+    """
+    csv_path = VERIFIED / f"mlb_schedule_{year}.csv"
+    if not csv_path.exists():
+        return None
+    summary_path = VERIFIED / f"mlb_schedule_{year}_summary.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else None
+
+    rows: list[list[object]] = []
+    clubs: dict[str, str] = {}
+    header_comments: list[str] = []
+    for raw in csv_path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith("#"):
+            header_comments.append(line.lstrip("# ").strip())
+            continue
+        cols = line.split("|")
+        if len(cols) != 13:
+            raise ValueError(f"{csv_path}: expected 13 pipe-separated columns, got {len(cols)}")
+        (date_local, _start_utc, start_pt, _start_et, time_tbd, game_type,
+         away, home, away_id, home_id, venue, status, _game_pk) = cols
+        clubs[away_id] = away
+        clubs[home_id] = home
+        rows.append([
+            date_local,
+            "" if time_tbd == "true" else start_pt,
+            away_id,
+            home_id,
+            venue,
+            game_type,
+            status,
+        ])
+    if not rows:
+        raise ValueError(f"{csv_path}: no fixture rows")
+
+    return {
+        "year": year,
+        "rows": rows,
+        "clubs": dict(sorted(clubs.items(), key=lambda kv: kv[1])),
+        "header": header_comments,
+        "summary": summary,
+        "with_time": sum(1 for r in rows if r[1]),
+        "tbd": sum(1 for r in rows if not r[1]),
+    }
+
+
+def write_mlb_season_site_file(snapshot: dict, out_dir: Path) -> str:
+    """Write the lazily loaded per-season fixture file the MLB tab reads."""
+    name = f"mlb-{snapshot['year']}.json"
+    payload = {
+        "_meta": {
+            "year": snapshot["year"],
+            "fields": MLB_ROW_FIELDS,
+            "clubs": snapshot["clubs"],
+            "club_note": (
+                "Club ids are MLB Stats API ids: 137 = San Francisco Giants, "
+                "133 = Athletics. Both are flagged high priority in the UI."
+            ),
+            "header": snapshot["header"],
+            "games": len(snapshot["rows"]),
+            "with_published_time": snapshot["with_time"],
+            "time_tbd": snapshot["tbd"],
+            "summary": snapshot["summary"],
+            "source": (
+                "https://statsapi.mlb.com/api/v1/schedule?sportId=1"
+                f"&startDate={snapshot['year']}-01-01&endDate={snapshot['year']}-12-31&gameType=R,E,S,D,L,F,W,A"
+            ),
+            "caveat": (
+                "Every row is a league-published fixture with a game_pk a reviewer can look up. "
+                "A blank start time means the league has not published a first pitch yet; the date is official."
+            ),
+        },
+        "games": snapshot["rows"],
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / name).write_text(json.dumps(payload, separators=(",", ":")) + "\n", encoding="utf-8")
+    return name
+
+
 _BUILD_CACHE: dict | None = None
 
 
@@ -893,6 +989,14 @@ def _build() -> dict:
     seasons = json.loads((VERIFIED / "seasons.json").read_text(encoding="utf-8"))
     mlb_frames = {}
     postseason = load("mlb_postseason_2026.json")
+    # Machine-measured postseason state (record count, how many first pitches the
+    # league has published, reserved dates, impossible dates). Written by the CI
+    # refresh; absent until that job has run.
+    postseason_state_path = VERIFIED / "mlb_postseason_state_2026.json"
+    postseason_state = (
+        json.loads(postseason_state_path.read_text(encoding="utf-8"))
+        if postseason_state_path.exists() else None
+    )
     covered = []
     if postseason["dates_with_a_reserved_game"]:
         covered = [[
@@ -920,6 +1024,26 @@ def _build() -> dict:
 
     vacation = analyze_main(verbose=False)
 
+    # Complete official season snapshots (all clubs, Spring Training -> World
+    # Series). Present once the CI refresh has committed them; the site degrades
+    # to the live per-day fetch when a season is missing.
+    mlb_seasons: dict[str, dict] = {}
+    for season_year in (2026, 2027):
+        snapshot = load_mlb_season_snapshot(season_year)
+        if not snapshot:
+            mlb_seasons[str(season_year)] = {"available": False}
+            continue
+        season_file = write_mlb_season_site_file(snapshot, OUT_DIR)
+        mlb_seasons[str(season_year)] = {
+            "available": True,
+            "site_file": f"data/{season_file}",
+            "games": len(snapshot["rows"]),
+            "with_published_time": snapshot["with_time"],
+            "time_tbd": snapshot["tbd"],
+            "clubs": len(snapshot["clubs"]),
+            "summary": snapshot["summary"],
+        }
+
     bundle = {
         "_meta": {
             "generated_by": "scripts/build_data.py",
@@ -942,6 +1066,9 @@ def _build() -> dict:
                     for lg in ("MLB", "NFL", "NCAAF", "MLS", "NBA", "WNBA")
                 },
                 "high_priority": sum(1 for g in games if g["priority"] == "high"),
+                "mlb_complete_seasons": {
+                    year: info.get("games", 0) for year, info in mlb_seasons.items()
+                },
                 "westwood_one_ncaaf": sum(
                     1 for g in games if g.get("network", "").startswith("Westwood One Sports") and g["league"] == "NCAAF"
                 ),
@@ -949,6 +1076,9 @@ def _build() -> dict:
             },
         },
         "mlb_snapshot": mlb_snapshot["_meta"] if mlb_snapshot else None,
+        "mlb_seasons": mlb_seasons,
+        "postseason": postseason,
+        "postseason_state": postseason_state,
         "games": games,
         "unresolved": unresolved,
         "nfl_schedule_2026": {

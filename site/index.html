@@ -25,6 +25,8 @@
     <button class="tab" data-tab="vacation" type="button">All windows</button>
     <button class="tab" data-tab="day" type="button">Day & calendar</button>
     <button class="tab" data-tab="compare" type="button">Compare all three</button>
+    <button class="tab" data-tab="mlb" type="button">MLB 2026 &amp; 2027</button>
+    <button class="tab" data-tab="postseason" type="button">Postseason 2026</button>
     <button class="tab" data-tab="nfl" type="button">NFL 2026 Slate</button>
     <button class="tab" data-tab="radio" type="button">Radio</button>
     <button class="tab" data-tab="review" type="button">Needs Review <span id="reviewCount" class="badge">0</span></button>
@@ -88,6 +90,15 @@
     </div>
 
     <div id="decisionSummary" class="verdict">&mdash;</div>
+
+    <h3 class="sect">The whole answer at a glance: 1, 2 and 3 weeks in every section</h3>
+    <p class="lede">
+      One row per year, one column per section. Each cell is the longest unbroken run of days with no
+      game in that section, and which trip lengths it satisfies. The two tables are the two readings of
+      &ldquo;no MLB&rdquo;: Spring Training counted as MLB, and regular season + postseason only.
+      Cells marked <em>past</em> are historical comparisons, not bookable trips.
+    </p>
+    <div id="answerMatrix"></div>
 
     <h3 class="sect">Your options by year</h3>
     <div class="tablewrap">
@@ -278,6 +289,74 @@
       <h3 class="sect">What actually changes between the situations</h3>
       <ul id="compareSummary" class="def"></ul>
     </div>
+  </section>
+
+  <!-- ===================== MLB EXPLORER ===================== -->
+  <section id="tab-mlb" class="panel">
+    <h2 class="dayheading">Every MLB game, all 30 clubs</h2>
+    <p class="lede">
+      The complete season fixture list pulled from the league's own schedule API and committed to this
+      repository: Spring Training, the regular season, the All-Star Game and the postseason, with each
+      row carrying the league's <code>game_pk</code> so it can be looked up. Nothing here is generated
+      or hand-entered. A blank first pitch means the league has not published a time yet &mdash; the date
+      is still official.
+    </p>
+    <div id="mlbSeasonMeta" class="note info"></div>
+    <div class="filterbar">
+      <label>Season <select id="mlbYear" aria-label="MLB season"></select></label>
+      <label>Club <select id="mlbClub" aria-label="Club filter"></select></label>
+      <label>Month <select id="mlbMonth" aria-label="Month filter"></select></label>
+      <label>Game type <select id="mlbType" aria-label="Game type filter"></select></label>
+      <label class="chk"><input type="checkbox" id="mlbHighOnly"> Only Giants and Athletics</label>
+      <span id="mlbCount" class="filtercount">&mdash;</span>
+    </div>
+    <div class="tablewrap">
+      <table class="vtable mlbtable">
+        <thead>
+          <tr>
+            <th>Date (PT)</th><th>First pitch (PT)</th><th>Away</th><th>Home</th>
+            <th>Venue</th><th>Type</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="mlbRows"></tbody>
+      </table>
+    </div>
+    <p class="hint" id="mlbTableHint"></p>
+    <details class="audit-details"><summary>Provenance and validation of this fixture list</summary>
+      <div id="mlbSeasonSummary"></div>
+    </details>
+  </section>
+
+  <!-- ===================== POSTSEASON ===================== -->
+  <section id="tab-postseason" class="panel">
+    <h2 class="dayheading">2026 MLB postseason: what is resolved, what is not</h2>
+    <p class="lede">
+      The postseason is the one part of the calendar where the league publishes dates first and
+      first-pitch times later &mdash; times are set round by round once the matchups lock. This tab keeps
+      the two apart: verified dates and clinched berths on one side, genuinely unpublished times on the
+      other. No matchup or time is inferred from a clinched berth.
+    </p>
+    <div id="postseasonSummary" class="verdict">&mdash;</div>
+
+    <h3 class="sect">Clinched berths and division titles</h3>
+    <div id="postseasonClinched"></div>
+
+    <h3 class="sect">Official round dates (Pacific)</h3>
+    <div class="tablewrap">
+      <table class="vtable">
+        <thead>
+          <tr><th>Round</th><th>Best of</th><th>Dates</th><th>Games per round day</th><th>First pitch</th></tr>
+        </thead>
+        <tbody id="postseasonRounds"></tbody>
+      </table>
+    </div>
+
+    <h3 class="sect">Dates reserved for a game</h3>
+    <div id="postseasonDates" class="note info"></div>
+    <p class="hint" id="postseasonOffDays"></p>
+
+    <h3 class="sect">Still unresolved &mdash; and what would resolve it</h3>
+    <div id="postseasonUnresolved"></div>
   </section>
 
   <!-- ===================== NFL REFERENCE ===================== -->

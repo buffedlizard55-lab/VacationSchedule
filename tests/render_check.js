@@ -201,6 +201,53 @@ setTimeout(() => {
   // ---- offline MLB note is labelled, not silently missing ----
   check("offline MLB fetch is disclosed", /Live MLB fetch failed|works offline/.test(text("mlbNote")), text("mlbNote"));
 
+  // ---- answer matrix: every section x every year, both Spring Training readings ----
+  check("answer matrix renders two readings", window.document.querySelectorAll("#answerMatrix table").length === 2,
+    `found ${window.document.querySelectorAll("#answerMatrix table").length}`);
+  check("answer matrix has a row per year in each reading",
+    window.document.querySelectorAll("#answerMatrix tbody tr").length === 8,
+    `found ${window.document.querySelectorAll("#answerMatrix tbody tr").length}`);
+  check("answer matrix names all three sections",
+    /1\. MLB \+ NFL/.test(text("answerMatrix")) && /Stanford/.test(text("answerMatrix")) && /Earthquakes/.test(text("answerMatrix")),
+    text("answerMatrix").slice(0, 200));
+  check("answer matrix states which trip lengths fit", /fits /.test(text("answerMatrix")) || /no full week/.test(text("answerMatrix")));
+  check("answer matrix flags historical windows",
+    /past/.test(text("answerMatrix")), text("answerMatrix").slice(0, 200));
+
+  // ---- postseason tracker: dates resolved, times measured ----
+  tab("postseason").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("postseason tab activates", $("tab-postseason").classList.contains("active"));
+  check("postseason summary separates dates from times",
+    /DATES RESOLVED/.test(text("postseasonSummary")) && /FIRST-PITCH TIMES NOT PUBLISHED/.test(text("postseasonSummary")),
+    text("postseasonSummary").slice(0, 200));
+  check("postseason clinch cards rendered",
+    window.document.querySelectorAll("#postseasonClinched .srccard").length === 3,
+    `found ${window.document.querySelectorAll("#postseasonClinched .srccard").length}`);
+  check("postseason round table has all four rounds",
+    window.document.querySelectorAll("#postseasonRounds tr").length === 4,
+    `found ${window.document.querySelectorAll("#postseasonRounds tr").length}`);
+  check("postseason round table admits times are unpublished", /Not published/.test(text("postseasonRounds")));
+  check("postseason lists reserved dates", /dates are reserved for a game/.test(text("postseasonDates")), text("postseasonDates").slice(0, 120));
+  check("postseason names the travel days", /No game is possible on/.test(text("postseasonDates")));
+  check("postseason says what would resolve the TBDs", /What would resolve it/.test(text("postseasonUnresolved")));
+
+  // ---- MLB season explorer: honest when the CI snapshot is not bundled ----
+  tab("mlb").dispatchEvent(new window.Event("click", { bubbles: true }));
+  check("mlb tab activates", $("tab-mlb").classList.contains("active"));
+  const bundledSeasons = (window.SCHEDULE_DATA.mlb_seasons) || {};
+  const available = Object.keys(bundledSeasons).filter((y) => bundledSeasons[y].available);
+  if (available.length) {
+    check("mlb explorer renders fixture rows", window.document.querySelectorAll("#mlbRows tr").length > 0,
+      `found ${window.document.querySelectorAll("#mlbRows tr").length}`);
+    check("mlb explorer reports the fixture count", /matching fixtures/.test(text("mlbCount")), text("mlbCount"));
+    check("mlb explorer offers all 30 clubs", window.document.querySelectorAll("#mlbClub option").length === 31,
+      `found ${window.document.querySelectorAll("#mlbClub option").length}`);
+    check("mlb explorer explains provenance", /official fixtures/.test(text("mlbSeasonMeta")), text("mlbSeasonMeta").slice(0, 160));
+  } else {
+    check("mlb explorer admits no season file is bundled", /not bundled|No complete season fixture file/.test(text("mlbRows") + text("mlbSeasonMeta")),
+      text("mlbSeasonMeta").slice(0, 160));
+  }
+
   console.log(ok.map((s) => "  PASS " + s).join("\n"));
   if (failures.length) {
     console.log(failures.map((s) => "  FAIL " + s).join("\n"));
