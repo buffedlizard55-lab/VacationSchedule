@@ -42,6 +42,29 @@ re-verified 2026-09-21 that the live API still serves every postseason record wi
 placeholder participants and no first-pitch time, and that MLB's tracker still
 lists exactly six clinched berths. See REVIEW-2026-09-21.md and SOURCES.md.
 
+## Session 2026-09-21 (session 3, continuation)
+
+The CI refresh has now committed the official fixture lists for 2026 and 2027, and
+the analysis uses them directly:
+
+* `analyze_vacation` blocks exact fixture dates for 2026/2027 (`mlb_block.mode =
+  exact_fixtures`), plus the announced 2027-03-24 Opening Night the feed omits (IR-39).
+  The result is unchanged for the headline windows but the *reason* is now a measured
+  date list rather than a season-wide envelope.
+* The MLB tab loads both seasons (2973 + 2900 fixtures) and shows each row's league
+  `game_pk`; the club filter offers the 30 MLB clubs while exhibition opponents
+  (national teams, college squads) stay visible in the rows (IR-41).
+* The season files expose the regular-season quiet dates — 2026-07-13, 2026-07-15,
+  2027-07-12, 2027-07-14, 2027-07-15 — so "All-Star break" is a measurement.
+* When statsapi.mlb.com is unreachable the day board now renders the committed
+  snapshot for that date (mode `snapshot`) instead of only a conservative hold.
+* The CI commit-back glob was extended to `mlb_postseason_state_*.json` and the raw
+  postseason payload is uploaded with the season payloads.
+
+Still open here: the 2028-2029 fixture lists do not exist yet (frames stay
+ESTIMATED), postseason first-pitch times are still unpublished, and the per-game
+radio questions in the flags below are unchanged.
+
 ## Highest priority for the next session
 
 1. **MLB postseason times, from 2026-09-27.** Dates are official and stored;

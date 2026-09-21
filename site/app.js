@@ -197,12 +197,28 @@
     return null;
   }
 
-  function mlbFrameIsCovered(dateStr, frame) {
+  /**
+   * Does the project know this date's MLB fixture status?
+   *   "no-game"  - the official list is complete here and no game is scheduled
+   *   "game"     - the official list has at least one game (time may still be TBD)
+   *   "unknown"  - no complete fixture list for that season/date
+   */
+  function mlbFrameCoverage(dateStr, frame) {
+    if (frame && (frame.anchor_dates || []).indexOf(dateStr) !== -1) return "game";
+    const snapStart = frame && frame.snapshot_start;
+    const snapEnd = frame && frame.snapshot_end;
+    if (snapStart && snapEnd && snapStart <= dateStr && dateStr <= snapEnd) {
+      return (frame.dates_with_games || []).indexOf(dateStr) === -1 ? "no-game" : "game";
+    }
     const ranges = (frame && frame.complete_ranges) || [];
     for (let i = 0; i < ranges.length; i++) {
-      if (ranges[i][0] <= dateStr && dateStr <= ranges[i][1]) return true;
+      if (ranges[i][0] <= dateStr && dateStr <= ranges[i][1]) return "no-game";
     }
-    return false;
+    return "unknown";
+  }
+
+  function mlbFrameIsCovered(dateStr, frame) {
+    return mlbFrameCoverage(dateStr, frame) === "no-game";
   }
 
   function mlbCoveredOnDate(games, dateStr) {
@@ -841,10 +857,10 @@
     box.innerHTML = "";
     SECTIONS.forEach((s) => {
       const cmp = (DATA.vacation_compare && DATA.vacation_compare[which]) || {};
-      let best = 0, bestYear = null, bestStart = null, bestEnd = null;
+      let best = 0, bestStart = null, bestEnd = null;
       Object.keys(cmp).sort().forEach((y) => {
         const r = cmp[y][s.id];
-        if (r && r.longest_days > best) { best = r.longest_days; bestYear = y; bestStart = r.longest_start; bestEnd = r.longest_end; }
+        if (r && r.longest_days > best) { best = r.longest_days; bestStart = r.longest_start; bestEnd = r.longest_end; }
       });
       const btn = document.createElement("button");
       btn.type = "button";
@@ -852,7 +868,7 @@
       let html = '<span class="sitename">' + esc(s.short) + "</span>" +
         "<ul>" + s.definition.map((d) => "<li>" + esc(d) + "</li>").join("") + "</ul>";
       if (best) {
-        html += '<div class="preview">Longest run (' + (which === "strict" ? "strict" : "regular only") + '): <strong>' + best + " days</strong> &mdash; " + esc(fmtRangeFriendly(bestStart, bestEnd)) + " (" + esc(bestYear) + ")</div>";
+        html += '<div class="preview">Longest run (' + (which === "strict" ? "strict" : "regular only") + '): <strong>' + best + " days</strong> &mdash; " + esc(fmtRangeFriendly(bestStart, bestEnd)) + "</div>";
       }
       btn.innerHTML = html;
       btn.setAttribute("aria-pressed", s.id === scope ? "true" : "false");
@@ -889,7 +905,7 @@
       summary.className = "verdict busy";
       summary.innerHTML = "NO CANDIDATE &mdash; no unbroken " + tripLength + "-day window in any year under these answers" +
         `<span class="sub">${esc(scopeShort(scope))} &middot; ${esc(reading)}` +
-        (overall ? ` &middot; the longest modeled run is <strong>${overall.days} days</strong> (${esc(fmtRangeFriendly(overall.start, overall.end))}, ${overall.year})` : "") +
+        (overall ? ` &middot; the longest modeled run is <strong>${overall.days} days</strong> (${esc(fmtRangeFriendly(overall.start, overall.end))})` : "") +
         " &middot; try a shorter trip, the other Spring Training rule, or a narrower situation</span>";
     }
 
@@ -1057,12 +1073,26 @@
     const summary = info.summary;
     const when = summary && summary._meta ? summary._meta.retrieved_utc : "";
     const source = summary && summary._meta ? summary._meta.source_url : "";
-    return `<strong>${esc(year)} season:</strong> ${info.games} official fixtures across ` +
-      `${info.clubs} clubs &middot; ${info.with_published_time} with a published first pitch, ` +
+    const validation = summary && summary.validation ? summary.validation : null;
+    const quiet = info.dates_without_a_game || [];
+    let out = `<strong>${esc(year)} season:</strong> ${info.games} official fixtures across ` +
+      `${info.clubs} clubs (${info.first_date} to ${info.last_date}) &middot; ` +
+      `${info.with_published_time} with a published first pitch, ` +
       `${info.time_tbd} still without a time (the date is still official).` +
+      (info.regular_season_days ? ` The regular season covers ${info.regular_season_days} dates;` : "") +
+      (quiet.length
+        ? ` inside it the league schedules no game at all on ${quiet.map((d) => esc(d)).join(", ")} (the All-Star break).`
+        : (info.regular_season_days ? " every date in it carries at least one game." : "")) +
       (when ? ` Snapshot retrieved <strong>${esc(when)}</strong>.` : "") +
-      (source ? ` <a href="${esc(source)}" target="_blank" rel="noopener">Open the league query</a>` : "") +
-      `<span class="r">Committed as data/verified/mlb_schedule_${esc(year)}.csv; regenerated by the CI refresh.</span>`;
+      (source ? ` <a href="${esc(source)}" target="_blank" rel="noopener">Open the league query</a>` : "");
+    if (validation) {
+      out += `<span class="r">Committed as data/verified/mlb_schedule_${esc(year)}.csv and re-checked on every run: ` +
+        `all 30 clubs in the regular season &middot; ${validation.regular_season_games} regular-season games &middot; ` +
+        (Object.keys(validation.clubs_with_non_162_regular_season_games || {}).length === 0
+          ? "all 30 clubs at exactly 162" : "club game counts need review") +
+        ` &middot; unique game ids ${validation.unique_game_pks ? "yes" : "NO"}.</span>`;
+    }
+    return out;
   }
 
   function mlbRowMatches(row, club, month, type, highOnly) {
@@ -1082,7 +1112,7 @@
     const info = mlbSeasonInfo(year);
     const countEl = $("mlbCount");
     if (!payload) {
-      body.innerHTML = `<tr><td colspan="7" class="empty">Fixture file for ${esc(year)} is not bundled in this build. ` +
+      body.innerHTML = `<tr><td colspan="8" class="empty">Fixture file for ${esc(year)} is not bundled in this build. ` +
         `The day checker still fetches this season live from statsapi.mlb.com.</td></tr>`;
       if (countEl) countEl.textContent = info.available ? "loading…" : "not bundled";
       return;
@@ -1097,7 +1127,7 @@
     const shown = filtered.slice(0, MLB_ROW_LIMIT);
 
     body.innerHTML = shown.map((row) => {
-      const [date, time, awayId, homeId, venue, gameType, status] = row;
+      const [date, time, awayId, homeId, venue, gameType, status, gamePk] = row;
       const highAway = MLB_HIGH_IDS.includes(awayId);
       const highHome = MLB_HIGH_IDS.includes(homeId);
       const cls = (highAway || highHome) ? ' class="hp-row"' : "";
@@ -1109,10 +1139,11 @@
         `<td>${esc(venue || "")}</td>` +
         `<td>${esc(mlbTypeName(gameType))}</td>` +
         `<td>${esc(status || "")}</td>` +
+        `<td class="num small">${gamePk ? esc(gamePk) : "&mdash;"}</td>` +
         `</tr>`;
     }).join("");
     if (!shown.length) {
-      body.innerHTML = '<tr><td colspan="7" class="empty">No fixture matches these filters.</td></tr>';
+      body.innerHTML = '<tr><td colspan="8" class="empty">No fixture matches these filters.</td></tr>';
     }
     if (countEl) {
       countEl.textContent = `${shown.length} of ${filtered.length} matching fixtures (${meta.games} in ${year})`;
@@ -1172,9 +1203,13 @@
     const previousMonth = monthSelect.value;
     const previousType = typeSelect.value;
 
-    const clubs = Object.keys(meta.clubs || {}).sort((a, b) => (meta.clubs[a] > meta.clubs[b] ? 1 : -1));
-    clubSelect.innerHTML = '<option value="">All 30 clubs</option>' + clubs.map((id) =>
-      `<option value="${esc(id)}">${esc(meta.clubs[id])}${MLB_HIGH_IDS.includes(id) ? " (high priority)" : ""}</option>`).join("");
+    const allClubs = meta.clubs || {};
+    // Only the league's own 30 clubs belong in the filter; exhibition rows can
+    // also mention national teams and college squads, which stay visible in rows.
+    const official = (meta.mlb_club_ids && meta.mlb_club_ids.length) ? meta.mlb_club_ids : Object.keys(allClubs);
+    const clubs = official.slice().sort((a, b) => ((allClubs[a] || a) > (allClubs[b] || b) ? 1 : -1));
+    clubSelect.innerHTML = `<option value="">All ${clubs.length} clubs</option>` + clubs.map((id) =>
+      `<option value="${esc(id)}">${esc(allClubs[id] || id)}${MLB_HIGH_IDS.includes(id) ? " (high priority)" : ""}</option>`).join("");
     const months = Array.from(new Set(payload.games.map((r) => r[0].slice(0, 7)))).sort();
     monthSelect.innerHTML = '<option value="">Every month</option>' + months.map((m) =>
       `<option value="${esc(m)}">${esc(fmtDateLong(m + "-01").replace(/^\w+ /, ""))}</option>`).join("");
@@ -1494,7 +1529,7 @@
     const meta = payload._meta || {};
     const clubs = meta.clubs || {};
     return payload.games.filter((row) => row[0] === dateStr).map((row) => {
-      const [date, time, awayId, homeId, venue, gameType, status] = row;
+      const [date, time, awayId, homeId, venue, gameType, status, gamePk] = row;
       const ids = [Number(awayId), Number(homeId)];
       const high = ids.includes(133) || ids.includes(137);
       const networks = [];
@@ -1504,7 +1539,8 @@
         ? new Date(ptWallToUtc(date, time)).toISOString().replace(/\.\d{3}Z$/, "Z")
         : null;
       return {
-        id: "mlb-snapshot-" + date + "-" + awayId + "-" + homeId,
+        id: "mlb-snapshot-" + (gamePk || date + "-" + awayId + "-" + homeId),
+        game_pk: gamePk || "",
         league: "MLB",
         game_type: gameType,
         label: `${clubs[awayId] || awayId} at ${clubs[homeId] || homeId}`,
@@ -1633,9 +1669,22 @@
       `<div class="club-item"><span>${esc(team.name)}</span>${team.priority === "high" ? '<span class="pill high">High priority</span>' : ""}</div>`
     ).join("") + `<a href="${esc(DATA.mlb_clubs.source)}" target="_blank" rel="noopener">Official MLB club list</a>`;
     const coverage = $("coverageStamp");
-    if (coverage) coverage.textContent = DATA.mlb_snapshot
-      ? "All-club MLB snapshot: " + DATA.mlb_snapshot.retrieved_utc + ". Other inputs: 2026-09-20; incomplete schedules remain."
-      : "MLB: per-day online fetch + partial offline snapshot, not a complete fixture list. Other inputs: 2026-09-20.";
+    if (coverage) {
+      const seasons = DATA.mlb_seasons || {};
+      const bits = Object.keys(seasons).sort().map((year) => {
+        const info = seasons[year] || {};
+        return info.available ? `${year}: ${info.games} official fixtures` : `${year}: not bundled`;
+      });
+      const state = DATA.postseason_state;
+      let stamp = bits.length ? "Committed fixture lists — " + bits.join(" · ") + ". " : "";
+      if (state && state.counts) {
+        stamp += `Postseason ${state._meta && state._meta.year ? state._meta.year : ""}: ` +
+          `${state.counts.game_records} game records, ${state.counts.with_published_time} with a published first pitch` +
+          (state._meta && state._meta.retrieved_utc ? ` (measured ${state._meta.retrieved_utc})` : "") + ". ";
+      }
+      stamp += "Other league inputs retrieved 2026-09-20; unpublished times and unreleased seasons remain incomplete.";
+      coverage.textContent = stamp;
+    }
     fetch("data/refresh-status.json").then((r) => r.ok ? r.json() : null).then((health) => {
       if (health && $("refreshHealth")) $("refreshHealth").textContent =
         "Last automated MLB refresh: " + health.mlb + " · " + health.attempted_utc;

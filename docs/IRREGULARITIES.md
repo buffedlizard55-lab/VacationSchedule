@@ -531,3 +531,48 @@ This is the conservative envelope talking, not a proof that every week has a
 game (NBA rest days etc. are hidden inside envelopes, exactly like MLB travel
 days). The three requested sections are unchanged and still report their
 windows; the `all` collapse is stated plainly on the Compare tab and here.
+
+### IR-39 — The 2027 Opening Night game is announced but absent from the Stats API feed (MEDIUM, mitigated)
+
+**Found:** MLB's 2026-07-16 release announced the first 2027 regular-season game
+(Opening Night, 2027-03-24, Netflix). The Stats API `schedule` feed for 2027 starts
+the next day: its first `gameType=R` record is 2027-03-25 and the whole Opening Day
+slate. Counted from the committed snapshot, 2027 has 2430 regular-season games from
+2027-03-25 to 2027-09-26, and the release's Opening Night is not among them.
+
+**Done:** `analyze_vacation.mlb_announced_anchors()` reads the announced date from
+`data/verified/seasons.json` (`opening_night`, `first_regular_season_game`) and blocks
+it on top of the feed dates, with the reason recorded in `mlb_block.anchors` so the
+provenance shows exactly which date is an announcement rather than a feed row. A test
+(`test_announced_anchors_block_even_when_the_feed_lacks_them`) fails if that ever
+regresses. If the league later adds the game to the feed, the anchor collapses into a
+duplicate and nothing changes.
+
+### IR-40 — The 2027 fixture feed publishes one time and 2899 TBDs (LOW, expected)
+
+**Found:** the committed 2027 snapshot has exactly one record with a published first
+pitch (2027-08-19, Cubs at Blue Jays, a neutral-site game in the "Journey Bank
+Ballpark" record) and 2899 records still on the `07:33:00Z` sentinel with
+`startTimeTBD: true`. That is not a data error: the league has released 2027 dates
+and matchups but not start times.
+
+**Done:** the site never turns a sentinel into a time. The MLB tab prints `TBD` for
+those rows, `mlb_seasons["2027"].with_published_time`/`time_tbd` carry the measured
+counts, and the day board keeps the full-date TBD envelope. The 2026 snapshot is the
+opposite case (2920 of 2973 records with real times; the 53 without are the
+as-yet-unplayed postseason placeholders).
+
+### IR-41 — The fixture feed carries non-MLB opponents in exhibition rows (LOW, fixed)
+
+**Found:** the 2026 snapshot contains exhibition games against teams that are not MLB
+clubs — Northeastern, Minnesota, Colombia, Panama, Israel, Nicaragua, Canada, the
+Kingdom of the Netherlands and others — so a naive "clubs in this file" list is not
+the 30-club roster. The first build of the MLB tab offered all 75 club ids in the
+club filter, which contradicted the "all 30 clubs" claim.
+
+**Done:** `load_mlb_season_snapshot()` splits the official roster
+(`data/verified/mlb_clubs.json`, 30 ids) from the row names, the site file carries
+both (`_meta.clubs` for the row labels, `_meta.mlb_club_ids` for the filter), and the
+browser check asserts exactly 31 options (all + 30). Exhibition rows still render
+with their real opponent names.
+

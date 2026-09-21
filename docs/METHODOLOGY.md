@@ -26,23 +26,46 @@ address has been measured by this project.
 
 ## Season blocking: exact fixtures before envelopes
 
-For the vacation question the project needs to know which dates have a game. There
-are two modes and the analysis states which one it used (`mlb_block.mode`):
+Since the CI refresh committed `data/verified/mlb_schedule_2026.csv` and
+`_2027.csv`, **2026 and 2027 are analysed from the league's own fixture dates**.
+`mlb_fixture_days(year, strict)` reads the CSV and returns every date with a game:
+regular season (`R`), the All-Star Game (`A`) and the postseason rounds (`F`, `D`,
+`L`, `W`, plus legacy `P`, `C`) always count; Spring Training (`S`) and pre-season
+exhibition rows (`E`) count under the strict reading only. `blocked_days_for_year()` records which mode it used in
+`mlb_block.mode` (`exact_fixtures` or `season_frame`) and the block's start/end,
+count, source and — for 2027 — the announced Opening Night anchor (see IR-39).
 
-* `exact_fixtures` - the committed official snapshot for that year
+Measured from the committed snapshots: 2026 has 2973 fixtures (2430 regular season,
+451 Spring Training, 53 postseason placeholders, 38 exhibition, 1 All-Star) from
+2026-02-20 to 2026-10-31; 2027 has 2900 (2430 regular season, 465 Spring Training,
+4 exhibition, 1 All-Star) from 2027-02-19 to 2027-09-26, plus the announced
+2027-03-24 Opening Night. Both files are re-validated on every run: 30 clubs present,
+regular-season count in range, every club at 162, unique game ids.
+
+Inside the regular season the league schedules **no game at all** on 2026-07-13,
+2026-07-15 and 2027-07-12, 2027-07-14, 2027-07-15 (the All-Star break; the 2026
+All-Star Game itself is on 2026-07-14 and the 2027 one on 2027-07-13). Those dates
+are free of MLB by measurement, not by assumption — but they are single days inside
+a busy corridor, so they do not create a vacation window on their own.
+
+
+The two modes are:
+
+* `exact_fixtures` — the committed official snapshot for that year
   (`data/verified/mlb_schedule_<year>.csv`) lists every game the league has scheduled.
-  Only real fixture dates are blocked, so a date with no row is genuinely free of
-  MLB under the chosen reading. This is what the 2026 and 2027 seasons use once the
-  CI refresh has committed them.
-* `season_frame` - no snapshot exists for that year, so the published season window
-  (Spring Training -> postseason end, or first regular game -> postseason end under
-  the regular-season reading) is blocked continuously. Conservative, and it can hide
-  real breaks.
+  Only real fixture dates are blocked, so a date with no row is free of MLB under the
+  chosen reading (plus the announced-anchor dates in `mlb_block.anchors`).
+* `season_frame` — no snapshot exists for that year, so the published season window
+  (Spring Training → postseason end, or first regular game → postseason end under the
+  regular-season reading) is blocked continuously. Conservative, and it can hide real
+  breaks. 2028 and 2029 are in this mode until the league releases those schedules.
 
-The strict reading keeps Spring Training (`S`) rows; the regular-season reading drops
-them. Postseason (`F`,`D`,`L`,`W`), All-Star (`A`) and exhibition (`E`) rows always
-count. No time is inferred anywhere in this step: a row with no published first pitch
-still blocks the whole local date through the TBD envelope described below.
+Reading detail: the strict reading is "any game the league schedules for its clubs",
+so Spring Training and the pre-season exhibition rows block too. The regular-season
+reading is "regular season plus the All-Star Game plus the postseason", so those
+exhibition rows do not block by themselves. No time is inferred anywhere in this step:
+a row with no published first pitch still blocks the whole local date through the TBD
+envelope described below.
 
 ## Daily intervals
 
@@ -60,7 +83,14 @@ still blocks the whole local date through the TBD envelope described below.
    local date. The old bug marking September 20–27 as complete merely because the
    postseason snapshot was retrieved September 20 is fixed: postseason coverage
    begins September 28, not the retrieval date.
-7. An unblocked day is presented as **NO KNOWN CONFLICT**, never certified free.
+7. The day board classifies each date from the same committed lists: a date inside a
+   season's fixture span is busy if the league has a game that day and **free of MLB**
+   if it has none (the All-Star break shows up as free), while dates beyond the
+   committed span stay reserved until the league publishes them.
+8. If the browser cannot reach statsapi.mlb.com, the day board falls back to the
+   committed season snapshot for that date (official dates and matchups, no live
+   status) and says so in the note. It never silently shows an empty day.
+9. An unblocked day is presented as **NO KNOWN CONFLICT**, never certified free.
    Other league coverage remains incomplete. Exact elapsed minutes are a calculation
    on the available inputs, not proof of accurate broadcast ending times.
 
