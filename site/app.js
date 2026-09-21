@@ -705,9 +705,6 @@
         else if (row.requirements.weeks_2) labels.push('<span class="pill ok">2 weeks</span>');
         else if (row.requirements.week_1) labels.push('<span class="pill warn">1 week</span>');
         else labels.push('<span class="pill bad">none</span>');
-   if (row.requirements.weeks_2) labels.push('<span class="pill ok">2 weeks</span>');
-        else if (row.requirements.week_1) labels.push('<span class="pill warn">1 week</span>');
-        else labels.push('<span class="pill bad">none</span>');
         html += `<td class="cmpcell${id === scope ? " current" : ""}">` +
           `<div class="big">${row.longest_days} d</div>` +
           `<div class="small">${row.longest_start ? esc(row.longest_start) + " &rarr; " + esc(row.longest_end) : "&mdash;"}</div>` +

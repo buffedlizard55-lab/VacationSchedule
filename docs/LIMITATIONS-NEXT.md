@@ -4,6 +4,11 @@ The site and three comparisons are implemented. **The exhaustive verified
 Bay Area AM/FM inventory requested is not complete.** Do not describe this
 project as a fully audited schedule of every broadcast or guarantee a quiet trip.
 
+Session 2026-09-21: GitHub Pages planner remains the published artifact (`site/`).
+Compare-table week pills were de-duplicated. MLB Stats API still fails TLS from
+this sandbox (`SSL_ERROR_SYSCALL`); do not invent fixture rows. Merge to `main`
+is required for Pages deploy. Remaining work is data completeness, not UI shell.
+
 ## Highest priority
 
 1. **Verify the published full MLB refresh.** The sandbox cannot directly retrieve
