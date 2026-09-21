@@ -197,12 +197,28 @@
     return null;
   }
 
-  function mlbFrameIsCovered(dateStr, frame) {
+  /**
+   * Does the project know this date's MLB fixture status?
+   *   "no-game"  - the official list is complete here and no game is scheduled
+   *   "game"     - the official list has at least one game (time may still be TBD)
+   *   "unknown"  - no complete fixture list for that season/date
+   */
+  function mlbFrameCoverage(dateStr, frame) {
+    if (frame && (frame.anchor_dates || []).indexOf(dateStr) !== -1) return "game";
+    const snapStart = frame && frame.snapshot_start;
+    const snapEnd = frame && frame.snapshot_end;
+    if (snapStart && snapEnd && snapStart <= dateStr && dateStr <= snapEnd) {
+      return (frame.dates_with_games || []).indexOf(dateStr) === -1 ? "no-game" : "game";
+    }
     const ranges = (frame && frame.complete_ranges) || [];
     for (let i = 0; i < ranges.length; i++) {
-      if (ranges[i][0] <= dateStr && dateStr <= ranges[i][1]) return true;
+      if (ranges[i][0] <= dateStr && dateStr <= ranges[i][1]) return "no-game";
     }
-    return false;
+    return "unknown";
+  }
+
+  function mlbFrameIsCovered(dateStr, frame) {
+    return mlbFrameCoverage(dateStr, frame) === "no-game";
   }
 
   function mlbCoveredOnDate(games, dateStr) {
@@ -1653,9 +1669,22 @@
       `<div class="club-item"><span>${esc(team.name)}</span>${team.priority === "high" ? '<span class="pill high">High priority</span>' : ""}</div>`
     ).join("") + `<a href="${esc(DATA.mlb_clubs.source)}" target="_blank" rel="noopener">Official MLB club list</a>`;
     const coverage = $("coverageStamp");
-    if (coverage) coverage.textContent = DATA.mlb_snapshot
-      ? "All-club MLB snapshot: " + DATA.mlb_snapshot.retrieved_utc + ". Other inputs: 2026-09-20; incomplete schedules remain."
-      : "MLB: per-day online fetch + partial offline snapshot, not a complete fixture list. Other inputs: 2026-09-20.";
+    if (coverage) {
+      const seasons = DATA.mlb_seasons || {};
+      const bits = Object.keys(seasons).sort().map((year) => {
+        const info = seasons[year] || {};
+        return info.available ? `${year}: ${info.games} official fixtures` : `${year}: not bundled`;
+      });
+      const state = DATA.postseason_state;
+      let stamp = bits.length ? "Committed fixture lists — " + bits.join(" · ") + ". " : "";
+      if (state && state.counts) {
+        stamp += `Postseason ${state._meta && state._meta.year ? state._meta.year : ""}: ` +
+          `${state.counts.game_records} game records, ${state.counts.with_published_time} with a published first pitch` +
+          (state._meta && state._meta.retrieved_utc ? ` (measured ${state._meta.retrieved_utc})` : "") + ". ";
+      }
+      stamp += "Other league inputs retrieved 2026-09-20; unpublished times and unreleased seasons remain incomplete.";
+      coverage.textContent = stamp;
+    }
     fetch("data/refresh-status.json").then((r) => r.ok ? r.json() : null).then((health) => {
       if (health && $("refreshHealth")) $("refreshHealth").textContent =
         "Last automated MLB refresh: " + health.mlb + " · " + health.attempted_utc;

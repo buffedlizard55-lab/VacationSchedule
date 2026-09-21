@@ -950,6 +950,10 @@ def write_mlb_season_site_file(snapshot: dict, out_dir: Path) -> str:
             "time_tbd": snapshot["tbd"],
             "regular_season_days": len(snapshot["regular_dates"]),
             "dates_without_a_game": snapshot["quiet_dates"],
+            # Every date that carries at least one fixture (strict reading). The day
+            # board uses this to tell "the league has no game that day" apart from
+            # "this season has no per-date detail", instead of reserving whole months.
+            "dates_with_games": sorted({r[0] for r in snapshot["rows"]}),
             "summary": snapshot["summary"],
             "source": (
                 "https://statsapi.mlb.com/api/v1/schedule?sportId=1"
@@ -1042,6 +1046,14 @@ def _build() -> dict:
         ]]
     if mlb_snapshot:
         covered += [["2026-02-20", "2026-09-27"]]
+    snapshot_spans: dict[str, list[str]] = {}
+    snapshot_dates: dict[str, list[str]] = {}
+    for season_year in (2026, 2027):
+        snap = load_mlb_season_snapshot(season_year)
+        if snap and snap["rows"]:
+            snapshot_spans[str(season_year)] = [snap["first_date"], snap["last_date"]]
+            snapshot_dates[str(season_year)] = sorted({row[0] for row in snap["rows"]})
+
     for year, frame in seasons["mlb"].items():
         mlb_frames[year] = {
             "start": frame["spring_training_start"],
@@ -1055,6 +1067,17 @@ def _build() -> dict:
             # season-frame envelope must not be applied. 2026 only: the postseason
             # was read date by date from the Stats API.
             "complete_ranges": covered if year == "2026" else [],
+            # Present when the official fixture list for this season is committed:
+            # the day board then answers "is there a game" from the league's dates.
+            "snapshot_start": snapshot_spans.get(year, [None, None])[0],
+            "snapshot_end": snapshot_spans.get(year, [None, None])[1],
+            "dates_with_games": snapshot_dates.get(year, []),
+            # League-announced dates the fixture feed does not carry yet (2027 Opening
+            # Night). They are game days, never free days. See docs/IRREGULARITIES.md IR-39.
+            "anchor_dates": [
+                d for d in (frame.get("opening_night"),)
+                if d and d != frame.get("regular_season_start")
+            ],
         }
 
     from analyze_vacation import main as analyze_main
@@ -1082,6 +1105,7 @@ def _build() -> dict:
             "last_date": snapshot["last_date"],
             "regular_season_days": len(snapshot["regular_dates"]),
             "dates_without_a_game": snapshot["quiet_dates"],
+            "dates_with_games": sorted({r[0] for r in snapshot["rows"]}),
             "summary": snapshot["summary"],
         }
 

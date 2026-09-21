@@ -443,12 +443,31 @@ def mlb_covered_on_date(games: Iterable[dict], date_iso: str) -> bool:
     )
 
 
-def mlb_frame_is_covered(date_iso: str, frame: dict) -> bool:
-    """True when `date_iso` sits inside a range whose MLB list is known-complete."""
+def mlb_frame_coverage(date_iso: str, frame: dict) -> str:
+    """How well is `date_iso` covered by known MLB fixtures?
+
+    ``"no-game"``  - the official fixture list for that season is complete at this
+                     date and the league schedules no game (e.g. the All-Star break);
+    ``"game"``     - the official list has at least one game (its time may be TBD);
+    ``"unknown"``  - nothing complete covers this date, so the envelope stands.
+
+    The browser engine implements the same three cases (site/app.js
+    `mlbFrameCoverage`); tests/test_parity_js.py fails if the two drift apart.
+    """
+    if date_iso in set(frame.get("anchor_dates") or []):
+        return "game"
+    snap_start, snap_end = frame.get("snapshot_start"), frame.get("snapshot_end")
+    if snap_start and snap_end and snap_start <= date_iso <= snap_end:
+        return "game" if date_iso in set(frame.get("dates_with_games") or []) else "no-game"
     for start, end in frame.get("complete_ranges") or []:
         if start <= date_iso <= end:
-            return True
-    return False
+            return "no-game"
+    return "unknown"
+
+
+def mlb_frame_is_covered(date_iso: str, frame: dict) -> bool:
+    """True when `date_iso` sits inside a range whose MLB list is known-complete."""
+    return mlb_frame_coverage(date_iso, frame) == "no-game"
 
 
 def frame_placeholder_interval(date_iso: str, frame: dict, durations: dict[str, int] | None = None) -> Interval:

@@ -83,10 +83,14 @@ envelope described below.
    local date. The old bug marking September 20–27 as complete merely because the
    postseason snapshot was retrieved September 20 is fixed: postseason coverage
    begins September 28, not the retrieval date.
-7. If the browser cannot reach statsapi.mlb.com, the day board falls back to the
+7. The day board classifies each date from the same committed lists: a date inside a
+   season's fixture span is busy if the league has a game that day and **free of MLB**
+   if it has none (the All-Star break shows up as free), while dates beyond the
+   committed span stay reserved until the league publishes them.
+8. If the browser cannot reach statsapi.mlb.com, the day board falls back to the
    committed season snapshot for that date (official dates and matchups, no live
    status) and says so in the note. It never silently shows an empty day.
-8. An unblocked day is presented as **NO KNOWN CONFLICT**, never certified free.
+9. An unblocked day is presented as **NO KNOWN CONFLICT**, never certified free.
    Other league coverage remains incomplete. Exact elapsed minutes are a calculation
    on the available inputs, not proof of accurate broadcast ending times.
 

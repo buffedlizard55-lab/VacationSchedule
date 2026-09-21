@@ -270,6 +270,32 @@ class TestCommittedSnapshots(unittest.TestCase):
                 "the announced Opening Night must still block the date",
             )
 
+    def test_day_board_coverage_uses_the_committed_dates(self) -> None:
+        """The day board must tell "no game" from "unknown" using the real list."""
+        from lib_windows import mlb_frame_coverage  # noqa: PLC0415
+
+        bundle = build_data.build()
+        frames = bundle["mlb_frames"]
+        frame_2027 = frames.get("2027")
+        if not frame_2027 or not frame_2027.get("snapshot_start"):
+            self.skipTest("2027 snapshot not committed yet (CI refresh pending)")
+        self.assertEqual(mlb_frame_coverage("2027-07-14", frame_2027), "no-game",
+                         "the All-Star break has no game, so it must not be reserved")
+        self.assertEqual(mlb_frame_coverage("2027-07-13", frame_2027), "game",
+                         "the All-Star Game date itself carries a game")
+        self.assertEqual(mlb_frame_coverage("2027-03-24", frame_2027), "game",
+                         "the announced Opening Night is not in the feed but is a game day, "
+                         "so it must stay reserved (IR-39)")
+        self.assertEqual(mlb_frame_coverage("2027-10-15", frame_2027), "unknown",
+                         "postseason dates are not published for 2027")
+        frame_2026 = frames.get("2026")
+        if frame_2026 and frame_2026.get("snapshot_start"):
+            self.assertEqual(mlb_frame_coverage("2026-07-15", frame_2026), "no-game")
+            self.assertEqual(mlb_frame_coverage("2026-07-14", frame_2026), "game",
+                             "the 2026 All-Star Game date carries a game")
+            self.assertEqual(mlb_frame_coverage("2026-09-29", frame_2026), "game",
+                             "the postseason has reserved dates in the committed list")
+
     def test_committed_csv_dates_are_inside_the_season_window(self) -> None:
         """No fixture may sit outside Spring Training -> postseason end."""
         seasons = json.loads((ROOT / "data" / "verified" / "seasons.json").read_text(encoding="utf-8"))
