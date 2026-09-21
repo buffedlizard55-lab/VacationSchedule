@@ -13,6 +13,19 @@ WNBA added as high-priority live-radio sports with per-game 95.7 flags; Sharks
 verified streaming-only and excluded with sources; MLB/MLB-API year frames
 re-checked (IR-33). Merge to `main` publishes the Pages artifact.
 
+Session 2 (2026-09-21, later pass): WWO row-count meta corrected (71 rows, not
+70) with a line-by-line re-verification against all four live page chunks; 49ers
+per-game radio stations transcribed from 49ers.com (Weeks 2-3 on KSFO 810 AM /
+KSAN 107.7 FM; Week 4 onward on KSAN 107.7 FM / KNBR 104.5 FM / 680 AM; none
+listed for the Melbourne opener) and propagated through the builder with a
+regression test; Athletics home venue confirmed as Sutter Health Park
+(Sacramento) via the Stats API, consistent with the KSTE/KNEW note; 2026/2027
+MLB frames, the 53-record 2026 postseason API state (still all 07:33Z sentinel,
+`startTimeTBD=true` — no times published) and the six-clinch tracker state
+re-verified live; a permanent "Spring Training included vs excluded" side-by-side
+table added to the All windows tab; five new regression tests. See
+REVIEW-2026-09-21.md (Session 2 section) and SOURCES.md (session 2 table).
+
 ## Highest priority for the next session
 
 1. **MLB postseason times, from 2026-09-27.** Dates are official and stored;

@@ -8,8 +8,9 @@
       "https://www.usatoday.com/story/sports/mlb/2026/09/18/mlb-playoff-schedule-2026-postseason-dates-world-series/91826300007/",
       "https://www.foxsports.com/stories/mlb/2026-mlb-playoff-schedule-dates-rounds-how-watch"
     ],
-    "time_resolution_status": "UNRESOLVED as of 2026-09-21 - no official first-pitch time exists for any 2026 postseason game (the Stats API still serves the 07:33:00Z sentinel). MLB sets early-round times round by round once matchups lock on 2026-09-27; recent postseasons used roughly 2-4 p.m. ET and 7-8 p.m. ET windows, which this project does NOT treat as times. The engine blocks each official date with the full local-date TBD envelope, which is conservative rather than precise. See docs/IRREGULARITIES.md IR-02.",
-    "date_resolution_status": "RESOLVED - the dates below are the exact dates the league schedule reserves for games, including 'if necessary' games. Note the gaps: 2026-10-02, 10-21, 10-22, 10-25 and 10-29 carry no game under any scenario (travel days). An earlier version of this project blocked 2026-09-29 through 2026-10-31 continuously, which over-blocked those five dates."
+    "time_resolution_status": "UNRESOLVED as of 2026-09-21 (session 2 re-verification) - no official first-pitch time exists for any 2026 postseason game: a fresh Stats API query returned all 53 postseason game records (2026-09-29 through 2026-10-31) and every one still carries the 07:33:00Z sentinel with startTimeTBD=true and seed-placeholder teams. MLB sets early-round times round by round once matchups lock on 2026-09-27; recent postseasons used roughly 2-4 p.m. ET and 7-8 p.m. ET windows, which this project does NOT treat as times. The engine blocks each official date with the full local-date TBD envelope, which is conservative rather than precise. See docs/IRREGULARITIES.md IR-02.",
+    "date_resolution_status": "RESOLVED - the dates below are the exact dates the league schedule reserves for games, including 'if necessary' games. Note the gaps: 2026-10-02, 10-21, 10-22, 10-25 and 10-29 carry no game under any scenario (travel days). An earlier version of this project blocked 2026-09-29 through 2026-10-31 continuously, which over-blocked those five dates.",
+    "reverified_utc": "2026-09-21T15:00:00Z"
   },
   "clinch_status": {
     "as_of": "2026-09-21",
@@ -41,7 +42,8 @@
       "what_clinching_does_resolve": "The six berths cannot disappear from the bracket, and the five no-game dates stay no-game dates. Nothing else about a specific game is implied: a berth sets neither opponent, host, seed nor time."
     },
     "still_unresolved": "Seeds 1-6 in each league except the three clinched division winners' titles (seeds themselves still move), all matchups, and every first-pitch time. Any row on this site naming a specific club in a still-TBD postseason game would be a guess, so the site shows the league's reserved dates with participants TBD.",
-    "review_note": "Re-read 2026-09-21 against MLB's clinch tracker and the Sept 20 playoff-picture standings. Corrected the Rays/Braves division list (IR-32). Berths do not establish opponents or first-pitch times. Link extraction redirects to a related article while retaining the tracker text; flagged previously as a redirect irregularity."
+    "review_note": "Re-read 2026-09-21 against MLB's clinch tracker and the Sept 20 playoff-picture standings. Corrected the Rays/Braves division list (IR-32). Berths do not establish opponents or first-pitch times. Session 2 re-read (same day): still exactly six berths - no new clinch between reads; the tracker text confirms the Wild Card Series begin Tuesday 2026-09-29 and that the two best division winners in each league get first-round byes. Link extraction redirects to a related article while retaining the tracker text; flagged previously as a redirect irregularity.",
+    "reverified": "2026-09-21 (session 2)"
   },
   "rounds": [
     {

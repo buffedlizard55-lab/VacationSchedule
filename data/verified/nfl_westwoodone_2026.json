@@ -4,8 +4,8 @@
     "source": "https://www.westwoodonesports.com/nfl-schedule/",
     "retrieved_utc": "2026-09-20T00:00:00Z",
     "time_semantics": "IMPORTANT: the time below is the one Westwood One publishes for the game. For Sunday Night and Thursday Night feeds Westwood One publishes 7:30pm ET while the official kickoff is 8:20pm / 8:15pm ET. We therefore store BOTH: `published_et` (Westwood One) and, where an official team source gave a kickoff, `kickoff_pt`. The blocking engine uses the EARLIER of the two as the start of the blocked window, which is the conservative choice for vacation planning. See docs/IRREGULARITIES.md IR-01.",
-    "coverage": "70 entries covering 2026-09-19 through 2027-01-10. Entries labelled 'TBA' have no teams announced by Westwood One yet.",
-    "review_note": "Re-read all four extracted chunks 2026-09-20. Corrected Sep 21 air time to 19:00 ET. Market affiliation does not prove local per-game carriage; conflicts and blackouts apply."
+    "coverage": "71 entries covering 2026-09-19 through 2027-01-10. Entries labelled 'TBA' have no teams announced by Westwood One yet.",
+    "review_note": "Re-read all four extracted chunks 2026-09-20. Re-verified all 71 rows line by line against the live page on 2026-09-21 (session 2): no row added or changed since the 2026-09-20 snapshot; today's 'Upcoming' tab starts at 2026-09-21 (NYG@LAR), the 09-19/09-20 rows having moved to the Past tab. Corrected Sep 21 air time to 19:00 ET. Market affiliation does not prove local per-game carriage; conflicts and blackouts apply."
   },
   "games": [
     {

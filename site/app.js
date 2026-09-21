@@ -682,9 +682,43 @@
         (p.mls_blocks || []).map((s) => `<div class="reviewitem">MLS: <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
         (p.other_radio_blocks || []).map((s) => `<div class="reviewitem">Other live radio (${esc(s.league)}): <strong>${esc(s.start)} &rarr; ${esc(s.end)}</strong> (${esc(s.label)}) &mdash; ${esc(s.status)}${s.conditional ? " &middot; conditional" : ""}<span class="r">${esc(s.source)}</span></div>`).join("") +
         `<div class="reviewitem">All clean runs found: ${r.gaps.slice(0, 12).map((g) => `${esc(g.start)} &rarr; ${esc(g.end)} (${g.days}d)`).join("; ")}${r.gaps.length > 12 ? " &hellip; " + (r.gaps.length - 12) + " more" : ""}</div>` +
-        `</div>`;
+          `</div>`;
     }).join("");
     renderAllGaps();
+    renderStCompare();
+  }
+
+  // ---------------------------------------------------------------------
+  // Spring Training comparison (strict vs regular, both shown at once)
+  // ---------------------------------------------------------------------
+
+  function stCell(r) {
+    if (!r) return "&mdash;";
+    return r.best
+      ? `<strong>${r.best.days} d</strong> &mdash; ${esc(r.best.start)} &rarr; ${esc(r.best.end)}${historicalLabel(r.best.end)}`
+      : "none found";
+  }
+
+  function renderStCompare() {
+    const body = $("stCompareBody");
+    if (!body) return;
+    body.innerHTML = "";
+    for (let year = 2026; year <= 2029; year++) {
+      const strict = DATA.vacation.find((r) => r.year === year && r.section === scope && r.interpretation === "strict");
+      const regular = DATA.vacation.find((r) => r.year === year && r.section === scope && r.interpretation === "regular");
+      if (!strict || !regular) {
+        body.innerHTML = `<tr><td colspan="4">No analysis rows for section ${esc(scope)}.</td></tr>`;
+        return;
+      }
+      const delta = (regular.best ? regular.best.days : 0) - (strict.best ? strict.best.days : 0);
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        `<td class="num"><strong>${year}</strong></td>` +
+        `<td class="num">${stCell(strict)}</td>` +
+        `<td class="num">${stCell(regular)}</td>` +
+        `<td class="num">${delta > 1 ? `+${delta} free days` : delta === 1 ? "+1 free day" : "no difference"}</td>`;
+      body.appendChild(tr);
+    }
   }
 
   // ---------------------------------------------------------------------

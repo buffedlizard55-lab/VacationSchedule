@@ -241,6 +241,13 @@ def from_49ers() -> tuple[list[dict], list[dict]]:
             detail_bits.append(row["tv"])
         if row.get("note"):
             detail_bits.append(row["note"])
+        # Per-game radio station exactly as 49ers.com lists it (session 2
+        # re-verification 2026-09-21); earlier games ran on KSFO 810 AM /
+        # KSAN 107.7 FM, later ones on KSAN / KNBR. Never claim a station
+        # that the club did not list for that game.
+        radio = row.get("radio") or (
+            "49ers radio network (KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM during 2026)"
+        )
         games.append({
             "league": "NFL",
             "label": f"San Francisco 49ers {where} {row['opponent']}",
@@ -248,7 +255,7 @@ def from_49ers() -> tuple[list[dict], list[dict]]:
             "venue": row.get("venue", ""),
             "priority": "high",
             "source": source,
-            "network": "KSAN 107.7 FM / KNBR 680 AM & 104.5 FM / KSFO 810 AM",
+            "network": radio,
             "date_local": row["date_local"],
             "start_utc": pt_to_utc(row["date_local"], row["kickoff_pt"]),
             "duration": DEFAULT_DURATIONS["NFL"],
