@@ -1,7 +1,7 @@
 # MLB 2026 schedule - all clubs, all game types
 # source: https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-01-01&endDate=2026-12-31&gameType=R,E,S,D,L,F,W,A
-# retrieved_utc: 2026-09-22T04:03:17Z
-# raw_sha256: 041826ec5298b0aec3454ba467a46ece6bc35232f5af845da48d63b7f9038264
+# retrieved_utc: 2026-09-22T17:42:01Z
+# raw_sha256: fe65126bf4508f54a9395e337afc89fa21b0552a6a8c12c6c34508a945604d64
 # games: 2973 (columns: date_local|start_utc|start_pt|start_et|time_tbd|game_type|away|home|away_id|home_id|venue|status|game_pk)
 # time_tbd=true means the league has not published a first pitch; date_local is still official.
 2026-02-20|2026-02-20T18:05:00Z|10:05|13:05|false|S|New York Yankees|Baltimore Orioles|147|110|Ed Smith Stadium|Final|832034
@@ -2836,7 +2836,7 @@
 2026-09-20|2026-09-20T23:20:00Z|16:20|19:20|false|R|Milwaukee Brewers|Baltimore Orioles|158|110|Oriole Park at Camden Yards|Final|824789
 2026-09-21|2026-09-21T22:35:00Z|15:35|18:35|false|R|Toronto Blue Jays|Baltimore Orioles|141|110|Oriole Park at Camden Yards|Final|824787
 2026-09-21|2026-09-21T22:40:00Z|15:40|18:40|false|R|Washington Nationals|Detroit Tigers|120|116|Comerica Park|Final|824221
-2026-09-21|2026-09-22T01:45:00Z|18:45|21:45|false|R|Minnesota Twins|San Francisco Giants|142|137|Oracle Park|In Progress|823169
+2026-09-21|2026-09-22T01:45:00Z|18:45|21:45|false|R|Minnesota Twins|San Francisco Giants|142|137|Oracle Park|Final|823169
 2026-09-22|2026-09-22T22:35:00Z|15:35|18:35|false|R|Toronto Blue Jays|Baltimore Orioles|141|110|Oriole Park at Camden Yards|Scheduled|824785
 2026-09-22|2026-09-22T22:40:00Z|15:40|18:40|false|R|Milwaukee Brewers|Philadelphia Phillies|158|143|Citizens Bank Park|Scheduled|823412
 2026-09-22|2026-09-22T22:40:00Z|15:40|18:40|false|R|St. Louis Cardinals|Pittsburgh Pirates|138|134|PNC Park|Scheduled|823328
