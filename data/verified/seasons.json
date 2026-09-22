@@ -239,10 +239,10 @@
     },
     "2028": {
       "status": "ESTIMATED",
-      "source": "NOT RELEASED. Only the Super Bowl date is official.",
+      "source": "NOT RELEASED. Only the Super Bowl host/year is official (Allegiant Stadium, Las Vegas, 2029); the exact day is NOT announced.",
       "verified_anchors": {
         "super_bowl": "2029-02-11",
-        "super_bowl_status": "VERIFIED - the NFL announced on 2026-03-30 (Annual Meeting, Phoenix) that Super Bowl LXIII will be played at Allegiant Stadium, Las Vegas on Sunday 2029-02-11. The exact day is part of the announcement (not just host/year). Secondary coverage notes the league retains control of its calendar. See docs/IRREGULARITIES.md IR-12/IR-34."
+        "super_bowl_status": "ESTIMATED - host/year official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited returns 404. 2029-02-11 is the second-Sunday-of-February planning assumption. See docs/IRREGULARITIES.md IR-12."
       },
       "preseason_start": "2028-08-03",
       "regular_season_start": "2028-09-07",
@@ -250,7 +250,7 @@
       "playoffs_start": "2029-01-13",
       "pro_bowl": "2029-02-06",
       "super_bowl": "2029-02-11",
-      "basis": "Same rule set as 2027, anchored to the officially announced February 2029 Super Bowl."
+      "basis": "Same rule set as 2027, anchored to the estimated second-Sunday-of-February 2029 Super Bowl (host/year official, exact day not announced)."
     },
     "2029": {
       "status": "ESTIMATED",

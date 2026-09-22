@@ -3,7 +3,7 @@
     "description": "Bay Area high-priority teams the user flagged: San Francisco 49ers, San Jose Earthquakes, Stanford Cardinal football, California Golden Bears football. MLB Giants and Athletics are handled separately because they come from the MLB Stats API.",
     "coverage_warning": "CLOSED as of 2026-09-20: the full 49ers 2026 schedule (preseason + regular season) was re-retrieved live from 49ers.com. Week 8 is a BYE, not a gap. Week 18 remains date-TBD by the league. Week 6 (vs Washington 2026-10-19) and the Melbourne opener (2026-09-10) that were previously missing are now included.",
     "retrieved_utc": "2026-09-20T19:00:00Z",
-    "reverified_utc": "2026-09-21T15:00:00Z (session 2: 49ers per-game radio, results; NCAAF/MLS rows unchanged)"
+    "reverified_utc": "2026-09-22T00:00:00Z (2026-09-22 pass: Earthquakes backfilled to the full 34-match schedule from the club release incl. Aug 1 time correction; 49ers/NCAAF rows unchanged)"
   },
   "nfl_49ers": {
     "source": "https://www.49ers.com/schedule/ (retrieved live 2026-09-20; all 16 regular-season kickoffs, 3 preseason results and per-game radio stations re-verified live 2026-09-21, session 2); preseason kickoffs per 49erswebzone / Levi's Stadium schedule release",
@@ -38,7 +38,7 @@
   },
   "ncaaf": {
     "source": [
-      "https://gostanford.com/news/2026-08-24/2026-season-begins-with-week-0-matchup-against-hawaii-at-stanford-stadium",
+      "https://gostanford.com/news/2026/1/26/complete-2026-schedule-unveiled (replaces the dead 2026-08-24 Week 0 URL, which 404s as of 2026-09-22; same dates)",
       "https://gostanford.com/news/2026-05-27/game-times-tv-networks-announced-for-select-games",
       "https://calbears.com/news/2026/5/15/acc-releases-full-2026-friday-football-schedule.aspx"
     ],
@@ -68,18 +68,35 @@
       {"team": "California", "date_local": "2026-11-14", "kickoff_pt": null, "time_status": "TBD", "opponent": "Virginia", "site": "away"},
       {"team": "California", "date_local": "2026-11-21", "kickoff_pt": null, "time_status": "TBD", "opponent": "Stanford", "site": "home", "venue": "California Memorial Stadium", "note": "129th Big Game - same game as Stanford 2026-11-21; de-duplicated by the builder"},
       {"team": "California", "date_local": "2026-11-28", "kickoff_pt": null, "time_status": "TBD", "opponent": "Pittsburgh", "site": "home", "venue": "California Memorial Stadium"},
-      {"team": "ACC Championship", "date_local": "2026-12-05", "kickoff_pt": "09:00", "time_status": "official", "opponent": "ACC Championship Game", "site": "neutral", "venue": "Bank of America Stadium, Charlotte NC", "tv": "ABC", "note": "Only relevant if Stanford or Cal qualifies. Blocked conditionally."}
+      {"team": "ACC Championship Game", "date_local": "2026-12-05", "kickoff_pt": "09:00", "time_status": "official", "opponent": "TBD", "site": "neutral", "venue": "Bank of America Stadium, Charlotte NC", "tv": "ABC", "conditional": "Only relevant if Stanford or Cal qualifies; qualification unknown until late November", "note": "Only relevant if Stanford or Cal qualifies. Blocked conditionally (IR-47)."}
     ],
     "unresolved": [
       {"reason": "11 of 24 Stanford/Cal games have no announced kickoff time. The builder marks those dates as blocked for the whole NCAA afternoon/evening envelope (11:00-23:59 PT) rather than guessing a time. See docs/METHODOLOGY.md 'TBD envelope'."},
-      {"reason": "Post-season bowl assignments for Stanford and Cal are not determined. Bowl games run roughly 2026-12-19 to 2027-01-01 and the College Football Playoff National Championship is 2027-01-11 at Allegiant Stadium."}
+      {"reason": "Post-season bowl assignments for Stanford and Cal are not determined. Bowl games run roughly 2026-12-19 to 2027-01-01 and the College Football Playoff National Championship is 2027-01-25 at 7:30 PM ET (collegefootballplayoff.com schedule widget, re-read 2026-09-22; corrected from the 2027-01-11 stated here before - see IR-43. Title-game venue not re-verified this pass)."}
     ]
   },
   "mls_earthquakes": {
     "source": "https://www.sjearthquakes.com/news/news-earthquakes-announce-2026-major-league-soccer-schedule",
-    "status": "VERIFIED - official club release, times in PT",
+    "status": "VERIFIED - full 34-match 2026 regular-season schedule (17 home / 17 away) transcribed from the club's schedule release, re-read 2026-09-22. Away venues before August are omitted (not stated in the release).",
     "games": [
-      {"date_local": "2026-08-01", "kickoff_pt": "19:30", "opponent": "FC Cincinnati", "site": "away", "venue": "TQL Stadium"},
+      {"date_local": "2026-02-21", "kickoff_pt": "19:30", "opponent": "Sporting Kansas City", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-02-28", "kickoff_pt": "16:30", "opponent": "Atlanta United FC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-03-07", "kickoff_pt": "16:30", "opponent": "Philadelphia Union", "site": "away"},
+      {"date_local": "2026-03-15", "kickoff_pt": "16:00", "opponent": "Seattle Sounders FC", "site": "home", "venue": "PayPal Park", "note": "Sunday Night Soccer game of the week"},
+      {"date_local": "2026-03-21", "kickoff_pt": "19:30", "opponent": "Vancouver Whitecaps FC", "site": "away"},
+      {"date_local": "2026-04-04", "kickoff_pt": "19:30", "opponent": "San Diego FC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-04-11", "kickoff_pt": "17:30", "opponent": "Sporting Kansas City", "site": "away"},
+      {"date_local": "2026-04-19", "kickoff_pt": "16:00", "opponent": "LAFC", "site": "away"},
+      {"date_local": "2026-04-22", "kickoff_pt": "19:30", "opponent": "Austin FC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-04-25", "kickoff_pt": "17:30", "opponent": "St. Louis City SC", "site": "away"},
+      {"date_local": "2026-05-02", "kickoff_pt": null, "time_status": "TBD", "opponent": "Toronto FC", "site": "away", "note": "Club release table says Time TBD"},
+      {"date_local": "2026-05-09", "kickoff_pt": "19:30", "opponent": "Vancouver Whitecaps FC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-05-13", "kickoff_pt": "18:30", "opponent": "Seattle Sounders FC", "site": "away"},
+      {"date_local": "2026-05-16", "kickoff_pt": "19:30", "opponent": "FC Dallas", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-05-23", "kickoff_pt": "18:30", "opponent": "Portland Timbers", "site": "away"},
+      {"date_local": "2026-07-22", "kickoff_pt": "19:30", "opponent": "Orlando City SC", "site": "home", "venue": "PayPal Park"},
+      {"date_local": "2026-07-25", "kickoff_pt": "19:30", "opponent": "LA Galaxy", "site": "home", "venue": "Stanford Stadium", "note": "California Clasico at Stanford Stadium"},
+      {"date_local": "2026-08-01", "kickoff_pt": "16:30", "opponent": "FC Cincinnati", "site": "away", "venue": "TQL Stadium", "note": "Corrected 2026-09-22: club release table says 4:30 PM (was 19:30). See IR-42."},
       {"date_local": "2026-08-15", "kickoff_pt": "19:30", "opponent": "St. Louis City SC", "site": "home", "venue": "PayPal Park"},
       {"date_local": "2026-08-19", "kickoff_pt": "19:30", "opponent": "LA Galaxy", "site": "away", "venue": "Dignity Health Sports Park"},
       {"date_local": "2026-08-22", "kickoff_pt": "19:30", "opponent": "Minnesota United FC", "site": "home", "venue": "PayPal Park"},
@@ -100,7 +117,7 @@
     "unresolved": [
       {"reason": "Matchday 33 vs Real Salt Lake on 2026-10-31 has no official kickoff time (club release says 'Time TBD'). Builder applies the TBD envelope."},
       {"reason": "MLS Cup Playoffs: if the Earthquakes qualify, additional games fall roughly 2026-11-22 to 2026-12-12. Not determined at retrieval time."},
-      {"reason": "Only matches from 2026-08-01 onward are listed; the February-July portion of the 2026 season was not retrieved and is therefore NOT in the snapshot. The club release confirms the season opened 2026-02-21."}
+      {"reason": "Matchday 11 at Toronto FC on 2026-05-02 has no official kickoff time (club release table says TBD). Builder applies the TBD envelope."}
     ]
   }
 }

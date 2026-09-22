@@ -1433,8 +1433,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -2101,8 +2101,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -2798,8 +2798,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -3733,8 +3733,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -4622,8 +4622,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -5354,8 +5354,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -6051,8 +6051,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",
@@ -6986,8 +6986,8 @@
         ],
         "nfl_previous_season_end": {
           "super_bowl": "2029-02-11",
-          "status": "VERIFIED",
-          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual Meeting in Phoenix. Secondary coverage notes the league can still adjust its calendar; re-check before booking far out.",
+          "status": "ESTIMATED",
+          "note": "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11, 2029, while NBC reported that the game 'does not yet have a firm date', the league's own nfl.com release names no day, and the Forbes URL once cited here returns 404. Per the project rule the league-owned source wins on conflict, so 2029-02-11 stays the second-Sunday-of-February planning assumption, not a released date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
           "playoff_dates_in_year": [
             "2029-01-01",
             "2029-01-06",

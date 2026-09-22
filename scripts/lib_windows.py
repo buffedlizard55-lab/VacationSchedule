@@ -529,6 +529,12 @@ def intervals_for_day(
     return [b for b in busy if b is not None], skipped
 
 
+def _game_overlaps_day(game, day_start, day_end, durations, overrun_buffer_min) -> bool:
+    """True when `game`'s blocking interval touches the given day bounds."""
+    interval = game_to_interval(game, durations, overrun_buffer_min)
+    return interval is not None and clip(interval, day_start, day_end) is not None
+
+
 def day_report(
     games: Iterable[dict],
     date_iso: str,
@@ -560,6 +566,14 @@ def day_report(
     # whose date is official but whose time is not announced still blocks the
     # day via the conservative envelope -- the earlier version of this project
     # reported such days as free, which is the bug being fixed.
+    #
+    # Conditional games (currently only the ACC Championship, IR-47) still block:
+    # the flag below only drives disclosure, never the busy math.
+    has_conditional = any(
+        game.get("conditional") and game_in_scope(game, scope)
+        and _game_overlaps_day(game, day_start, day_end, durations, overrun_buffer_min)
+        for game in games
+    )
     return {
         "date": date_iso,
         "scope": scope or SCOPE_ALL,
@@ -568,6 +582,7 @@ def day_report(
         "free_minutes": round(total_minutes - busy_minutes, 1),
         "is_free_day": not merged,
         "has_high_priority": any(iv.priority == "high" for iv in merged),
+        "has_conditional": has_conditional,
         "has_unconfirmed_times": bool(unconfirmed),
         "unconfirmed_minutes": round(unconfirmed_minutes, 1),
         "mlb_frame_fallback": frame_used,

@@ -18,13 +18,15 @@ ESTIMATED
 
 Why the offsets are trustworthy for the *vacation* question
 -----------------------------------------------------------
-Every round is anchored to a Super Bowl date; 2027/2028/2029 are official inputs
-(Super Bowl LXIII's exact day, 2029-02-11, was part of the NFL's 2026-03-30
-announcement; Super Bowl LXIV in 2030 is still an estimate). The offsets (Wild
-Card = SB-29/28/27, Divisional = SB-22/21, Conference Championships = SB-14)
-reproduce the verified 2026-27 layout exactly; a test asserts that. A shift of
-one week in any future round would move a blocked date, so the analysis output
-labels every future-year row ESTIMATED.
+Every round is anchored to a Super Bowl date. 2027 and 2028 are official inputs;
+2029 (Super Bowl LXIII) keeps the second-Sunday-of-February planning date
+2029-02-11 as an ESTIMATE: the league's own 2026-03-30 announcement names the
+host and year but no exact day, and NBC reported the game "does not yet have a
+firm date" (see IR-12). Super Bowl LXIV in 2030 is likewise an estimate. The
+offsets (Wild Card = SB-29/28/27, Divisional = SB-22/21, Conference
+Championships = SB-14) reproduce the verified 2026-27 layout exactly; a test
+asserts that. A shift of one week in any future round would move a blocked date,
+so the analysis output labels every future-year row ESTIMATED.
 """
 
 from __future__ import annotations
@@ -49,11 +51,16 @@ SUPER_BOWL_BY_YEAR = {
     ),
     2029: (
         "2029-02-11",
-        "VERIFIED",
-        "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV. The NFL announced the exact "
-        "date (Sunday 2029-02-11) together with the host on 2026-03-30 at the Annual "
-        "Meeting in Phoenix. Secondary coverage notes the league can still adjust its "
-        "calendar; re-check before booking far out.",
+        "ESTIMATED",
+        "Super Bowl LXIII, Allegiant Stadium, Las Vegas NV - host and year are "
+        "official (NFL Annual Meeting, Phoenix, 2026-03-30) but secondary sources "
+        "conflict on the exact day: WJHL/KLAS (Nexstar, 2026-03-30) reports the "
+        "NFL announced Feb 11, 2029, while NBC reported that the "
+        "game 'does not yet have a firm date', the league's own nfl.com release "
+        "names no day, and the Forbes URL once cited here returns 404. Per the "
+        "project rule the league-owned source wins on conflict, so 2029-02-11 "
+        "stays the second-Sunday-of-February planning assumption, not a released "
+        "date. Re-check before booking far out. See docs/IRREGULARITIES.md IR-12.",
     ),
 }
 

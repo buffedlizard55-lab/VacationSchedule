@@ -67,6 +67,7 @@ def python_side(date_str, scope="all", frames=None):
         "free_minutes": rep["free_minutes"],
         "is_free_day": rep["is_free_day"],
         "has_high_priority": rep["has_high_priority"],
+        "has_conditional": rep["has_conditional"],
         "has_unconfirmed_times": rep["has_unconfirmed_times"],
         "unconfirmed_minutes": rep["unconfirmed_minutes"],
         "mlb_frame_fallback": rep["mlb_frame_fallback"],

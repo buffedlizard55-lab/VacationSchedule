@@ -6,10 +6,22 @@ daily scoreboard and the wider live-radio scope are implemented and merged to
 complete.** Do not describe this project as a fully audited schedule of every
 broadcast or guarantee a quiet trip.
 
-Session 2026-09-21 (this document's pass): Westwood One rows re-verified line by
+Session 2026-09-22 (this document's pass): every primary source re-read live;
+Super Bowl LXIII exact day demoted back to ESTIMATED (genuine secondary
+conflict disclosed, IR-12 revision — supersedes the IR-34 promotion below);
+Earthquakes backfilled to the full 34-match schedule with an Aug 1 kickoff
+correction (IR-07 resolved, IR-42); Valkyries Sep 19 radio fixed to 95.7 with
+the Audacy-only count corrected to 17 of 45 (IR-44); CFP title note corrected
+to 2027-01-25 (IR-43); two dead citations replaced (IR-45); Cal radio column
+needs a full-browser re-check (IR-46); conditional coverage disclosed on the day
+board (free-day envelope notes + ACC conditional flag, IR-47). All 235 checks
+pass; no vacation window moved. Merge to `main` publishes the Pages artifact.
+
+Session 2026-09-21 (earlier pass): Westwood One rows re-verified line by
 line against the live page; MLB clinch facts corrected (IR-32); Super Bowl LXIII
-promoted to VERIFIED everywhere consistently (IR-34); Warriors NBA + Valkyries
-WNBA added as high-priority live-radio sports with per-game 95.7 flags; Sharks
+promoted to VERIFIED everywhere consistently (IR-34 — since superseded by the
+2026-09-22 IR-12 revision); Warriors NBA + Valkyries WNBA added as
+high-priority live-radio sports with per-game 95.7 flags; Sharks
 verified streaming-only and excluded with sources; MLB/MLB-API year frames
 re-checked (IR-33). Merge to `main` publishes the Pages artifact.
 
@@ -88,9 +100,11 @@ radio questions in the flags below are unchanged.
    KNBR/KTCT grids; store `national_feed`, `local_station`, `carriage_status`,
    evidence timestamp. Affiliation alone is insufficient: blackouts and
    conflicts displace feeds (the Station Finder says so explicitly).
-5. **Complete Stanford/Cal and Earthquakes fixtures.** Refresh kickoff TBDs, the
-   2027 MLS transition-season fixtures as they release, and conditional bowl/CFP
-   slots. Never infer a free day from a missing row.
+5. **Complete Stanford/Cal fixtures (Earthquakes 2026 done 2026-09-22).** The
+   Quakes' full 34-match 2026 table is now stored (IR-07 resolved) — still to
+   do: 2027 MLS transition-season fixtures as they release, Stanford/Cal
+   kickoff TBDs (11 of 24), the Cal KSFO radio-column re-check (IR-46), and
+   conditional bowl/CFP slots. Never infer a free day from a missing row.
 6. **Remaining wider-scope gaps** (`data/verified/other_radio_sports.json`
    `unresolved_coverage`): USF men's basketball on KNBR (2026-27 schedule when
    published), Westwood One NCAA basketball event grid + local carriage,

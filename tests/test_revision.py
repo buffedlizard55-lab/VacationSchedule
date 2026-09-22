@@ -57,13 +57,16 @@ class TestPublicationRevision(unittest.TestCase):
             self.assertTrue(all(s["source"].startswith("https://www.mlssoccer.com/") for s in spans))
 
     def test_2029_super_bowl_exact_date_status_matches_sources(self):
-        # NFL announced Super Bowl LXIII for Sunday 2029-02-11 on 2026-03-30
-        # (Annual Meeting, Phoenix). The old ESTIMATED label was corrected in the
-        # 2026-09-21 line-by-line review once the announcement text was re-read.
+        # Super Bowl LXIII host/year (Allegiant Stadium, Las Vegas, 2029) are
+        # official, but secondaries conflict on the exact day: WJHL/KLAS reports
+        # the NFL announced Feb 11, 2029, while NBC says "no firm date", the
+        # league's own nfl.com release names no day, and the Forbes URL once
+        # cited now 404s. League-owned source wins on conflict, so ESTIMATED.
+        # Re-verified 2026-09-22; see docs/IRREGULARITIES.md IR-12.
         self.assertEqual(SUPER_BOWL_BY_YEAR[2029][0], "2029-02-11")
-        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][1], "VERIFIED")
+        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][1], "ESTIMATED")
         self.assertIn("2026-03-30", SUPER_BOWL_BY_YEAR[2029][2])
-        # The 2030 Super Bowl, by contrast, is still an estimate.
+        # The 2030 Super Bowl, likewise, is still an estimate.
         self.assertEqual(SUPER_BOWL_BY_YEAR[2030][1], "ESTIMATED")
 
     def test_missing_regular_season_data_not_marked_complete(self):

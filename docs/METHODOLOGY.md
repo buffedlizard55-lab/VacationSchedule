@@ -93,6 +93,12 @@ envelope described below.
 9. An unblocked day is presented as **NO KNOWN CONFLICT**, never certified free.
    Other league coverage remains incomplete. Exact elapsed minutes are a calculation
    on the available inputs, not proof of accurate broadcast ending times.
+10. (2026-09-22) Conditional coverage is disclosed on the day board, not just the
+    Plan tab: a free day inside a conditional envelope (bowl/CFP, MLS Cup, other
+    radio) names the envelope in the verdict, and a game that blocks only if a
+    school qualifies (currently the ACC Championship, IR-47) carries a Conditional
+    pill plus a verdict note. The blocks stay conservative; only the disclosure
+    changed.
 
 Both Python and JavaScript implement the interval model. Parity tests compare
 all bundled dates/scopes. Arithmetic uses UTC; display uses `America/Los_Angeles`.

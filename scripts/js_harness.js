@@ -54,6 +54,7 @@ function serialise(rep) {
     free_minutes: rep.freeMinutes,
     is_free_day: rep.isFreeDay,
     has_high_priority: rep.hasHighPriority,
+    has_conditional: !!rep.hasConditional,
     has_unconfirmed_times: rep.hasUnconfirmed,
     unconfirmed_minutes: rep.unconfirmedMinutes,
     mlb_frame_fallback: rep.mlbFrameFallback,

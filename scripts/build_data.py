@@ -338,7 +338,7 @@ def from_ncaaf() -> tuple[list[dict], list[dict]]:
         else:
             start_utc = pt_to_utc(row["date_local"], TBD_ENVELOPE["NCAAF"][0])
             status = "TBD_envelope"
-        games.append({
+        game = {
             "league": "NCAAF",
             "label": label,
             "detail": row.get("tv", "") or "kickoff time not announced",
@@ -353,7 +353,12 @@ def from_ncaaf() -> tuple[list[dict], list[dict]]:
             ),
             "time_status": status,
             "tags": ncaaf_tags(row["team"], opponent),
-        })
+        }
+        if row.get("conditional"):
+            # The ACC Championship blocks its date conservatively, but the day
+            # board must say the block depends on qualification (IR-47).
+            game["conditional"] = row["conditional"]
+        games.append(game)
     for row in payload["unresolved"]:
         unresolved.append({
             "league": "NCAAF", "date_local": None,
