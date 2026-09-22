@@ -53,9 +53,10 @@ windows:
 
 2027 MLB Opening Night is **March 24**, so it is not part of that vacation window.
 2027 NFL round/Pro Bowl assumptions still make that year's result provisional.
-Super Bowl LXIII on **February 11, 2029** (Allegiant Stadium) is a verified anchor:
-the NFL announced the exact day on 2026-03-30. Super Bowl LXIV in 2030 is still an
-estimate.
+Super Bowl LXIII (Allegiant Stadium, 2029) host and year are official, but the exact
+day is **estimated** at February 11, 2029: secondary sources conflict (WJHL/KLAS
+reports Feb 11 announced; NBC says no firm date; the league's own release names no
+day). Super Bowl LXIV in 2030 is likewise an estimate. See IR-12.
 
 With Spring Training included, no modeled section reaches two weeks. Adding the
 Earthquakes removes the future February corridor in this conservative model:
@@ -88,13 +89,21 @@ dates inside the regular season that carry no game at all (the All-Star break).
 - **No blanket “fully verified” claim.** The bundled inputs are partly inherited
   snapshots. The 2026-09-21 line-by-line pass re-verified the Westwood One rows,
   MLB clinch facts, Super Bowl dates, the MLB API year frames, and the new
-  Warriors/Valkyries/Sharks findings; college and MLS fixtures are still
-  inherited snapshots. A session-2 pass the same day re-verified the 49ers
-  schedule including per-game radio stations (Weeks 2-3 KSFO 810 AM / KSAN
-  107.7 FM; Week 4 onward KSAN / KNBR), the Athletics home venue (Sutter Health
-  Park, Sacramento), and the live Stats API state (2026/2027 frames; 53
-  postseason records still without published times; six clinched berths). See
-  [the source audit](docs/SOURCES.md).
+  Warriors/Valkyries/Sharks findings; a session-2 pass the same day re-verified
+  the 49ers schedule including per-game radio stations, the Athletics home venue
+  (Sutter Health Park, Sacramento), and the live Stats API state (2026/2027
+  frames; 53 postseason records still without published times; six clinched
+  berths). The 2026-09-22 pass re-read every primary
+  source again and corrected four data errors it found: the Super Bowl LXIII
+  exact day is back to ESTIMATED (secondaries conflict; league release names no
+  day), the Earthquakes are backfilled to the full 34-match schedule with an
+  Aug 1 kickoff correction, one Valkyries radio flag was fixed, and the CFP
+  title-game note was corrected to January 25, 2027. College fixtures remain
+  inherited snapshots with one dead source URL replaced. Its second pass also
+  made conditional coverage visible on the day board: free days inside a
+  bowl/CFP/MLS-Cup envelope name it, and the ACC Championship block is flagged
+  as conditional on Stanford/Cal qualifying (IR-47). See
+  [the source audit](docs/SOURCES.md) and [the 2026-09-22 review](docs/REVIEW-2026-09-22.md).
 - MLB all-club **per-day online fetching** is available. The checked-in offline
   bundle has postseason date holds, not every 2026 regular-season game.
 - A daily Pages workflow attempts an **all-club 2026 MLB snapshot**. It validates

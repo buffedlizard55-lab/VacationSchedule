@@ -285,12 +285,16 @@
     const all = games.filter((g) => gameInScope(g, scope));
     const busy = [];
     const unplaced = [];
+    let hasConditional = false;
 
     all.forEach((game) => {
       const iv = gameToInterval(game);
       if (!iv) { if (game.date_local === dateStr) unplaced.push(game); return; }
       const c = clip(iv, day.start, day.end);
-      if (c) busy.push(c);
+      if (c) {
+        busy.push(c);
+        if (game.conditional) hasConditional = true;
+      }
     });
 
     const frames = useFrames === false ? null : DATA.mlb_frames;
@@ -322,6 +326,7 @@
       freeMinutes: Math.round((day.minutes - busyMin) * 10) / 10,
       isFreeDay: merged.length === 0,
       hasHighPriority: merged.some((iv) => iv.priority === "high"),
+      hasConditional: hasConditional,
       hasUnconfirmed: unconfirmed.length > 0,
       unconfirmedMinutes: Math.round(unconfirmed.reduce((a, iv) => a + (iv.end - iv.start), 0) / 60000 * 10) / 10,
       mlbFrameFallback: frameUsed,
@@ -488,6 +493,7 @@
       `</div>` +
       `<div class="meta">` +
         (g.priority === "high" ? '<span class="pill high">High priority</span> ' : "") +
+        (g.conditional ? `<span class="pill cond" title="${esc(g.conditional)}">Conditional</span> ` : "") +
         (!iv.timeConfirmed ? '<span class="pill tbd">Time TBD</span> ' : "") +
         (iv.provisional ? '<span class="pill tbd">season frame</span> ' : "") +
         srcLink +
@@ -608,6 +614,25 @@
     }
   }
 
+  // Conditional spans (bowls/CFP, MLS Cup, other-radio envelopes) that contain
+  // `dateStr` for the current scope. The Plan tab blocks these dates
+  // conservatively; the Day tab has no per-day rows for them (qualification
+  // unknown), so the free verdict names them instead of staying silent.
+  function conditionalSpansFor(dateStr) {
+    const year = parseInt(dateStr.slice(0, 4), 10);
+    const row = (DATA.vacation || []).find((r) => r.year === year && r.section === scope);
+    if (!row || !row.provenance) return [];
+    const out = [];
+    ["ncaaf_blocks", "mls_blocks", "other_radio_blocks"].forEach((key) => {
+      ((row.provenance || {})[key] || []).forEach((s) => {
+        if (s.conditional && s.start <= dateStr && dateStr <= s.end) {
+          out.push(`${s.label} (${s.start} to ${s.end})`);
+        }
+      });
+    });
+    return [...new Set(out)];
+  }
+
   function renderDay(dateStr) {
     currentDate = dateStr;
     $("dateInput").value = dateStr;
@@ -622,12 +647,17 @@
     const v = $("verdict");
     v.className = "verdict " + (rep.isFreeDay ? "free" : "busy");
     if (rep.isFreeDay) {
+      const cond = conditionalSpansFor(dateStr);
+      const condNote = cond.length
+        ? ` Conditional coverage may still apply &mdash; the Plan tab blocks these dates conservatively: ${cond.map((s) => esc(s)).join("; ")}.`
+        : "";
       v.innerHTML = "NO KNOWN CONFLICT for " + esc(scopeShort(scope)) +
-        `<span class="sub">No bundled conflict in this section. Incomplete or unreleased schedules can still change this result; this is not confirmed free time.</span>`;
+        `<span class="sub">No bundled conflict in this section. Incomplete or unreleased schedules can still change this result; this is not confirmed free time.${condNote}</span>`;
     } else {
       const parts = [];
       parts.push(`Free time: <strong>${Math.round(rep.freeMinutes / 60 * 10) / 10}h</strong> of ${Math.round(rep.dayMinutes / 60 * 10) / 10}h`);
       if (rep.hasHighPriority) parts.push("includes a <strong>high-priority</strong> team or national broadcast");
+      if (rep.hasConditional) parts.push("includes a game <strong>conditional on qualification</strong> &mdash; the block is conservative, not a confirmed broadcast");
       if (rep.hasUnconfirmed) parts.push("<strong>some start times are not yet announced</strong> &mdash; the shaded block is a conservative envelope, not a confirmed window");
       if (rep.mlbFrameFallback) parts.push("MLB is in season but its per-game times are not in the offline snapshot, so the MLB window is blocked conservatively");
       parts.push("section: <strong>" + esc(scopeShort(scope)) + "</strong>");
@@ -1465,10 +1495,11 @@
       { label: "NFL key dates 2026-27 (Wild Card, Divisional, Championships, Super Bowl LXI)", url: "https://www.seahawks.com/news/nfl-announces-important-dates-for-2026-2027" },
       { label: "NFL Operations &mdash; 2026 Pro Bowl Games moved to Super Bowl week", url: "https://operations.nfl.com/updates/the-game/2026-pro-bowl-games-presented-by-verizon-moved-to-tuesday-of-super-bowl-lx-week-in-bay-area/" },
       { label: "NFL &mdash; Super Bowl LXIII host/year confirmed (Las Vegas, 2029)", url: "https://www.nfl.com/news/las-vegas-to-host-super-bowl-lxiii-in-2029" },
-      { label: "NFL Annual Meeting 2026-03-30 &mdash; Super Bowl LXIII exact date: February 11, 2029", url: "https://www.forbes.com/sites/alexkirschner/2026/03/30/nfl-super-bowl-2029-date-location-las-vegas-allegiant-stadium/" },
+      { label: "Super Bowl LXIII exact day disputed: WJHL/KLAS reports Feb 11, 2029 announced", url: "https://www.wjhl.com/news/national/the-super-bowl-will-return-to-las-vegas-in-2029/" },
+      { label: "Super Bowl LXIII exact day disputed: NBC reports no firm date yet (project treats Feb 11 as ESTIMATED)", url: "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/nfl-officially-awards-super-bowl-lxiii-to-las-vegas" },
       { label: "CBS Sports &mdash; Warriors 2026-27 schedule grid (ET tips; transcribed)", url: "https://www.cbssports.com/nba/teams/GS/golden-state-warriors/schedule/" },
       { label: "ESPN API &mdash; Warriors opener spot-check (matches transcribed grid)", url: "http://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/9/schedule?dates=2026-2027" },
-      { label: "Golden State Valkyries &mdash; 2026 broadcast partners and per-game radio flags", url: "https://www.wnba.com/valkyries/roster" },
+      { label: "Golden State Valkyries &mdash; 2026 local TV/radio broadcast schedule (per-game 95.7 flags)", url: "https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425" },
       { label: "KGMZ 95.7 The Game &mdash; official Warriors/Valkyries release", url: "https://www.cumulusmedia.com/2025/09/25/golden-state-valkyries-join-95-7-the-game-as-official-flagship-station/" },
       { label: "San Jose Sharks &mdash; Sports Radio 1140 AM listing; app-only broadcasts (verified streaming)", url: "https://www.nhl.com/sharks/fans/how-to-listen-watch-2526" },
       { label: "Forbes sports business &mdash; new NHL local radio coverage (no Bay Area 49ers/Sharks carry)", url: "https://www.forbes.com/sites/paulkaplan/2026/09/04/san-jose-sharks-new-local-radio-coverage/" },
@@ -1482,7 +1513,7 @@
     $("sourcesList").innerHTML =
       '<div class="srcgrid">' + fixed.concat(rows).map((r) =>
         `<div class="srccard"><h4>${esc(r.label.replace(/&mdash;/g, "—").replace(/&middot;/g, "·"))}</h4>${sourceLink(r.url)}` +
-        `<span class="when">Source register · line-by-line review 2026-09-21 · links can change</span></div>`).join("") + "</div>";
+        `<span class="when">Source register · line-by-line review 2026-09-22 · links can change</span></div>`).join("") + "</div>";
   }
 
   // ---------------------------------------------------------------------
@@ -1697,7 +1728,7 @@
           `${state.counts.game_records} game records, ${state.counts.with_published_time} with a published first pitch` +
           (state._meta && state._meta.retrieved_utc ? ` (measured ${state._meta.retrieved_utc})` : "") + ". ";
       }
-      stamp += "Other league inputs retrieved 2026-09-20; unpublished times and unreleased seasons remain incomplete.";
+      stamp += "Other league inputs re-verified 2026-09-22; unpublished times and unreleased seasons remain incomplete.";
       coverage.textContent = stamp;
     }
     fetch("data/refresh-status.json").then((r) => r.ok ? r.json() : null).then((health) => {

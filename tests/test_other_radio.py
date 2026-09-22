@@ -57,12 +57,16 @@ class TestPostseasonClinchFacts(unittest.TestCase):
 
 
 class TestSuperBowlDates(unittest.TestCase):
-    def test_lxiii_is_verified_everywhere_consistently(self):
-        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][:2], ("2029-02-11", "VERIFIED"))
+    def test_lxiii_is_estimated_everywhere_consistently(self):
+        # Host/year official; exact day disputed across secondaries (WJHL/KLAS
+        # says Feb 11 announced, NBC says no firm date, nfl.com names no day,
+        # Forbes citation 404s). planning assumption, not a released date.
+        # Re-verified 2026-09-22; see docs/IRREGULARITIES.md IR-12.
+        self.assertEqual(SUPER_BOWL_BY_YEAR[2029][:2], ("2029-02-11", "ESTIMATED"))
         seasons = load_verified("seasons.json")
         anchor = seasons["nfl"]["2028"]["verified_anchors"]
         self.assertEqual(anchor["super_bowl"], "2029-02-11")
-        self.assertIn("VERIFIED", anchor["super_bowl_status"])
+        self.assertIn("ESTIMATED", anchor["super_bowl_status"])
 
     def test_2030_super_bowl_still_estimated(self):
         self.assertEqual(SUPER_BOWL_BY_YEAR[2030][1], "ESTIMATED")

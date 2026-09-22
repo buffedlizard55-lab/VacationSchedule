@@ -128,6 +128,44 @@ setTimeout(() => {
   check("2026-10-02 discloses no known conflict, not guaranteed free", /NO KNOWN CONFLICT/.test(text("verdict")), text("verdict"));
   check("2026-10-02 shows no game rows",
     window.document.querySelectorAll("#scoreboard .game").length === 0);
+  check("2026-10-02 names no conditional envelope (none covers it in section 3)",
+    !/Conditional/.test(text("verdict")), text("verdict"));
+
+  // ---- free days inside a conditional envelope name it ----
+  // 2026-12-22 and 2027-01-25 have no per-day rows in section 2 (bowl/CFP
+  // qualification is unknown) but the Plan tab blocks them; the verdict must
+  // say so instead of reading silently free.
+  const scopeBtnsEarly = () => window.document.querySelectorAll("#scopePicker .scopebtn");
+  scopeBtnsEarly()[1].dispatchEvent(new window.Event("click", { bubbles: true }));
+  $("dateInput").value = "2026-12-22";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  check("2026-12-22 section 2 stays a disclosed free day", /NO KNOWN CONFLICT/.test(text("verdict")), text("verdict"));
+  check("2026-12-22 section 2 names the bowl/CFP envelope",
+    /Conditional coverage may still apply/.test(text("verdict")) && /Bowl\/CFP envelope/.test(text("verdict")), text("verdict"));
+  $("dateInput").value = "2027-01-25";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  check("2027-01-25 (CFP title date) section 2 names the bowl/CFP envelope",
+    /NO KNOWN CONFLICT/.test(text("verdict")) && /Jan 25 title date published/.test(text("verdict")), text("verdict"));
+  scopeBtnsEarly()[2].dispatchEvent(new window.Event("click", { bubbles: true }));
+  $("dateInput").value = "2026-10-02";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+
+  // ---- conditional games block but disclose (IR-47) ----
+  // The ACC Championship blocks 2026-12-05 conservatively, yet neither school
+  // has qualified: the verdict and the game row must say the block is conditional.
+  scopeBtnsEarly()[1].dispatchEvent(new window.Event("click", { bubbles: true }));
+  $("dateInput").value = "2026-12-05";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
+  check("2026-12-05 section 2 is blocked (conservative)", /BUSY/.test(text("verdict")), text("verdict"));
+  check("2026-12-05 verdict discloses conditional qualification",
+    /conditional on qualification/.test(text("verdict")), text("verdict"));
+  check("2026-12-05 game row carries a Conditional pill",
+    window.document.querySelectorAll("#scoreboard .pill.cond").length === 1);
+  check("2026-12-05 labels the ACC game vs TBD, not vs itself",
+    /ACC Championship Game vs TBD/.test(text("scoreboard")), text("scoreboard"));
+  scopeBtnsEarly()[2].dispatchEvent(new window.Event("click", { bubbles: true }));
+  $("dateInput").value = "2026-10-02";
+  $("dateInput").dispatchEvent(new window.Event("change", { bubbles: true }));
 
   // ---- navigation buttons move the date ----
   const before = $("dateInput").value;

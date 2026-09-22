@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Live Bay Area sports radio beyond the three requested sections: Golden State Warriors (NBA) and Golden State Valkyries (WNBA) on KGMZ 95.7 The Game, plus researched exclusions. Per the user's request, other sports broadcast live over AM/FM radio in the Bay Area are flagged HIGH priority and count as busy -- but only in the 'Everything tracked' (all) scope, so the three requested section definitions stay exactly as written. Streaming-only broadcasts (Sharks Audio Network, Audacy-only Valkyries games) are NOT counted as busy: the user's definition is a standard AM/FM radio in Outer Sunset 94122.",
-    "retrieved_utc": "2026-09-21T00:00:00Z",
+    "retrieved_utc": "2026-09-22T00:00:00Z (re-verified line by line 2026-09-22: 44/45 rows matched the club table; Sep 19 radio corrected to 95.7)",
     "time_semantics": "start_et is the published tip-off in Eastern Time (CBS Sports schedule grids publish ET). The loader converts to UTC exactly like the Westwood One rows. Where a source publishes Pacific wall-clock times (Valkyries), start_pt is used instead.",
     "counting_rules": {
       "blocking": "A game blocks (marks time not-free) only when an AM/FM broadcast serving San Francisco is verified or strongly evidenced. Valkyries games whose radio column is 'The Audacy App' only are streaming-only and do NOT block; they are disclosed instead.",
@@ -186,8 +186,8 @@
       {"date": "2026-08-26", "start_pt": "16:00", "opponent": "Connecticut Sun", "ha": "away", "phase": "regular", "on_957": false},
       {"date": "2026-08-27", "start_pt": "17:00", "opponent": "New York Liberty", "ha": "away", "phase": "regular", "on_957": false},
       {"date": "2026-08-30", "start_pt": "16:00", "opponent": "Portland Fire", "ha": "away", "phase": "regular", "on_957": false},
-      {"date": "2026-09-18", "start_pt": "19:00", "opponent": "Portland Fire", "ha": "home", "phase": "regular", "on_957": true, "date_flag": "IR-36: club table says Sep 18; final scores feeds show the Portland home game on Sep 19. Schedule marked 'subject to change'; date unresolved."},
-      {"date": "2026-09-19", "start_pt": "18:00", "opponent": "Seattle Storm", "ha": "home", "phase": "regular", "on_957": false, "date_flag": "IR-36: club table says Sep 19; final scores feeds show the Seattle home game on Sep 20. Schedule marked 'subject to change'; date unresolved."},
+      {"date": "2026-09-18", "start_pt": "19:00", "opponent": "Portland Fire", "ha": "home", "phase": "regular", "on_957": true, "date_flag": "IR-35: club table says Sep 18; final scores feeds show the Portland home game on Sep 19. Schedule marked 'subject to change'; date unresolved."},
+      {"date": "2026-09-19", "start_pt": "18:00", "opponent": "Seattle Storm", "ha": "home", "phase": "regular", "on_957": true, "radio_fix": "Corrected 2026-09-22 (IR-44): club table lists '95.7 The Game, The Audacy App'.", "date_flag": "IR-35: club table says Sep 19; final scores feeds show the Seattle home game on Sep 20. Schedule marked 'subject to change'; date unresolved."},
       {"date": "2026-09-22", "start_pt": "19:00", "opponent": "Portland Fire", "ha": "away", "phase": "regular", "on_957": true},
       {"date": "2026-09-24", "start_pt": "19:00", "opponent": "Los Angeles Sparks", "ha": "away", "phase": "regular", "on_957": true}
     ],
@@ -234,7 +234,7 @@
       ]
     },
     {
-      "name": "Valkyries games listed 'The Audacy App' only (18 of 45 listed 2026 games)",
+      "name": "Valkyries games listed 'The Audacy App' only (17 of 45 listed 2026 games)",
       "finding": "Streaming-only broadcasts are not standard AM/FM. Not counted busy; the rows are kept in valkyries.games_2026 with on_957=false so they remain auditable.",
       "sources": ["https://valkyries.wnba.com/news/golden-state-valkyries-announce-local-television-and-radio-broadcast-schedule-20260425"]
     }

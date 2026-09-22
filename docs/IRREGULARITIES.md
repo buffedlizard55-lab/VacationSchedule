@@ -108,6 +108,16 @@ fixtures are absent.
 **Mitigating:** those dates are already blocked by MLB Spring Training, so no
 vacation window in this analysis is affected. Still a real coverage hole.
 
+**RESOLVED 2026-09-22:** the full 34-match table was transcribed from the club's
+2026 schedule release (re-read in full on 2026-09-22): matches 1–17 from
+2026-02-21 (vs Sporting Kansas City) through 2026-07-25 (California Clasico vs
+LA Galaxy at Stanford Stadium) are now in `data/verified/mls_earthquakes`
+alongside the existing August–November rows. 17 home / 17 away, matching the
+official 34-game MLS format. Away venues before August are omitted because the
+release does not state them. The May 2 match at Toronto FC is Time TBD in the
+release and envelope-blocks that date. Confirmation the backfill changed no
+vacation window is in `docs/REVIEW-2026-09-22.md`.
+
 ---
 
 ## IR-08 — Westwood One publishes air time, not kickoff (MEDIUM)
@@ -328,6 +338,19 @@ Stadium, Las Vegas, on **2029-02-11**. The date the project had been carrying as
 estimate was correct, and is now VERIFIED with a source. `scripts/nfl_calendar.py` and
 `data/verified/seasons.json` were updated; a test asserts the status is VERIFIED.
 
+**REVISED 2026-09-22 (demoted back to ESTIMATED):** the 2026-09-21 promotion above
+did not survive re-verification. Today's live re-read found a genuine conflict between
+secondary sources: WJHL/KLAS (Nexstar, 2026-03-30) reports the NFL announced Feb 11,
+2029 on Instagram, while NBC Sports reports the game "does not yet have a firm date";
+the league's own nfl.com release names the host and year but no day, and the cited
+Forbes URL now returns 404. Per the project's league-source-wins rule the exact day is
+an estimate again everywhere (`nfl_calendar.py`, `seasons.json`, site Sources tab,
+README, VACATION-WINDOWS.md, both regression tests), with both conflicting reports
+cited rather than hidden. The planning date is unchanged (second Sunday of February,
+2029-02-11), so no vacation window moved — but the original IR-12 sensitivity revives:
+if the league picks Feb 18, the 2029 corridor disappears. See also IR-34 (superseded)
+and IR-45 (the dead Forbes citation).
+
 ### IR-22 — California football's radio home is KSFO 810 AM, not KNBR (MEDIUM, resolved)
 
 The Cumulus 49ers release (2026-04-15) describes KNBR as the radio home of "Stanford
@@ -481,6 +504,10 @@ estimate). All user-facing docs updated in the same pass. Sensitivity analysis
 in IR-12 ("if it slips to Feb 18 the window disappears") is retired: the date is
 set. The general caveat that the NFL controls its calendar remains.
 
+**SUPERSEDED 2026-09-22:** the 2026-09-21 re-read above missed NBC's "no firm date"
+report and the dateless nfl.com release. The VERIFIED promotion is reversed; see the
+REVISED note on IR-12. The IR-12 Feb-18 sensitivity analysis is un-retired.
+
 ### IR-35 — Valkyries September home games disagree with results feeds by one day (LOW, open)
 
 **Found:** the club's broadcast table (2026-04-25, "subject to change") lists
@@ -505,7 +532,7 @@ streaming). Trade coverage confirms "no flagship radio station in the Bay Area."
 **Done:** Sharks games do **not** block free time under the project's standard
 AM/FM rule. The exclusion, with sources, is shown on the Radio tab and in
 `data/verified/other_radio_sports.json` / `radio_stations.json`. Same treatment
-for the 18 Audacy-only Valkyries games.
+for the 17 Audacy-only Valkyries games (corrected from 18 on 2026-09-22; see IR-44).
 
 ### IR-37 — Warriors fixtures come from a secondary grid (LOW, accepted with flags)
 
@@ -576,3 +603,70 @@ both (`_meta.clubs` for the row labels, `_meta.mlb_club_ids` for the filter), an
 browser check asserts exactly 31 options (all + 30). Exhibition rows still render
 with their real opponent names.
 
+
+### IR-42 — Earthquakes Aug 1 kickoff was stored 3 hours late (MEDIUM, fixed)
+
+**Found 2026-09-22:** the stored row said San Jose at FC Cincinnati on 2026-08-01
+kicks off 19:30 PT. The club release table says 4:30 PM (PT) — 7:30 PM would have been
+10:30 PM Eastern in Cincinnati. All 17 other stored rows re-checked against the same
+release and match.
+
+**Done:** corrected to 16:30 PT with a source note on the row. The free afternoon of
+Aug 1 grows by 3 hours; no vacation window moved (an MLS game still blocks the date
+in Section 3 either way).
+
+### IR-43 — CFP title note named the wrong date (LOW, fixed)
+
+**Found 2026-09-22:** `bay_area_2026.json` said the 2027 College Football Playoff
+title game is 2027-01-11. The CFP schedule widget lists it 2027-01-25 (7:30 PM ET).
+The bowl/CFP envelope in the analysis already ran through Jan 25, so the note
+contradicted the engine.
+
+**Done:** note corrected to 2027-01-25; no venue is claimed (only the date was
+verified). No window moved.
+
+### IR-44 — Valkyries Sep 19 radio flag was wrong; Audacy-only count was 18, not 17 (LOW, fixed)
+
+**Found 2026-09-22:** the full 45-row Valkyries broadcast table was re-checked
+row by row: 44 rows match, but 2026-09-19 vs Seattle carries 95.7 The Game per the
+club table while the stored row said Audacy-app only. The Audacy-only count is
+therefore 17 of 45, not 18.
+
+**Done:** Sep 19 flipped to `on_957: true`, the count corrected everywhere it is
+stated (including IR-36 above), and the per-game source column now carries the
+verification note. Sep 19 now blocks in the `all` scope; Sections 1–3 are untouched.
+
+### IR-45 — Two cited URLs rotted (LOW, fixed)
+
+**Found 2026-09-22:** (1) the Stanford Week 0 source URL dated 2026-08-24 returns
+404; (2) the Forbes URL cited for the Super Bowl LXIII date returns 404.
+
+**Done:** (1) replaced with the live 2026-01-26 Stanford schedule release, whose
+12-game table matches every stored Stanford row; (2) replaced with the two live
+conflicting reports (WJHL/KLAS vs NBC) now disclosed under IR-12. No fixture changed.
+
+### IR-46 — Cal schedule page's per-game radio column needs a full-browser re-check (LOW, open)
+
+**Found 2026-09-22:** the 12 Cal dates, first five kickoffs, and results all match
+the stored rows, but this pass's page extraction did not surface the per-game radio
+column (Radio: KSFO 810 AM vs KNBR) that IR-22 documents.
+
+**Action:** re-read the Cal schedule page in a full browser next session and confirm
+the KSFO/KNBR split is unchanged. No conclusion depends on it (both stations block
+equally), but the Radio tab names stations per game.
+
+### IR-47 — The ACC Championship blocked Dec 5 as "official" while only the Plan tab called it conditional (MEDIUM, fixed)
+
+**Found 2026-09-22 (Pass 2):** the 2026-12-05 ACC Championship game blocked Sections
+2–3 as a plain official high-priority row ("ACC Championship vs ACC Championship
+Game", KNBR radio claim) even though neither Stanford nor Cal has qualified — and
+Westwood One's national NCAA grid carries the SEC title game that day, not the ACC.
+The Plan tab's span label said "conditional on qualifying", but the Day tab showed a
+confirmed block with no caveat.
+
+**Done:** the stored row now reads "ACC Championship Game vs TBD" with a structured
+`conditional` flag ("Only relevant if Stanford or Cal qualifies; qualification unknown
+until late November"), the builder propagates it, both engines report
+`has_conditional` (covered by the JS/Python parity test), the busy verdict discloses
+"conditional on qualification", and the game row carries a Conditional pill. The block
+itself stays conservative — only the disclosure changed.

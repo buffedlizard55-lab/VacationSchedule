@@ -215,6 +215,7 @@ input[type="date"] {
 .pill.tbd { background: #e2e8f0; color: #334155; border: 1px solid #94a3b8; }
 .pill.ok { background: var(--freebg); color: var(--free); border: 1px solid var(--free); }
 .pill.warn { background: var(--highbg); color: var(--high); border: 1px solid #d97706; }
+.pill.cond { background: #fef9c3; color: #854d0e; border: 1px solid #ca8a04; }
 .pill.bad { background: var(--busybg); color: var(--busy); border: 1px solid var(--busy); }
 .yes { color: var(--free); font-weight: 700; }
 .no { color: var(--busy); font-weight: 700; }

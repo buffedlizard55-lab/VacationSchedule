@@ -275,6 +275,21 @@ class TestDayLevelRegression(unittest.TestCase):
             report = day_report(bundle["games"], game["date_local"])
             self.assertFalse(report["is_free_day"], f"{game['date_local']} wrongly free")
 
+    def test_conditional_game_blocks_but_is_flagged(self):
+        """The ACC Championship (IR-47) blocks Dec 5 conservatively while
+        flagging that the block depends on Stanford/Cal qualifying."""
+        bundle = build()
+        acc = [g for g in bundle["games"]
+               if g["date_local"] == "2026-12-05" and g["league"] == "NCAAF"
+               and "SEC" not in g["label"]]
+        self.assertEqual(len(acc), 1)
+        self.assertIn("qualif", acc[0].get("conditional", ""))
+        report = day_report(bundle["games"], "2026-12-05", scope="2")
+        self.assertFalse(report["is_free_day"])
+        self.assertTrue(report["has_conditional"])
+        plain = day_report(bundle["games"], "2026-12-06", scope="2")
+        self.assertFalse(plain["has_conditional"])
+
 
 class TestVacationAnalysis(unittest.TestCase):
     def setUp(self):
