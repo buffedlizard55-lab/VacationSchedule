@@ -7,8 +7,8 @@
       "2026-10-31"
     ],
     "source_url": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-09-28&endDate=2026-10-31&gameType=E,S,D,L,F,W",
-    "retrieved_utc": "2026-09-24T17:54:16Z",
-    "raw_sha256": "c76bdef9923d35adc3628c914c13f957632308ed12c64c21693000bb5f39e2da",
+    "retrieved_utc": "2026-09-25T18:01:30Z",
+    "raw_sha256": "a29d7f73d2426374a699e91fafb5fed4ddd04addc6b871b1c2f1c3d7bfa4501a",
     "generated_by": "scripts/export_mlb_schedule.py"
   },
   "counts": {
@@ -75,7 +75,7 @@
       "date": "2026-09-29",
       "start_pt": "TBD",
       "time_tbd": "true",
-      "label": "AL Wild Card #3 at AL #3 Seed",
+      "label": "AL Wild Card #3 at AL West #1",
       "venue": "AL Stadium",
       "game_type": "F"
     },
@@ -91,8 +91,8 @@
       "date": "2026-09-29",
       "start_pt": "TBD",
       "time_tbd": "true",
-      "label": "NL Wild Card #3 at NL #3 Seed",
-      "venue": "NL Stadium",
+      "label": "NL Wild Card #3 at Atlanta Braves",
+      "venue": "Truist Park",
       "game_type": "F"
     },
     {
@@ -107,7 +107,7 @@
       "date": "2026-09-30",
       "start_pt": "TBD",
       "time_tbd": "true",
-      "label": "AL Wild Card #3 at AL #3 Seed",
+      "label": "AL Wild Card #3 at AL West #1",
       "venue": "AL Stadium",
       "game_type": "F"
     },
@@ -123,8 +123,8 @@
       "date": "2026-09-30",
       "start_pt": "TBD",
       "time_tbd": "true",
-      "label": "NL Wild Card #3 at NL #3 Seed",
-      "venue": "NL Stadium",
+      "label": "NL Wild Card #3 at Atlanta Braves",
+      "venue": "Truist Park",
       "game_type": "F"
     },
     {
@@ -139,7 +139,7 @@
       "date": "2026-10-01",
       "start_pt": "TBD",
       "time_tbd": "true",
-      "label": "AL Wild Card #3 at AL #3 Seed",
+      "label": "AL Wild Card #3 at AL West #1",
       "venue": "AL Stadium",
       "game_type": "F"
     },
@@ -155,8 +155,8 @@
       "date": "2026-10-01",
       "start_pt": "TBD",
       "time_tbd": "true",
-      "label": "NL Wild Card #3 at NL #3 Seed",
-      "venue": "NL Stadium",
+      "label": "NL Wild Card #3 at Atlanta Braves",
+      "venue": "Truist Park",
       "game_type": "F"
     }
   ]
