@@ -1,7 +1,7 @@
 # MLB 2026 schedule - all clubs, all game types
 # source: https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=2026-01-01&endDate=2026-12-31&gameType=R,E,S,D,L,F,W,A
-# retrieved_utc: 2026-09-25T18:01:29Z
-# raw_sha256: ae3026cd903bda6f1464a32d6d0cb8c907f6c679bdaf111dc60ddb58877a6a53
+# retrieved_utc: 2026-09-26T17:20:27Z
+# raw_sha256: a3e5f5b835b8167e52ad14db368a273c610f058b8d031327a389607df5291755
 # games: 2973 (columns: date_local|start_utc|start_pt|start_et|time_tbd|game_type|away|home|away_id|home_id|venue|status|game_pk)
 # time_tbd=true means the league has not published a first pitch; date_local is still official.
 2026-02-20|2026-02-20T18:05:00Z|10:05|13:05|false|S|New York Yankees|Baltimore Orioles|147|110|Ed Smith Stadium|Final|832034
@@ -2879,37 +2879,37 @@
 2026-09-24|2026-09-25T01:40:00Z|18:40|21:40|false|R|Houston Astros|Athletics|117|133|Sutter Health Park|Final|824950
 2026-09-24|2026-09-25T01:40:00Z|18:40|21:40|false|R|Los Angeles Angels|Seattle Mariners|108|136|T-Mobile Park|Final|823087
 2026-09-24|2026-09-25T02:10:00Z|19:10|22:10|false|R|San Diego Padres|Los Angeles Dodgers|135|119|UNIQLO Field at Dodger Stadium|Final|823895
-2026-09-25|2026-09-25T17:05:00Z|10:05|13:05|false|R|Chicago Cubs|Boston Red Sox|112|111|Fenway Park|In Progress|824703
-2026-09-25|2026-09-25T20:05:00Z|13:05|16:05|false|R|Baltimore Orioles|New York Yankees|110|147|Yankee Stadium|Pre-Game|823491
-2026-09-25|2026-09-25T21:35:00Z|14:35|17:35|false|R|Chicago Cubs|Boston Red Sox|112|111|Fenway Park|Scheduled|824706
-2026-09-25|2026-09-25T22:40:00Z|15:40|18:40|false|R|Pittsburgh Pirates|Detroit Tigers|134|116|Comerica Park|Scheduled|824220
-2026-09-25|2026-09-25T22:40:00Z|15:40|18:40|false|R|Tampa Bay Rays|Philadelphia Phillies|139|143|Citizens Bank Park|Scheduled|823409
-2026-09-25|2026-09-25T22:45:00Z|15:45|18:45|false|R|New York Mets|Washington Nationals|121|120|Nationals Park|Scheduled|822681
-2026-09-25|2026-09-25T23:07:00Z|16:07|19:07|false|R|Cincinnati Reds|Toronto Blue Jays|113|141|Rogers Centre|Scheduled|822760
-2026-09-25|2026-09-25T23:10:00Z|16:10|19:10|false|R|Atlanta Braves|Miami Marlins|144|146|loanDepot park|Scheduled|823816
-2026-09-25|2026-09-25T23:40:00Z|16:40|19:40|false|R|Cleveland Guardians|Kansas City Royals|114|118|Kauffman Stadium|Scheduled|824058
-2026-09-25|2026-09-25T23:40:00Z|16:40|19:40|false|R|Colorado Rockies|Chicago White Sox|115|145|Rate Field|Scheduled|824544
-2026-09-25|2026-09-25T23:40:00Z|16:40|19:40|false|R|St. Louis Cardinals|Milwaukee Brewers|138|158|American Family Field|Scheduled|823735
-2026-09-25|2026-09-26T00:10:00Z|17:10|20:10|false|R|Texas Rangers|Minnesota Twins|140|142|Target Field|Scheduled|823652
-2026-09-25|2026-09-26T01:40:00Z|18:40|21:40|false|R|Arizona Diamondbacks|San Diego Padres|109|135|Petco Park|Scheduled|823248
-2026-09-25|2026-09-26T01:40:00Z|18:40|21:40|false|R|Houston Astros|Athletics|117|133|Sutter Health Park|Scheduled|824947
-2026-09-25|2026-09-26T02:10:00Z|19:10|22:10|false|R|Los Angeles Angels|Seattle Mariners|108|136|T-Mobile Park|Scheduled|823085
-2026-09-25|2026-09-26T02:15:00Z|19:15|22:15|false|R|Los Angeles Dodgers|San Francisco Giants|119|137|Oracle Park|Scheduled|823167
-2026-09-25||TBD|TBD|true|R|Baltimore Orioles|New York Yankees|110|147|Yankee Stadium|Scheduled|823489
-2026-09-26|2026-09-26T17:10:00Z|10:10|13:10|false|R|Pittsburgh Pirates|Detroit Tigers|134|116|Comerica Park|Scheduled|824219
-2026-09-26|2026-09-26T19:07:00Z|12:07|15:07|false|R|Cincinnati Reds|Toronto Blue Jays|113|141|Rogers Centre|Scheduled|822759
-2026-09-26|2026-09-26T20:05:00Z|13:05|16:05|false|R|Los Angeles Dodgers|San Francisco Giants|119|137|Oracle Park|Scheduled|823165
-2026-09-26|2026-09-26T20:05:00Z|13:05|16:05|false|R|New York Mets|Washington Nationals|121|120|Nationals Park|Scheduled|822678
-2026-09-26|2026-09-26T20:10:00Z|13:10|16:10|false|R|Atlanta Braves|Miami Marlins|144|146|loanDepot park|Scheduled|823813
-2026-09-26|2026-09-26T20:10:00Z|13:10|16:10|false|R|Texas Rangers|Minnesota Twins|140|142|Target Field|Scheduled|823653
+2026-09-25|2026-09-25T17:05:00Z|10:05|13:05|false|R|Chicago Cubs|Boston Red Sox|112|111|Fenway Park|Final|824703
+2026-09-25|2026-09-25T20:05:00Z|13:05|16:05|false|R|Baltimore Orioles|New York Yankees|110|147|Yankee Stadium|Final|823491
+2026-09-25|2026-09-25T21:35:00Z|14:35|17:35|false|R|Chicago Cubs|Boston Red Sox|112|111|Fenway Park|Final|824706
+2026-09-25|2026-09-25T22:40:00Z|15:40|18:40|false|R|Pittsburgh Pirates|Detroit Tigers|134|116|Comerica Park|Final|824220
+2026-09-25|2026-09-25T22:40:00Z|15:40|18:40|false|R|Tampa Bay Rays|Philadelphia Phillies|139|143|Citizens Bank Park|Final|823409
+2026-09-25|2026-09-25T22:45:00Z|15:45|18:45|false|R|New York Mets|Washington Nationals|121|120|Nationals Park|Final|822681
+2026-09-25|2026-09-25T23:07:00Z|16:07|19:07|false|R|Cincinnati Reds|Toronto Blue Jays|113|141|Rogers Centre|Final|822760
+2026-09-25|2026-09-25T23:10:00Z|16:10|19:10|false|R|Atlanta Braves|Miami Marlins|144|146|loanDepot park|Final|823816
+2026-09-25|2026-09-25T23:40:00Z|16:40|19:40|false|R|Cleveland Guardians|Kansas City Royals|114|118|Kauffman Stadium|Final|824058
+2026-09-25|2026-09-25T23:40:00Z|16:40|19:40|false|R|Colorado Rockies|Chicago White Sox|115|145|Rate Field|Final|824544
+2026-09-25|2026-09-25T23:40:00Z|16:40|19:40|false|R|St. Louis Cardinals|Milwaukee Brewers|138|158|American Family Field|Final|823735
+2026-09-25|2026-09-26T00:10:00Z|17:10|20:10|false|R|Texas Rangers|Minnesota Twins|140|142|Target Field|Final|823652
+2026-09-25|2026-09-26T01:40:00Z|18:40|21:40|false|R|Arizona Diamondbacks|San Diego Padres|109|135|Petco Park|Final|823248
+2026-09-25|2026-09-26T01:40:00Z|18:40|21:40|false|R|Houston Astros|Athletics|117|133|Sutter Health Park|Final|824947
+2026-09-25|2026-09-26T02:10:00Z|19:10|22:10|false|R|Los Angeles Angels|Seattle Mariners|108|136|T-Mobile Park|Final|823085
+2026-09-25|2026-09-26T02:15:00Z|19:15|22:15|false|R|Los Angeles Dodgers|San Francisco Giants|119|137|Oracle Park|Final|823167
+2026-09-25||TBD|TBD|true|R|Baltimore Orioles|New York Yankees|110|147|Yankee Stadium|Final|823489
+2026-09-26|2026-09-26T16:35:00Z|09:35|12:35|false|R|New York Mets|Washington Nationals|121|120|Nationals Park|In Progress|822678
+2026-09-26|2026-09-26T17:10:00Z|10:10|13:10|false|R|Pittsburgh Pirates|Detroit Tigers|134|116|Comerica Park|In Progress|824219
+2026-09-26|2026-09-26T19:07:00Z|12:07|15:07|false|R|Cincinnati Reds|Toronto Blue Jays|113|141|Rogers Centre|Pre-Game|822759
+2026-09-26|2026-09-26T20:05:00Z|13:05|16:05|false|R|Los Angeles Dodgers|San Francisco Giants|119|137|Oracle Park|Pre-Game|823165
+2026-09-26|2026-09-26T20:10:00Z|13:10|16:10|false|R|Atlanta Braves|Miami Marlins|144|146|loanDepot park|Pre-Game|823813
+2026-09-26|2026-09-26T20:10:00Z|13:10|16:10|false|R|Texas Rangers|Minnesota Twins|140|142|Target Field|Pre-Game|823653
 2026-09-26|2026-09-26T23:10:00Z|16:10|19:10|false|R|Cleveland Guardians|Kansas City Royals|114|118|Kauffman Stadium|Scheduled|824057
 2026-09-26|2026-09-26T23:10:00Z|16:10|19:10|false|R|Colorado Rockies|Chicago White Sox|115|145|Rate Field|Scheduled|824543
 2026-09-26|2026-09-26T23:10:00Z|16:10|19:10|false|R|St. Louis Cardinals|Milwaukee Brewers|138|158|American Family Field|Scheduled|823733
-2026-09-26|2026-09-26T23:15:00Z|16:15|19:15|false|R|Chicago Cubs|Boston Red Sox|112|111|Fenway Park|Scheduled|824705
 2026-09-26|2026-09-26T23:15:00Z|16:15|19:15|false|R|Tampa Bay Rays|Philadelphia Phillies|139|143|Citizens Bank Park|Scheduled|823407
 2026-09-26|2026-09-27T00:40:00Z|17:40|20:40|false|R|Arizona Diamondbacks|San Diego Padres|109|135|Petco Park|Scheduled|823245
 2026-09-26|2026-09-27T01:40:00Z|18:40|21:40|false|R|Houston Astros|Athletics|117|133|Sutter Health Park|Scheduled|824949
 2026-09-26|2026-09-27T01:40:00Z|18:40|21:40|false|R|Los Angeles Angels|Seattle Mariners|108|136|T-Mobile Park|Scheduled|823083
+2026-09-27|2026-09-27T19:05:00Z|12:05|15:05|false|R|Chicago Cubs|Boston Red Sox|112|111|Tropicana Field|Scheduled|824705
 2026-09-27|2026-09-27T19:05:00Z|12:05|15:05|false|R|Houston Astros|Athletics|117|133|Sutter Health Park|Scheduled|824948
 2026-09-27|2026-09-27T19:05:00Z|12:05|15:05|false|R|Los Angeles Dodgers|San Francisco Giants|119|137|Oracle Park|Scheduled|823164
 2026-09-27|2026-09-27T19:05:00Z|12:05|15:05|false|R|New York Mets|Washington Nationals|121|120|Nationals Park|Scheduled|822679
@@ -2924,37 +2924,37 @@
 2026-09-27|2026-09-27T19:10:00Z|12:10|15:10|false|R|St. Louis Cardinals|Milwaukee Brewers|138|158|American Family Field|Scheduled|823731
 2026-09-27|2026-09-27T19:10:00Z|12:10|15:10|false|R|Texas Rangers|Minnesota Twins|140|142|Target Field|Scheduled|823650
 2026-09-27|2026-09-27T19:20:00Z|12:20|15:20|false|R|Baltimore Orioles|New York Yankees|110|147|Yankee Stadium|Scheduled|823490
-2026-09-29||TBD|TBD|true|F|AL Wild Card #2|New York Yankees|4944|147|Yankee Stadium|Scheduled|849851
-2026-09-29||TBD|TBD|true|F|AL Wild Card #3|AL West #1|4946|4614|AL Stadium|Scheduled|849849
+2026-09-29||TBD|TBD|true|F|Boston Red Sox|New York Yankees|111|147|Yankee Stadium|Scheduled|849851
+2026-09-29||TBD|TBD|true|F|CWS/CLE|HOU/TEX|4946|4614|AL Stadium|Scheduled|849849
 2026-09-29||TBD|TBD|true|F|NL Wild Card #2|NL Wild Card #1|4945|4619|NL Stadium|Scheduled|849843
 2026-09-29||TBD|TBD|true|F|NL Wild Card #3|Atlanta Braves|4947|144|Truist Park|Scheduled|849845
-2026-09-30||TBD|TBD|true|F|AL Wild Card #2|New York Yankees|4944|147|Yankee Stadium|Scheduled|849848
-2026-09-30||TBD|TBD|true|F|AL Wild Card #3|AL West #1|4946|4614|AL Stadium|Scheduled|849846
+2026-09-30||TBD|TBD|true|F|Boston Red Sox|New York Yankees|111|147|Yankee Stadium|Scheduled|849848
+2026-09-30||TBD|TBD|true|F|CWS/CLE|HOU/TEX|4946|4614|AL Stadium|Scheduled|849846
 2026-09-30||TBD|TBD|true|F|NL Wild Card #2|NL Wild Card #1|4945|4619|NL Stadium|Scheduled|849842
 2026-09-30||TBD|TBD|true|F|NL Wild Card #3|Atlanta Braves|4947|144|Truist Park|Scheduled|849841
-2026-10-01||TBD|TBD|true|F|AL Wild Card #2|New York Yankees|4944|147|Yankee Stadium|Scheduled|849847
-2026-10-01||TBD|TBD|true|F|AL Wild Card #3|AL West #1|4946|4614|AL Stadium|Scheduled|849850
+2026-10-01||TBD|TBD|true|F|Boston Red Sox|New York Yankees|111|147|Yankee Stadium|Scheduled|849847
+2026-10-01||TBD|TBD|true|F|CWS/CLE|HOU/TEX|4946|4614|AL Stadium|Scheduled|849850
 2026-10-01||TBD|TBD|true|F|NL Wild Card #2|NL Wild Card #1|4945|4619|NL Stadium|Scheduled|849840
 2026-10-01||TBD|TBD|true|F|NL Wild Card #3|Atlanta Braves|4947|144|Truist Park|Scheduled|849844
-2026-10-03||TBD|TBD|true|D|AL 3/6 Winner|AL Central #1|5528|4613|AL Stadium|Scheduled|849829
+2026-10-03||TBD|TBD|true|D|AL 3/6 Winner|CLE/CWS|5528|4613|AL Stadium|Scheduled|849829
 2026-10-03||TBD|TBD|true|D|AL 4/5 Winner|Tampa Bay Rays|5529|139|Tropicana Field|Scheduled|849835
 2026-10-03||TBD|TBD|true|D|NL 3/6 Winner|Los Angeles Dodgers|5532|119|UNIQLO Field at Dodger Stadium|Scheduled|849828
 2026-10-03||TBD|TBD|true|D|NL 4/5 Winner|Milwaukee Brewers|5533|158|American Family Field|Scheduled|849830
 2026-10-04||TBD|TBD|true|D|NL 3/6 Winner|Los Angeles Dodgers|5532|119|UNIQLO Field at Dodger Stadium|Scheduled|849823
 2026-10-04||TBD|TBD|true|D|NL 4/5 Winner|Milwaukee Brewers|5533|158|American Family Field|Scheduled|849825
-2026-10-05||TBD|TBD|true|D|AL 3/6 Winner|AL Central #1|5528|4613|AL Stadium|Scheduled|849834
+2026-10-05||TBD|TBD|true|D|AL 3/6 Winner|CLE/CWS|5528|4613|AL Stadium|Scheduled|849834
 2026-10-05||TBD|TBD|true|D|AL 4/5 Winner|Tampa Bay Rays|5529|139|Tropicana Field|Scheduled|849839
 2026-10-06||TBD|TBD|true|D|Los Angeles Dodgers|NL 3/6 Winner|119|5532|NL Stadium|Scheduled|849819
 2026-10-06||TBD|TBD|true|D|Milwaukee Brewers|NL 4/5 Winner|158|5533|NL Stadium|Scheduled|849826
-2026-10-07||TBD|TBD|true|D|AL Central #1|AL 3/6 Winner|4613|5528|AL Stadium|Scheduled|849833
+2026-10-07||TBD|TBD|true|D|CLE/CWS|AL 3/6 Winner|4613|5528|AL Stadium|Scheduled|849833
 2026-10-07||TBD|TBD|true|D|Los Angeles Dodgers|NL 3/6 Winner|119|5532|NL Stadium|Scheduled|849822
 2026-10-07||TBD|TBD|true|D|Milwaukee Brewers|NL 4/5 Winner|158|5533|NL Stadium|Scheduled|849827
 2026-10-07||TBD|TBD|true|D|Tampa Bay Rays|AL 4/5 Winner|139|5529|AL Stadium|Scheduled|849838
-2026-10-08||TBD|TBD|true|D|AL Central #1|AL 3/6 Winner|4613|5528|AL Stadium|Scheduled|849832
+2026-10-08||TBD|TBD|true|D|CLE/CWS|AL 3/6 Winner|4613|5528|AL Stadium|Scheduled|849832
 2026-10-08||TBD|TBD|true|D|Tampa Bay Rays|AL 4/5 Winner|139|5529|AL Stadium|Scheduled|849837
 2026-10-09||TBD|TBD|true|D|NL 3/6 Winner|Los Angeles Dodgers|5532|119|UNIQLO Field at Dodger Stadium|Scheduled|849821
 2026-10-09||TBD|TBD|true|D|NL 4/5 Winner|Milwaukee Brewers|5533|158|American Family Field|Scheduled|849824
-2026-10-10||TBD|TBD|true|D|AL 3/6 Winner|AL Central #1|5528|4613|AL Stadium|Scheduled|849831
+2026-10-10||TBD|TBD|true|D|AL 3/6 Winner|CLE/CWS|5528|4613|AL Stadium|Scheduled|849831
 2026-10-10||TBD|TBD|true|D|AL 4/5 Winner|Tampa Bay Rays|5529|139|Tropicana Field|Scheduled|849836
 2026-10-11||TBD|TBD|true|L|NL Lower Seed|NL Higher Seed|5525|5517|NL Stadium|Scheduled|849809
 2026-10-12||TBD|TBD|true|L|AL Lower Seed|AL Higher Seed|5521|5513|AL Stadium|Scheduled|849820
